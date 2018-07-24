@@ -14,7 +14,7 @@ Getting Started
 
 - Upgrade packaging tools.
 
-    env/bin/pip install --upgrade pip setuptools
+    env/bin/pip install --upgrade pip setuptools requests bs4
 
 - Install the project in editable mode with its testing requirements.
 
@@ -42,3 +42,9 @@ Backlog
   * Add method to_json()
   * Add cookiecutter pyramid app
 
+
+
+Genuine
+-------
+
+Let me know if you would like to link arscca to this site, or somehow integrate the two
