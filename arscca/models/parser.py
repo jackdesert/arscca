@@ -41,11 +41,11 @@ class Parser:
 
         self.drivers.sort(key=Driver.fastest_pax_time)
         for index, driver in enumerate(self.drivers):
-            driver.pos_pax = index + 1
+            driver.position_pax = index + 1
 
         self.drivers.sort(key=Driver.fastest_time)
         for index, driver in enumerate(self.drivers):
-            driver.pos_overall = index + 1
+            driver.position_overall = index + 1
 
         self.drivers.sort(key=Driver.car_class_sortable)
         rank = 1
@@ -53,7 +53,7 @@ class Parser:
         for driver in self.drivers:
             if driver.car_class != last_car_class:
                 rank = 1
-            driver.pos_class = rank
+            driver.position_class = rank
             rank += 1
             last_car_class = driver.car_class
 

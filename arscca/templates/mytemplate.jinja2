@@ -2,7 +2,62 @@
 
 {% block content %}
 <div class="content">
-  <h1><span class="font-semi-bold">Pyramid</span> <span class="smaller">Starter project</span></h1>
-  <p class="lead">Welcome to <span class="font-normal">arscca</span>, a&nbsp;Pyramid application generated&nbsp;by<br><span class="font-normal">Cookiecutter</span>.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Pos Overall</th>
+                <th>Pos PAX</th>
+                <th>Pos Class</th>
+                <th>Driver</th>
+                <th>Number</th>
+                <th>Class</th>
+                <th>Model</th>
+                <th>Best Time</th>
+                <th>Pax Factor</th>
+                <th>Best PAX Time</th>
+                <th>Run 1</th>
+                <th>Run 2</th>
+                <th>Run 3</th>
+                <th>Run 4</th>
+                <th>Run 5</th>
+                <th>Run 6</th>
+            </tr>
+        </thead>
+        <tbody id='drivers-tbody'>
+            <tr>
+                <td colspan='15'>Please enable JavaScript</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+    <script>
+        // Use |safe filter so jinja2 does not escape the quotes
+        var drivers = {{ drivers |safe }}
+    </script>
+
+    <script id='driver-template' type='text/x-handlerbars-template'>
+        {% raw %}
+            <tr>
+                <td>{{ position_overall }}</td>
+                <td>{{ position_pax }}</td>
+                <td>{{ position_class }}</td>
+                <td>{{ name }}</td>
+                <td>{{ car_number }}</td>
+                <td>{{ car_class }}</td>
+                <td>{{ car_model }}</td>
+                <td>{{ fastest_time }}</td>
+                <td>{{ pax_factor }}</td>
+                <td>{{ fastest_pax_time }}</td>
+                <td>{{ run_1 }}</td>
+                <td>{{ run_2 }}</td>
+                <td>{{ run_3 }}</td>
+                <td>{{ run_4 }}</td>
+                <td>{{ run_5 }}</td>
+                <td>{{ run_6 }}</td>
+            </tr>
+        {% endraw %}
+
+    </script>
+
 {% endblock content %}

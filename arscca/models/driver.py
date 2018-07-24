@@ -63,4 +63,10 @@ class Driver:
         print(f'fastest_time  {self.fastest_time()}')
         print(f'fastest_pax   {self.fastest_pax_time()}')
 
+    def properties(self):
+        props = self.__dict__.copy()
+        props.update(fastest_time = str(self.fastest_time()),
+                     fastest_pax_time = str(self.fastest_pax_time()),
+                     pax_factor = str(self.pax_factor()))
+        return props
 

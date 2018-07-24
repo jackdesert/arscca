@@ -62,5 +62,5 @@ class Pax:
         if car_class.endswith('L'):
             car_class = car_class[0:-1]
         factor = cls.FACTORS[car_class]
-        return Decimal(factor)
+        return Decimal(str(factor))
 
