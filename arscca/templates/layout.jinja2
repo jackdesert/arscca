@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="pyramid web application">
-    <meta name="author" content="Pylons Project">
+    <meta name="description" content="ARSCCA Results, Sortable by Column">
+    <meta name="author" content="Jack Desert">
     <link rel="shortcut icon" href="{{request.static_path('arscca:static/pyramid-16x16.png')}}">
 
-    <title>ARSCCA Stats</title>
+    <title>ARSCCA Results</title>
 
     <!-- Custom styles for this scaffold -->
     <link href="{{request.static_path('arscca:static/theme.css')}}" rel="stylesheet">
@@ -17,35 +17,30 @@
 
   <body>
 
-    <div class="starter-template">
       <div class="container">
-        <div class="row">
-          <div class="col-md-2">
-            <img class="logo img-responsive" src="{{request.static_path('arscca:static/pyramid.png') }}" alt="pyramid web framework">
+          <div class="row">
+              <div class="col-md-10">
+                  {% block content %}
+                  <p>No content</p>
+                  {% endblock content %}
+              </div>
           </div>
-          <div class="col-md-10">
-            {% block content %}
-                <p>No content</p>
-            {% endblock content %}
-          </div>
-        </div>
-        <div class="row">
-          <div class="copyright">
-              Compiled by Jack Desert
-          </div>
-          <div>
-              Little Rock, AR
-          </div>
-          <div>
-              sexycadaver@riseup.net
-          </div>
+          <div class="row">
+              <div class="copyright">
+                  Compiled by Jack Desert
+              </div>
+              <div>
+                  Little Rock, AR
+              </div>
+              <div>
+                  sexycadaver@riseup.net
+              </div>
 
-          <div>
-              971.901.7899
+              <div>
+                  971.901.7899
+              </div>
           </div>
-        </div>
       </div>
-    </div>
 
 
     <script src="{{request.static_path('arscca:static/handlebars.js')}}"></script>
