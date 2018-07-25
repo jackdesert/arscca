@@ -35,6 +35,35 @@ h6 {
   background: #4f4;
 }
 
+td.car-class
+{
+  text-transform: uppercase;
+}
+
+table,tr,th,td
+{
+  border: none !important;
+  border-collapse: collapse;
+}
+
+td, th
+{
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+}
+
+.tr_stripe
+{
+  background: #e9e8e8;
+}
+
+.tr_stripe .td_active-sort
+{
+  background: #4e4;
+  border-bottom: 1px solid #e9e8e8 !important;
+  border-top:    1px solid #e9e8e8 !important;
+}
+
 
 p {
   font-weight: 300;

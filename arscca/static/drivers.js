@@ -8,7 +8,13 @@ var initializeDriversTable = function(){
             var content = '',
                 html
 
-            drivers.forEach(function(driver){
+            drivers.forEach(function(driver, index){
+                var k = ''
+                if (index % 2 === 0){
+                    k = 'tr_stripe'
+                }
+
+                driver.row_klass = k
 
                 html = template(driver)
                 content += html
@@ -16,6 +22,26 @@ var initializeDriversTable = function(){
             })
 
             target.innerHTML = content
+            replaceInfinity()
+        },
+        replaceInfinity = function(){
+            var elements = document.querySelectorAll('td.fastest-time,td.fastest-pax-time')
+
+            elements.forEach(function(element){
+                if(element.textContent === 'Infinity'){
+                    element.textContent = '-'
+                }
+            })
+
+        },
+        sortByCarModel = function(){
+            sortString('car_model')
+        },
+        sortByCarNumber = function(){
+            sortNumeric('car_number')
+        },
+        sortByDriverName = function(){
+            sortString('name')
         },
         sortByPaxPosition = function(){
             sortNumeric('position_pax')
@@ -40,12 +66,11 @@ var initializeDriversTable = function(){
             })
         },
 
-        sortByCarClass = function(){
+        sortByStringAttributeThenByOverallPosition = function(stringAttribute){
             drivers.sort(function(a, b){
-                var carClassAttribute = 'car_class',
-                    overallPositionAttribute = 'position_overall',
-                    a1 = a[carClassAttribute],
-                    b1 = b[carClassAttribute],
+                var overallPositionAttribute = 'position_overall',
+                    a1 = a[stringAttribute],
+                    b1 = b[stringAttribute],
                     a2 = a[overallPositionAttribute],
                     b2 = b[overallPositionAttribute]
                 if(a1 > b1){
@@ -56,14 +81,39 @@ var initializeDriversTable = function(){
                 // If you made it to here, a1 === b1
                 return a2 - b2
             })
+
         },
+        sortByCarClassThenByOverallPosition = function(){
+            sortByStringAttributeThenByOverallPosition('car_class')
+        },
+
+        sortByCarModelThenByOverallPosition = function(){
+            sortByStringAttributeThenByOverallPosition('car_model')
+        },
+
+        sortByPaxFactorThenByOverallPosition = function(){
+            sortByStringAttributeThenByOverallPosition('pax_factor')
+        },
+
         bindHeaders = function(){
-            var carClassHeader = document.getElementById('car-class'),
-                fastestTimeHeader = document.getElementById('fastest-time'),
-                fastestPaxTimeHeader = document.getElementById('fastest-pax-time'),
-                bindings = [[carClassHeader, sortByCarClass],
-                            [fastestTimeHeader, sortByOverallPosition],
-                            [fastestPaxTimeHeader, sortByPaxPosition]]
+            var carClassHeader        = document.getElementById('car-class'),
+                fastestTimeHeader     = document.getElementById('fastest-time'),
+                positionOverallHeader = document.getElementById('position-overall'),
+                positionPaxHeader     = document.getElementById('position-pax'),
+                fastestPaxTimeHeader  = document.getElementById('fastest-pax-time'),
+                driverNameHeader      = document.getElementById('driver-name'),
+                carModelHeader        = document.getElementById('car-model'),
+                carNumberHeader       = document.getElementById('car-number'),
+                paxFactorHeader       = document.getElementById('pax-factor'),
+                bindings = [[carClassHeader,        sortByCarClassThenByOverallPosition],
+                            [carNumberHeader,       sortByCarNumber],
+                            [fastestTimeHeader,     sortByOverallPosition],
+                            [positionOverallHeader, sortByOverallPosition],
+                            [driverNameHeader,      sortByDriverName],
+                            [carModelHeader,        sortByCarModelThenByOverallPosition],
+                            [positionPaxHeader,     sortByPaxPosition],
+                            [paxFactorHeader,       sortByPaxFactorThenByOverallPosition],
+                            [fastestPaxTimeHeader,  sortByPaxPosition]]
 
             bindings.forEach(function(array){
                 var header = array[0],
@@ -108,5 +158,6 @@ var initializeDriversTable = function(){
     sortByOverallPosition()
     displayDrivers()
     bindHeaders()
+    styleActiveHeader(document.getElementById('fastest-time'))
 
 }

@@ -6,15 +6,15 @@
     <table>
         <thead>
             <tr>
-                <th>Pos Overall</th>
-                <th>Pos PAX</th>
-                <th>Pos Class</th>
-                <th>Driver</th>
-                <th>Number</th>
+                <th id='position-overall' class='sortable-header'>Pos Overall</th>
+                <th id='position-pax' class='sortable-header'>Pos PAX</th>
+                <th id='driver-name' class='sortable-header'>Driver</th>
+                <th id='car-number' class='sortable-header'>Number</th>
                 <th id='car-class' class='sortable-header'>Class</th>
-                <th>Model</th>
+                <th>Pos Class</th>
+                <th id='car-model' class='sortable-header'>Model</th>
                 <th id='fastest-time' class='sortable-header'>Best Time</th>
-                <th>Pax Factor</th>
+                <th id='pax-factor' class='sortable-header'>Pax Factor</th>
                 <th id='fastest-pax-time' class='sortable-header'>Best PAX Time</th>
                 <th>Run 1</th>
                 <th>Run 2</th>
@@ -38,16 +38,16 @@
 
     <script id='driver-template' type='text/x-handlerbars-template'>
         {% raw %}
-            <tr>
-                <td>{{ position_overall }}</td>
-                <td>{{ position_pax }}</td>
-                <td>{{ position_class }}</td>
-                <td>{{ name }}</td>
-                <td>{{ car_number }}</td>
+            <tr class='{{ row_klass }}'>
+                <td class='position-overall'>{{ position_overall }}</td>
+                <td class='position-pax'>{{ position_pax }}</td>
+                <td class='driver-name'>{{ name }}</td>
+                <td class='car-number'>{{ car_number }}</td>
                 <td class='car-class'>{{ car_class }}</td>
-                <td>{{ car_model }}</td>
+                <td>{{ position_class }}</td>
+                <td class='car-model'>{{ car_model }}</td>
                 <td class='fastest-time'>{{ fastest_time }}</td>
-                <td>{{ pax_factor }}</td>
+                <td class='pax-factor'>{{ pax_factor }}</td>
                 <td class='fastest-pax-time'>{{ fastest_pax_time }}</td>
                 <td>{{ run_1 }}</td>
                 <td>{{ run_2 }}</td>
