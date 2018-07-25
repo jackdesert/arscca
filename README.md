@@ -38,6 +38,8 @@ Getting Started
 Backlog
 -------
 
+  * Make Pos Class sortable (so it's not confusing to not have it)
+  * Sort by last name instead of first name
   * Ask if there are any legal issues with posting results
   * After new stats become available, post new mashup facebook @arscca
   * robots.txt
@@ -49,11 +51,10 @@ Backlog
   * Find canonical spelling of pax Pax PAX and spell all columns the same
 
 
-  * Cache JSON blob (drivers) in redis (for an hour or so)
-    - so can handle way more traffic
-  * Put a Mutex around the network call so a spike in traffic
-    will still only call external site once
-  * Last-modified is available..
+  * Allow highlight a single driver (This interaction design may need
+    me to observe several people using the site so I can see if they intuit
+    how it works)
+  * Maybe we want to be able to highlight multiple drivers?
 
 
 
@@ -65,4 +66,8 @@ Let me know if you would like to link arscca to this site, or somehow integrate 
 Jack Desert
 Data Scientist
 Web Engineer
-*Race Engineer
+*Race Engineer*
+
+
+Humble Stats
+------------

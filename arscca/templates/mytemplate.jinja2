@@ -3,21 +3,21 @@
 {% block content %}
 <div class="content">
 
-    <h1>Stats by Jack</h1>
+    <h1>SCCA Stats</h1>
     <p>2018 ARSCCA Solo II Event 6</p>
     <p>Sun 06-24-2018</p>
     <table>
         <thead>
             <tr>
-                <th id='position-overall' class='sortable-header'>Pos Overall</th>
-                <th id='position-pax' class='sortable-header'>Pos PAX</th>
-                <th id='driver-name' class='sortable-header'>Driver</th>
-                <th id='car-number' class='sortable-header'>Number</th>
+                <th id='position-overall' class='sortable-header'>Position (Overall)</th>
+                <th id='position-pax' class='sortable-header'>Position (PAX)</th>
+                <th id='driver-name' class='sortable-header'>Driver Name</th>
+                <th id='car-number' class='sortable-header'>Driver Number</th>
                 <th id='car-class' class='sortable-header'>Class</th>
-                <th>Pos Class</th>
+                <th id='position-class' class='sortable-header'>Position (Class)</th>
                 <th id='car-model' class='sortable-header'>Model</th>
                 <th id='fastest-time' class='sortable-header'>Best Time</th>
-                <th id='pax-factor' class='sortable-header'>Pax Factor</th>
+                <th id='pax-factor' class='sortable-header'>PAX Factor</th>
                 <th id='fastest-pax-time' class='sortable-header'>Best PAX Time</th>
                 <th>Run 1</th>
                 <th>Run 2</th>
@@ -50,7 +50,7 @@
                 <td class='driver-name'>{{ name }}</td>
                 <td class='car-number'>{{ car_number }}</td>
                 <td class='car-class'>{{ car_class }}</td>
-                <td>{{ position_class }}</td>
+                <td class='position-class'>{{ position_class }}</td>
                 <td class='car-model'>{{ car_model }}</td>
                 <td class='fastest-time'>{{ fastest_time }}</td>
                 <td class='pax-factor'>{{ pax_factor }}</td>
