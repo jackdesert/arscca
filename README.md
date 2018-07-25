@@ -1,5 +1,11 @@
-arscca
+
+ARSCCA
 ======
+
+Pulls the stats from the arscca.org website and displays them.
+
+Allows you to sort by whichever column you like.
+
 
 Getting Started
 ---------------
@@ -27,20 +33,17 @@ Getting Started
 - Run your project.
 
     env/bin/pserve development.ini
-ARSCCA
-======
-
-Pulls the stats from the arscca.org website and displays them.
-
-Allows you to sort by whichever column you like.
 
 
 Backlog
 -------
 
   * Assign pos_overall, pos_pas, pos_class to each driver
-  * Add method to_json()
-  * Add cookiecutter pyramid app
+  * Styling
+  * Indicate which column is sorted (side borders??)
+  * Make it easy to see classes grouped together (stripe??)
+  * Capitalize class name in CSS
+  * Display Infinity as blank
 
 
 
@@ -48,3 +51,8 @@ Genuine
 -------
 
 Let me know if you would like to link arscca to this site, or somehow integrate the two
+
+Jack Desert
+Data Scientist
+Web Engineer
+*Race Engineer

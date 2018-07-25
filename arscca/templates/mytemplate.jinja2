@@ -11,11 +11,11 @@
                 <th>Pos Class</th>
                 <th>Driver</th>
                 <th>Number</th>
-                <th>Class</th>
+                <th id='car-class' class='sortable-header'>Class</th>
                 <th>Model</th>
-                <th>Best Time</th>
+                <th id='fastest-time' class='sortable-header'>Best Time</th>
                 <th>Pax Factor</th>
-                <th>Best PAX Time</th>
+                <th id='fastest-pax-time' class='sortable-header'>Best PAX Time</th>
                 <th>Run 1</th>
                 <th>Run 2</th>
                 <th>Run 3</th>
@@ -44,11 +44,11 @@
                 <td>{{ position_class }}</td>
                 <td>{{ name }}</td>
                 <td>{{ car_number }}</td>
-                <td>{{ car_class }}</td>
+                <td class='car-class'>{{ car_class }}</td>
                 <td>{{ car_model }}</td>
-                <td>{{ fastest_time }}</td>
+                <td class='fastest-time'>{{ fastest_time }}</td>
                 <td>{{ pax_factor }}</td>
-                <td>{{ fastest_pax_time }}</td>
+                <td class='fastest-pax-time'>{{ fastest_pax_time }}</td>
                 <td>{{ run_1 }}</td>
                 <td>{{ run_2 }}</td>
                 <td>{{ run_3 }}</td>

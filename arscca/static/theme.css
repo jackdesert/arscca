@@ -2,8 +2,8 @@
 body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;
-  color: #ffffff;
-  background: #bc2131;
+  color: #222;
+  /*background: #bc2131;*/
 }
 h1,
 h2,
@@ -14,6 +14,28 @@ h6 {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;
 }
+
+.sortable-header
+{
+  cursor: pointer;
+  color: red;
+  text-decoration: underline;
+}
+
+.sortable-header_active
+{
+  cursor: inherit;
+  color: inherit;
+  text-decoration: inherit;
+  background: #4f4;
+}
+
+.td_active-sort
+{
+  background: #4f4;
+}
+
+
 p {
   font-weight: 300;
 }
