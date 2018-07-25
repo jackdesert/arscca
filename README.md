@@ -20,7 +20,7 @@ Getting Started
 
 - Upgrade packaging tools.
 
-    env/bin/pip install --upgrade pip setuptools requests bs4
+    env/bin/pip install --upgrade pip setuptools requests bs4 redis
 
 - Install the project in editable mode with its testing requirements.
 
@@ -38,12 +38,22 @@ Getting Started
 Backlog
 -------
 
-  * Assign pos_overall, pos_pas, pos_class to each driver
-  * Styling
-  * Indicate which column is sorted (side borders??)
+  * Ask if there are any legal issues with posting results
+  * After new stats become available, post new mashup facebook @arscca
+  * robots.txt
+  * advertise
+  * View your own source code to make sure <header>, etc are in order
+  * Move content close to top
+  * Advertise it!
   * Make it easy to see classes grouped together (stripe??)
-  * Capitalize class name in CSS
-  * Display Infinity as blank
+  * Find canonical spelling of pax Pax PAX and spell all columns the same
+
+
+  * Cache JSON blob (drivers) in redis (for an hour or so)
+    - so can handle way more traffic
+  * Put a Mutex around the network call so a spike in traffic
+    will still only call external site once
+  * Last-modified is available..
 
 
 

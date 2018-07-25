@@ -21,7 +21,6 @@ class Parser:
         drivers = []
         # Two rows are used to represent a single driver
         for row_idx in range(0, len(data), 2):
-            print(f'row_idx: {row_idx}')
             driver = Driver()
 
             driver.car_class  = data[row_idx][1]

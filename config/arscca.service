@@ -1,6 +1,7 @@
 [Unit]
 Description=ARSCCA
 Wants=network.target
+Wants=redis-server.service
 
 [Service]
 Type=simple
