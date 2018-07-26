@@ -1,8 +1,23 @@
+from datetime import date as Date
 import requests
 from bs4 import BeautifulSoup
 from .driver import Driver
 import pdb
+import re
 class Parser:
+
+    URLS = {
+
+            '2018-03-18' : 'http://arscca.org/index.php?option=com_content&view=article&id=372:2018-solo-ii-event-1-final&catid=115&Itemid=103',
+            '2018-04-15' : 'http://arscca.org/index.php?option=com_content&view=article&id=379:2018-solo-ii-event-2-final&catid=119&Itemid=103',
+            '2018-05-26' : 'http://arscca.org/index.php?option=com_content&view=article&id=386:2018-solo-ii-event-3-final&catid=122&Itemid=103',
+            '2018-06-09' : 'http://arscca.org/index.php?option=com_content&view=article&id=393:2018-solo-ii-event-4-final&catid=123&Itemid=103',
+            '2018-06-10' : 'http://arscca.org/index.php?option=com_content&view=article&id=397:2018-solo-ii-event-5-final&catid=124&Itemid=103',
+            '2018-06-24' : 'http://arscca.org/index.php?option=com_content&view=article&id=398:2018-solo-ii-event-6-final&catid=125&Itemid=103',
+            '2018-07-21' : 'http://arscca.org/index.php?option=com_content&view=article&id=409:2018-solo-ii-event-7-final&catid=127&Itemid=103',
+            '2018-07-22' : 'http://arscca.org/index.php?option=com_content&view=article&id=413:2018-solo-ii-event-8-final&catid=128&Itemid=103'}
+
+    DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
 
     def __init__(self, url):
         self.url = url
@@ -10,7 +25,16 @@ class Parser:
     def parse(self):
         rr = requests.get(self.url, allow_redirects=False, timeout=10)
         soup = BeautifulSoup(rr.text, 'html.parser')
-        # grab the third table
+
+        # First h2 has title
+        self.event_name = soup.find('h2').text.strip().replace('Final', '')
+
+        # First table has datethe event name and date
+        date_table = soup('table')[0]
+        date_string = date_table('th')[0].text
+        self.event_date = self.format_date(date_string)
+
+        # Third table has driver results
         table = soup('table')[2]
         data = []
         for tr in table('tr'):
@@ -25,7 +49,7 @@ class Parser:
 
             driver.car_class  = data[row_idx][1]
             driver.car_number = data[row_idx][2]
-            driver.name       = data[row_idx][3]
+            driver.name       = data[row_idx][3].title()
             driver.car_model  = data[row_idx][4]
             driver.run_1      = data[row_idx][7]
             driver.run_2      = data[row_idx][8]
@@ -55,6 +79,17 @@ class Parser:
             driver.position_class = rank
             rank += 1
             last_car_class = driver.car_class
+
+    def format_date(self, string):
+        matches = self.DATE_REGEX.search(string)
+        if not matches:
+            return string
+        month = int(matches[1])
+        day   = int(matches[2])
+        year  = int(matches[3])
+        date  = Date(year, month, day)
+        return date.strftime('%B %-d, %Y')
+
 
 
 

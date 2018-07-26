@@ -2,10 +2,17 @@
 
 {% block content %}
 <div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        Events
+        ->
+        {{ event_name }}
+    </div>
 
-    <h1>SCCA Results (Sortable)</h1>
-    <p>2018 ARSCCA Solo II Event 6</p>
-    <p>Sun 06-24-2018</p>
+
+    <h1 class='event__name'>{{ event_name }}</h1>
+    <div class='event__date'>{{ event_date }}</div>
     <table>
         <thead>
             <tr>
@@ -34,9 +41,9 @@
         </tbody>
     </table>
     <p>Data pulled from
-        <a href='http://arscca.org/index.php?option=com_content&view=article&id=398:2018-solo-ii-event-6-final&catid=125&Itemid=103'>this page</a>
+        <a href='{{ source_url }}'>the official ARSCCA results page</a>
         and
-        <a href='http://solotime.info/pax/rtp2018.html'>this page</a>.
+        <a href='http://solotime.info/pax/rtp2018.html'>the official PAX page</a>.
     </p>
 </div>
     <script>

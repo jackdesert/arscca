@@ -38,19 +38,13 @@ Getting Started
 Backlog
 -------
 
-  * Make Pos Class sortable (so it's not confusing to not have it)
-  * Sort by last name instead of first name
-  * Ask if there are any legal issues with posting results
+  * Index Action
+  * Render also in html (at least basic version)
+  * List with Yandex and Google
   * After new stats become available, post new mashup facebook @arscca
   * robots.txt
   * advertise
-  * View your own source code to make sure <header>, etc are in order
-  * Move content close to top
-  * Advertise it!
   * Make it easy to see classes grouped together (stripe??)
-  * Find canonical spelling of pax Pax PAX and spell all columns the same
-
-
   * Allow highlight a single driver (This interaction design may need
     me to observe several people using the site so I can see if they intuit
     how it works)

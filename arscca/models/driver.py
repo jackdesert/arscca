@@ -4,7 +4,7 @@ from decimal import Decimal
 from .pax import Pax
 
 class Driver:
-    DNF_REGEX     = re.compile('dnf', re.IGNORECASE)
+    DNF_REGEX     = re.compile('(dnf)|(dsq)', re.IGNORECASE)
     PENALTY_REGEX = re.compile('\+')
 
     def __init__(self):

@@ -12,7 +12,40 @@ h4,
 h5,
 h6 {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+
+
+
+
+.banner, .h2_banner
+{
+  color: #d8adaf;
+  background: #a80006;
+  padding: 0.5rem;
+}
+
+.h2_banner
+{
+  margin-top: 2rem;
+  font-size: 1.6rem;
+}
+
+
+.page__title
+{
+  line-height: 1;
+}
+
+.page__subtitle
+{
+  font-size: 1rem;
+  line-height: 1;
+  position: relative;
+  top: -0.8rem;
 }
 
 .sortable-header, a
@@ -62,6 +95,11 @@ td, th
   background: #4e4;
   border-bottom: 1px solid #e9e8e8 !important;
   border-top:    1px solid #e9e8e8 !important;
+}
+
+.author-block
+{
+  margin-top: 2rem;
 }
 
 @media (max-width: 1199px) {

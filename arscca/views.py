@@ -10,55 +10,72 @@ REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=Tr
 REDIS_EXPIRATION_IN_SECONDS = 3600
 LOCK = Lock()
 
-@view_config(route_name='home',
-             renderer='templates/mytemplate.jinja2')
-def my_view(request):
-    url = 'http://arscca.org/index.php?option=com_content&view=article&id=398:2018-solo-ii-event-6-final&catid=125&Itemid=103'
+@view_config(route_name='index',
+             renderer='templates/index.jinja2')
+def home_view(request):
+    return dict()
+
+
+@view_config(route_name='event',
+             renderer='templates/event.jinja2')
+def event_view(request):
+    date = request.matchdict.get('date')
+    event_url = Parser.URLS[date]
+    if not event_url:
+        request.response.status_code = 404
+        return dict(flash=f'No event found for date {date}')
 
     if request.params.get('cb'):
         # If "cache-buste" param is set, fetch drivers directly
         print('Cache busting')
-        json_drivers = fetch_drivers(url)
+        json_event = fetch_event(event_url)
     else:
         # Otherwise attempt to pull them from cache
-        json_drivers = drivers_from_redis_or_network_call(url)
+        json_event = event_from_redis_or_network_call(event_url)
 
-    return dict(drivers=json_drivers)
+    event = json.loads(json_event)
+    return event
 
 
 # Pull from redis, if available
-def drivers_from_redis_or_network_call(url_aka_redis_key):
-    json_drivers = REDIS.get(url_aka_redis_key)
-    if json_drivers:
-        print('Serving drivers cached in Redis')
-        return json_drivers
+def event_from_redis_or_network_call(url_aka_redis_key):
+    json_event = REDIS.get(url_aka_redis_key)
+    if json_event:
+        print('Serving event cached in Redis')
+        return json_event
     else:
-        print('Nothing in Redis, so serving drivers fetched from the Web')
-        return populate_redis_and_yield_drivers(url_aka_redis_key)
+        print('Nothing in Redis, so serving event fetched from the Web')
+        return populate_redis_and_yield_event(url_aka_redis_key)
 
-def populate_redis_and_yield_drivers(url_aka_redis_key):
+def populate_redis_and_yield_event(url_aka_redis_key):
     # Acquire a lock so that if 100 clients connect at the same time,
     # drivers will only be fetched once
     LOCK.acquire()
     try:
-        json_drivers = REDIS.get(url_aka_redis_key)
+        json_event = REDIS.get(url_aka_redis_key)
         # If lots of request have built up, the first one will populate
         # redis, and the others will find redis populated and return from here
-        if json_drivers:
-            return json_drivers
+        if json_event:
+            return json_event
 
-        generated_json_drivers = fetch_drivers(url_aka_redis_key)
+        generated_json_event = fetch_event(url_aka_redis_key)
         REDIS.set(url_aka_redis_key,
-                  generated_json_drivers, ex=REDIS_EXPIRATION_IN_SECONDS)
-        return generated_json_drivers
+                  generated_json_event, ex=REDIS_EXPIRATION_IN_SECONDS)
+        return generated_json_event
     finally:
         LOCK.release()
 
 # Fetch directly from other site; Do not read or write to Redis
-def fetch_drivers(url):
+def fetch_event(url):
     parser = Parser(url)
     parser.parse()
     parser.rank_drivers()
     drivers_as_dicts = [driver.properties() for driver in parser.drivers]
-    json_drivers = json.dumps(drivers_as_dicts)
-    return json_drivers
+    event = dict(drivers=drivers_as_dicts,
+                 event_name=parser.event_name,
+                 event_date=parser.event_date,
+                 source_url=url)
+    json_event = json.dumps(event)
+    return json_event
+
+
