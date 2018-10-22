@@ -6,16 +6,34 @@ import pdb
 import re
 class Parser:
 
+    # Required params: ['com_content', 'view', 'id']
+    # The only param that changes: 'id'
+    # Which view to click on to get the correct 'id': FINAL
     URLS = {
 
-            '2018-03-18' : 'http://arscca.org/index.php?option=com_content&view=article&id=372:2018-solo-ii-event-1-final&catid=115&Itemid=103',
-            '2018-04-15' : 'http://arscca.org/index.php?option=com_content&view=article&id=379:2018-solo-ii-event-2-final&catid=119&Itemid=103',
-            '2018-05-26' : 'http://arscca.org/index.php?option=com_content&view=article&id=386:2018-solo-ii-event-3-final&catid=122&Itemid=103',
-            '2018-06-09' : 'http://arscca.org/index.php?option=com_content&view=article&id=393:2018-solo-ii-event-4-final&catid=123&Itemid=103',
-            '2018-06-10' : 'http://arscca.org/index.php?option=com_content&view=article&id=397:2018-solo-ii-event-5-final&catid=124&Itemid=103',
-            '2018-06-24' : 'http://arscca.org/index.php?option=com_content&view=article&id=398:2018-solo-ii-event-6-final&catid=125&Itemid=103',
-            '2018-07-21' : 'http://arscca.org/index.php?option=com_content&view=article&id=409:2018-solo-ii-event-7-final&catid=127&Itemid=103',
-            '2018-07-22' : 'http://arscca.org/index.php?option=com_content&view=article&id=413:2018-solo-ii-event-8-final&catid=128&Itemid=103'}
+            '2018-03-18' : 'http://arscca.org/index.php?option=com_content&view=article&id=372',
+            '2018-04-15' : 'http://arscca.org/index.php?option=com_content&view=article&id=379',
+            '2018-05-26' : 'http://arscca.org/index.php?option=com_content&view=article&id=386',
+            '2018-06-09' : 'http://arscca.org/index.php?option=com_content&view=article&id=393',
+            '2018-06-10' : 'http://arscca.org/index.php?option=com_content&view=article&id=397',
+            '2018-06-24' : 'http://arscca.org/index.php?option=com_content&view=article&id=398',
+            '2018-07-21' : 'http://arscca.org/index.php?option=com_content&view=article&id=409',
+            # 8
+            '2018-07-22' : 'http://arscca.org/index.php?option=com_content&view=article&id=413',
+            # 9 8/11?
+            '2018-08-11a' : 'http://arscca.org/index.php?option=com_content&view=article&id=421',
+            # 10 8/11?
+            '2018-08-11b' : 'http://arscca.org/index.php?option=com_content&view=article&id=416',
+
+            # 11
+            '2018-09-22' : 'http://arscca.org/index.php?option=com_content&view=article&id=425',
+
+            # 12
+            '2018-09-23' : 'http://arscca.org/index.php?option=com_content&view=article&id=429',
+
+            # 13
+            '2018-10-21' : 'http://arscca.org/index.php?option=com_content&view=article&id=435',
+            }
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
 

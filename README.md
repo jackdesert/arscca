@@ -38,7 +38,8 @@ Getting Started
 Backlog
 -------
 
-  * Index Action
+  * Change title tags to the unOFFICIAL guide
+  * Make heading text smaller on smaller devices (so page__title does not wrap)
   * Render also in html (at least basic version)
   * List with Yandex and Google
   * After new stats become available, post new mashup facebook @arscca
