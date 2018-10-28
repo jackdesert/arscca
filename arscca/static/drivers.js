@@ -11,10 +11,14 @@ var initializeDriversTable = function(){
             drivers.forEach(function(driver, index){
                 var k = ''
                 if (index % 2 === 0){
-                    k = 'tr_stripe'
+                    k = 'tr_stripe '
                 }
 
                 driver.row_klass = k
+
+                if (selectedDriverIds.has(driver.id)){
+                    driver.row_klass += klassToToggle
+                }
 
                 html = template(driver)
                 content += html
@@ -22,6 +26,7 @@ var initializeDriversTable = function(){
             })
 
             target.innerHTML = content
+            bindClickDriverRow()
             replaceInfinity()
         },
         replaceInfinity = function(){
@@ -170,6 +175,35 @@ var initializeDriversTable = function(){
 
             document.querySelectorAll('.' + cellClassToHighlight).forEach(function(element){
                 element.classList.add(cellHighlightClass)
+            })
+
+        },
+
+
+        klassToToggle = 'selected',
+
+        selectedDriverIds = new Set(),
+
+        bindClickDriverRow = function(){
+            console.log('binding')
+            var rows = document.querySelectorAll('tbody tr')
+
+
+            console.log('rows: ', rows)
+
+            rows.forEach(function(row){
+                row.addEventListener('click', function(event){
+                    var cellParent = event.target.parentElement,
+                        driverId = parseInt(cellParent.id, 10)
+                    if (selectedDriverIds.has(driverId)){
+                        selectedDriverIds.delete(driverId)
+                    }else{
+                        selectedDriverIds.add(driverId)
+                    }
+
+                    cellParent.classList.toggle(klassToToggle)
+                })
+
             })
 
         }

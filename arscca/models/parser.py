@@ -65,6 +65,7 @@ class Parser:
         for row_idx in range(0, len(data), 2):
             driver = Driver()
 
+            driver.id         = row_idx
             driver.car_class  = data[row_idx][1]
             driver.car_number = data[row_idx][2]
             driver.name       = data[row_idx][3].title()

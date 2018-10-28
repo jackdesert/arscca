@@ -38,6 +38,7 @@ Getting Started
 Backlog
 -------
 
+  * Make /events url redirect to home
   * Change title tags to the unOFFICIAL guide
   * Make heading text smaller on smaller devices (so page__title does not wrap)
   * Render also in html (at least basic version)
@@ -64,5 +65,10 @@ Web Engineer
 *Race Engineer*
 
 
-Humble Stats
-------------
+Backlog
+-------
+
+Highlight any rows that I click on so I can compare people.
+
+
+

@@ -85,6 +85,17 @@ td, th
   padding-right: 0.4rem;
 }
 
+tr:hover
+{
+  border-bottom: 1px solid black !important;
+  border-top: 1px solid black !important;
+  cursor: pointer;
+}
+tr.selected
+{
+  background: #f88;
+}
+
 .tr_stripe
 {
   background: #e9e8e8;
