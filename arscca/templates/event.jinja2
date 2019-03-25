@@ -23,9 +23,9 @@
                 <th id='car-class' class='sortable-header'>Class</th>
                 <th id='position-class' class='sortable-header'>Position (Class)</th>
                 <th id='car-model' class='sortable-header'>Model</th>
-                <th id='fastest-time' class='sortable-header'>Best Time</th>
+                <th id='best-combined' class='sortable-header'>Time*</th>
                 <th id='pax-factor' class='sortable-header'>PAX Factor</th>
-                <th id='fastest-pax-time' class='sortable-header'>Best PAX Time</th>
+                <th id='best-combined-pax' class='sortable-header'>PAX Time*</th>
                 <th>Run 1</th>
                 <th>Run 2</th>
                 <th>Run 3</th>
@@ -43,8 +43,9 @@
     <p>Data pulled from
         <a href='{{ source_url }}'>the official ARSCCA results page</a>
         and
-        <a href='http://solotime.info/pax/rtp2018.html'>the official PAX page</a>.
+        <a href='http://solotime.info/pax/rtp2019.html'>the official PAX page</a>.
     </p>
+    <p>* Time is computed by adding best morning run to the best afternoon run.</p>
 </div>
     <script>
         // Use |safe filter so jinja2 does not escape the quotes
@@ -61,13 +62,13 @@
                 <td class='car-class'>{{ car_class }}</td>
                 <td class='position-class'>{{ position_class }}</td>
                 <td class='car-model'>{{ car_model }}</td>
-                <td class='fastest-time'>{{ fastest_time }}</td>
+                <td class='best-combined'>{{ best_combined }}</td>
                 <td class='pax-factor'>{{ pax_factor }}</td>
-                <td class='fastest-pax-time'>{{ fastest_pax_time }}</td>
-                <td>{{ run_1 }}</td>
+                <td class='best-combined-pax'>{{ best_combined_pax }}</td>
+                <td class='run-1'>{{ run_1 }}</td>
                 <td>{{ run_2 }}</td>
                 <td>{{ run_3 }}</td>
-                <td>{{ run_4 }}</td>
+                <td class='run-4'>{{ run_4 }}</td>
                 <td>{{ run_5 }}</td>
                 <td>{{ run_6 }}</td>
             </tr>

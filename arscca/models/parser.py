@@ -33,11 +33,15 @@ class Parser:
 
             # 13
             '2018-10-21' : 'http://arscca.org/index.php?option=com_content&view=article&id=435',
+
+            # 1
+            '2019-03-24' : 'http://arscca.org/index.php?option=com_content&view=article&id=444',
             }
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
 
-    def __init__(self, url):
+    def __init__(self, date, url):
+        self.date = date
         self.url = url
 
     def parse(self):
@@ -63,7 +67,7 @@ class Parser:
         drivers = []
         # Two rows are used to represent a single driver
         for row_idx in range(0, len(data), 2):
-            driver = Driver()
+            driver = Driver(self._year())
 
             driver.id         = row_idx
             driver.car_class  = data[row_idx][1]
@@ -81,11 +85,11 @@ class Parser:
 
     def rank_drivers(self):
 
-        self.drivers.sort(key=Driver.fastest_pax_time)
+        self.drivers.sort(key=Driver.best_combined_pax)
         for index, driver in enumerate(self.drivers):
             driver.position_pax = index + 1
 
-        self.drivers.sort(key=Driver.fastest_time)
+        self.drivers.sort(key=Driver.best_combined)
         for index, driver in enumerate(self.drivers):
             driver.position_overall = index + 1
 
@@ -109,6 +113,8 @@ class Parser:
         date  = Date(year, month, day)
         return date.strftime('%B %-d, %Y')
 
+    def _year(self):
+        return int(self.date[0:4])
 
 
 

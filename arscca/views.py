@@ -28,26 +28,26 @@ def event_view(request):
     if request.params.get('cb'):
         # If "cache-buste" param is set, fetch drivers directly
         print('Cache busting')
-        json_event = fetch_event(event_url)
+        json_event = fetch_event(date, event_url)
     else:
         # Otherwise attempt to pull them from cache
-        json_event = event_from_redis_or_network_call(event_url)
+        json_event = event_from_redis_or_network_call(date, event_url)
 
     event = json.loads(json_event)
     return event
 
 
 # Pull from redis, if available
-def event_from_redis_or_network_call(url_aka_redis_key):
+def event_from_redis_or_network_call(date, url_aka_redis_key):
     json_event = REDIS.get(url_aka_redis_key)
     if json_event:
         print('Serving event cached in Redis')
         return json_event
     else:
         print('Nothing in Redis, so serving event fetched from the Web')
-        return populate_redis_and_yield_event(url_aka_redis_key)
+        return populate_redis_and_yield_event(date, url_aka_redis_key)
 
-def populate_redis_and_yield_event(url_aka_redis_key):
+def populate_redis_and_yield_event(date, url_aka_redis_key):
     # Acquire a lock so that if 100 clients connect at the same time,
     # drivers will only be fetched once
     LOCK.acquire()
@@ -58,7 +58,7 @@ def populate_redis_and_yield_event(url_aka_redis_key):
         if json_event:
             return json_event
 
-        generated_json_event = fetch_event(url_aka_redis_key)
+        generated_json_event = fetch_event(date, url_aka_redis_key)
         REDIS.set(url_aka_redis_key,
                   generated_json_event, ex=REDIS_EXPIRATION_IN_SECONDS)
         return generated_json_event
@@ -66,8 +66,8 @@ def populate_redis_and_yield_event(url_aka_redis_key):
         LOCK.release()
 
 # Fetch directly from other site; Do not read or write to Redis
-def fetch_event(url):
-    parser = Parser(url)
+def fetch_event(date, url):
+    parser = Parser(date, url)
     parser.parse()
     parser.rank_drivers()
     drivers_as_dicts = [driver.properties() for driver in parser.drivers]

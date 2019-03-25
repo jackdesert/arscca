@@ -85,6 +85,11 @@ td, th
   padding-right: 0.4rem;
 }
 
+td.run-1, td.run-4
+{
+  border-left: 1px solid #faa !important;
+}
+
 tr:hover
 {
   border-bottom: 1px solid black !important;
