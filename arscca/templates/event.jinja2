@@ -40,12 +40,23 @@
             </tr>
         </tbody>
     </table>
-    <p>Data pulled from
-        <a href='{{ source_url }}'>the official ARSCCA results page</a>
-        and
-        <a href='http://solotime.info/pax/rtp2019.html'>the official PAX page</a>.
-    </p>
-    <p>* Time is computed by adding best morning run to the best afternoon run.</p>
+
+    <h3 class='h3'>Tips</h3>
+    <ul>
+        <li>Click on any column heading to sort</li>
+        <li>Click on any row to highlight that row. (Persists even after sorting)</li>
+    </ul>
+
+    <h3 class='h3'>* Timing Details</h3>
+    <ul>
+        <li>Time is computed by adding best morning run to the best afternoon run.</li>
+    </ul>
+
+    <h3 class='h3'>Data Sources</h3>
+    <ul>
+        <li><a href='{{ source_url }}'>The official ARSCCA results page</a></li>
+        <li><a href='http://solotime.info/pax/rtp2019.html'>The official PAX page</a></li>
+    </ul>
 </div>
     <script>
         // Use |safe filter so jinja2 does not escape the quotes

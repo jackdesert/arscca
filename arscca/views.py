@@ -3,6 +3,7 @@ import pdb
 import redis
 from threading import Lock
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPFound
 from .models.driver import Driver
 from .models.parser import Parser
 
@@ -15,6 +16,15 @@ LOCK = Lock()
 def home_view(request):
     return dict()
 
+
+
+@view_config(route_name='events')
+def events_view(request):
+    return HTTPFound(location='/')
+
+@view_config(route_name='events_with_slash')
+def events_with_slash_view(request):
+    return HTTPFound(location='/')
 
 @view_config(route_name='event',
              renderer='templates/event.jinja2')
