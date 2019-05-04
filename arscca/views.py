@@ -5,6 +5,7 @@ from threading import Lock
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from .models.driver import Driver
+from .models.national_event_driver import NationalEventDriver
 from .models.parser import Parser
 
 REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
@@ -25,6 +26,19 @@ def events_view(request):
 @view_config(route_name='events_with_slash')
 def events_with_slash_view(request):
     return HTTPFound(location='/')
+
+
+@view_config(route_name='national_event',
+             renderer='templates/national_event.jinja2')
+def national_event_view(request):
+    year = request.matchdict.get('year')
+    drivers = [driver.as_dict() for driver in NationalEventDriver.all()]
+    event = dict(drivers=drivers,
+                 event_name=f'{year} Nationals',
+                )
+
+    return event
+
 
 @view_config(route_name='event',
              renderer='templates/event.jinja2')

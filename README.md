@@ -35,6 +35,13 @@ Getting Started
     env/bin/pserve development.ini
 
 
+National Events
+---------------
+
+See related repository, named arscca-pdf, for generating CSV files from
+the pdfs produced by SCCA.
+
+
 Backlog
 -------
 

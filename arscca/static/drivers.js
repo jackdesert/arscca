@@ -1,5 +1,10 @@
+// DUPLICATE
+// This file is copypasta from drivers.js with a few changes
+// The original drivers.js is left untouched to make sure we don't break it
 var initializeDriversTable = function(){
     'use strict'
+
+    const hugeNumber = 1000000
 
     var templateSource = document.getElementById('driver-template').innerHTML,
         template = Handlebars.compile(templateSource),
@@ -45,6 +50,9 @@ var initializeDriversTable = function(){
         sortByCarNumber = function(){
             sortNumeric('car_number')
         },
+        sortByCodriverCarNumber = function(){
+            sortParsedInteger('codriver_car_number')
+        },
         sortByDriverLastName = function(){
             drivers.sort(function(a, b){
                 var lastNameFirstA = a.name.toLowerCase().split(' ').reverse().join(),
@@ -65,7 +73,50 @@ var initializeDriversTable = function(){
             sortNumeric('position_overall')
         },
         sortNumeric = function(attribute){
-            drivers.sort(function(a, b){ return a[attribute] - b[attribute] })
+            drivers.sort(function(a, b){
+                var aa = a[attribute],
+                    bb = b[attribute]
+                if (!aa){ aa = hugeNumber }
+                if (!bb){ bb = hugeNumber }
+                return aa - bb
+            })
+        },
+        sortParsedInteger = function(attribute){
+            var regex = /\[|\]/g
+            drivers.sort(function(a, b){
+                var aa = a[attribute] || '',
+                    bb = b[attribute] || ''
+
+                aa = parseInt(aa.replace(regex, '')) || hugeNumber
+                bb = parseInt(bb.replace(regex, '')) || hugeNumber
+
+                return aa - bb
+            })
+        },
+        sortByNumericThenByString = function(numericAttribute, stringAttribute){
+            drivers.sort(function(a, b){
+                var a_number = parseFloat(a[numericAttribute]) || hugeNumber
+                var b_number = parseFloat(b[numericAttribute]) || hugeNumber
+                var a_string_lower = a[stringAttribute].toLowerCase()
+                var b_string_lower = b[stringAttribute].toLowerCase()
+
+
+                // Compare numeric
+                if(a_number > b_number){
+                    return 1
+                }else if(a_number < b_number){
+                    return -1
+                }
+
+                // If numeric was equal, compare string
+                if (a_string_lower === b_string_lower){
+                    return 0
+                }else if (a_string_lower > b_string_lower){
+                    return 1
+                }else{
+                    return -1
+                }
+            })
         },
         sortString = function(attribute){
             drivers.sort(function(a, b){
@@ -102,6 +153,9 @@ var initializeDriversTable = function(){
             sortByStringAttributeThenByOverallPosition('car_class')
         },
 
+        sortByCarYearThenByCarModel = function(){
+            sortByNumericThenByString('car_year', 'car_model')
+        },
         sortByCarModelThenByOverallPosition = function(){
             sortByStringAttributeThenByOverallPosition('car_model')
         },
@@ -112,9 +166,8 @@ var initializeDriversTable = function(){
 
         sortByClassPositionThenByOverallPosition = function(){
             drivers.sort(function(a, b){
-                var huge = 1000000,
-                    A = a.position_class * huge + a.position_overall,
-                    B = b.position_class * huge + b.position_overall
+                var A = a.position_class * hugeNumber + a.position_overall,
+                    B = b.position_class * hugeNumber + b.position_overall
                 return A - B
             })
         },
@@ -125,19 +178,23 @@ var initializeDriversTable = function(){
                 positionOverallHeader = document.getElementById('position-overall'),
                 positionPaxHeader     = document.getElementById('position-pax'),
                 positionClassHeader   = document.getElementById('position-class'),
-                bestCombinedPaxHeader  = document.getElementById('best-combined-pax'),
+                bestCombinedPaxHeader = document.getElementById('best-combined-pax'),
                 driverNameHeader      = document.getElementById('driver-name'),
+                carYearHeader         = document.getElementById('car-year'),
                 carModelHeader        = document.getElementById('car-model'),
+                codriverCarNumberHeader  = document.getElementById('codriver-car-number'),
                 carNumberHeader       = document.getElementById('car-number'),
                 paxFactorHeader       = document.getElementById('pax-factor'),
                 bindings = [
                     [carClassHeader,        sortByCarClassThenByOverallPosition],
                     [carNumberHeader,       sortByCarNumber],
+                    [codriverCarNumberHeader,     sortByCodriverCarNumber],
                     [bestCombinedHeader,    sortByOverallPosition],
                     [positionOverallHeader, sortByOverallPosition],
                     [positionPaxHeader,     sortByPaxPosition],
                     [positionClassHeader,   sortByClassPositionThenByOverallPosition],
                     [driverNameHeader,      sortByDriverLastName],
+                    [carYearHeader,         sortByCarYearThenByCarModel],
                     [carModelHeader,        sortByCarModelThenByOverallPosition],
                     [paxFactorHeader,       sortByPaxFactorThenByOverallPosition],
                     [bestCombinedPaxHeader, sortByPaxPosition]]
@@ -145,6 +202,10 @@ var initializeDriversTable = function(){
             bindings.forEach(function(array){
                 var header = array[0],
                     func = array[1]
+                if(header === null){
+                    console.log('WARNING: no header for func', func)
+                    return
+                }
                 header.addEventListener('click', function(){
                     var that = this
                     func()
@@ -188,13 +249,14 @@ var initializeDriversTable = function(){
             console.log('binding')
             var rows = document.querySelectorAll('tbody tr')
 
-
-            console.log('rows: ', rows)
-
             rows.forEach(function(row){
                 row.addEventListener('click', function(event){
                     var cellParent = event.target.parentElement,
                         driverId = parseInt(cellParent.id, 10)
+                    if (isNaN(driverId)){
+                        console.log('Please include an ID in each table row')
+                    }
+
                     if (selectedDriverIds.has(driverId)){
                         selectedDriverIds.delete(driverId)
                     }else{

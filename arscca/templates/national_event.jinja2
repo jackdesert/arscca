@@ -20,8 +20,10 @@
                 <th id='position-pax' class='sortable-header'>Position (PAX)</th>
                 <th id='driver-name' class='sortable-header'>Driver Name</th>
                 <th id='car-number' class='sortable-header'>Driver Number</th>
+                <th id='codriver-car-number' class='sortable-header'>CoDriver Number</th>
                 <th id='car-class' class='sortable-header'>Class</th>
                 <th id='position-class' class='sortable-header'>Position (Class)</th>
+                <th id='car-year' class='sortable-header'>Year</th>
                 <th id='car-model' class='sortable-header'>Model</th>
                 <th id='best-combined' class='sortable-header'>Time*</th>
                 <th id='pax-factor' class='sortable-header'>PAX Factor</th>
@@ -49,19 +51,32 @@
 
     <h3 class='h3'>* Timing Details</h3>
     <ul>
-        <li>Time is computed by adding best morning run to the best afternoon run.</li>
+        <li>Time is computed by adding best time on first course to best time on second course.</li>
     </ul>
 
     <h3 class='h3'>Data Sources</h3>
     <ul>
-        <li><a href='{{ source_url }}'>The official ARSCCA results page</a></li>
-        <li><a href='http://solotime.info/pax/rtp2019.html'>The official PAX page</a></li>
+        <li>2018 Lincoln Air Park in the <a href='//www.scca.com/pages/solo-archives'>scca.com Solo Archives</a>.
+            Direct file link: <a href='//www.scca.com/downloads/42353-2018-solo-nationals-official-class-results-combined/download'>here</a>.
+        </li>
+        <li>2018 Indexed Results, <i>Nationals</i> at <a href='//solotime.info/pax/rtp2018.html'>Solotime</a>
+            Direct file link: <a href='//www.dropbox.com/sh/0rmqth35bi3c7tx/AABV2JS7ptXYnoQyR9UUrhmIa?raw=1'>here</a>.
+        </li>
     </ul>
+
+    <h3 class='h3'>Download CSV</h3>
+    <ul>
+        <li><a href='/static/2018-national-results.csv'>Trimmed CSV File</a> (Only the columns used on this page)</li>
+        <li><a href='/static/2018-national-results__full.csv'>Full CSV File</a> (Includes all columns present in both data sources, plus a couple of interpolated columns)</li>
+    </ul>
+
+
 </div>
     <script>
         // Use |safe filter so jinja2 does not escape the quotes
         var drivers = {{ drivers |safe }}
     </script>
+
 
     <script id='driver-template' type='text/x-handlerbars-template'>
         {% raw %}
@@ -70,8 +85,10 @@
                 <td class='position-pax'>{{ position_pax }}</td>
                 <td class='driver-name'>{{ name }}</td>
                 <td class='car-number'>{{ car_number }}</td>
+                <td class='codriver-car-number'>{{ codriver_car_number }}</td>
                 <td class='car-class'>{{ car_class }}</td>
                 <td class='position-class'>{{ position_class }}</td>
+                <td class='car-year'>{{ car_year }}</td>
                 <td class='car-model'>{{ car_model }}</td>
                 <td class='best-combined'>{{ best_combined }}</td>
                 <td class='pax-factor'>{{ pax_factor }}</td>
