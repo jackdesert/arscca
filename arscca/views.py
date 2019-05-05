@@ -32,9 +32,10 @@ def events_with_slash_view(request):
              renderer='templates/national_event.jinja2')
 def national_event_view(request):
     year = request.matchdict.get('year')
-    drivers = [driver.as_dict() for driver in NationalEventDriver.all()]
+    drivers = [driver.as_dict() for driver in NationalEventDriver.all(year)]
     event = dict(drivers=drivers,
-                 event_name=f'{year} Nationals',
+                 year=year,
+
                 )
 
     return event

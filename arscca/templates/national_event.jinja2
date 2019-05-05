@@ -7,11 +7,11 @@
         ->
         Events
         ->
-        {{ event_name }}
+        {{ year }} Nationals
     </div>
 
 
-    <h1 class='event__name'>{{ event_name }}</h1>
+    <h1 class='event__name'>{{ year }} Nationals</h1>
     <div class='event__date'>{{ event_date }}</div>
     <table>
         <thead>
@@ -56,18 +56,18 @@
 
     <h3 class='h3'>Data Sources</h3>
     <ul>
-        <li>2018 Lincoln Air Park in the <a href='//www.scca.com/pages/solo-archives'>scca.com Solo Archives</a>.
-            Direct file link: <a href='//www.scca.com/downloads/42353-2018-solo-nationals-official-class-results-combined/download'>here</a>.
+        <li>{{ year }} Lincoln Air Park in the <a href='//www.scca.com/pages/solo-archives'>scca.com Solo Archives</a>.
+            <!-- Direct file link: <a href='//www.scca.com/downloads/42353-2018-solo-nationals-official-class-results-combined/download'>here</a>. -->
         </li>
-        <li>2018 Indexed Results, <i>Nationals</i> at <a href='//solotime.info/pax/rtp2018.html'>Solotime</a>
-            Direct file link: <a href='//www.dropbox.com/sh/0rmqth35bi3c7tx/AABV2JS7ptXYnoQyR9UUrhmIa?raw=1'>here</a>.
+        <li>{{ year }} Indexed Results, <i>Nationals</i> at <a href='//solotime.info/pax/rtp2018.html'>Solotime</a>
+            <!--Direct file link: <a href='//www.dropbox.com/sh/0rmqth35bi3c7tx/AABV2JS7ptXYnoQyR9UUrhmIa?raw=1'>here</a>. -->
         </li>
     </ul>
 
     <h3 class='h3'>Download CSV</h3>
     <ul>
-        <li><a href='/static/2018-national-results.csv'>Trimmed CSV File</a> (Only the columns used on this page)</li>
-        <li><a href='/static/2018-national-results__full.csv'>Full CSV File</a> (Includes all columns present in both data sources, plus a couple of interpolated columns)</li>
+        <li><a href='/static/{{ year }}-national-results.csv'>Trimmed CSV File</a> (Only the columns used on this page)</li>
+        <li><a href='/static/{{ year }}-national-results__full.csv'>Full CSV File</a> (Includes all columns present in both data sources, plus a couple of interpolated columns)</li>
     </ul>
 
 

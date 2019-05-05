@@ -1,7 +1,10 @@
 import csv
 import pdb
+import re
 
 class NationalEventDriver:
+
+    YEAR_REGEX = re.compile(r'\d{4}')
 
     def __init__(self, data):
         self.data = tuple(data)
@@ -42,21 +45,31 @@ class NationalEventDriver:
 
 
     @classmethod
-    def all(cls):
+    def all(cls, year):
+        assert cls.YEAR_REGEX.match(str(year))
+
         drivers = []
-        with open('arscca/static/2018-national-results.csv', newline='') as csvfile:
-            reader = csv.reader(csvfile, delimiter=',', quotechar='"')
-            for index, row in enumerate(reader):
-                driver = cls(row)
-                # driver.id is used as the id of the table row
-                driver.id = index
-                drivers.append(driver)
+        filename = f'arscca/static/{year}-national-results.csv'
+        try:
+            with open(filename, newline='') as csvfile:
+                reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+                for index, row in enumerate(reader):
+                    driver = cls(row)
+                    # driver.id is used as the id of the table row
+                    driver.id = index
+                    drivers.append(driver)
+        except FileNotFoundError:
+            print(f'No results found for year {year}')
+            return []
+
         return drivers[1:]
 
 
 
 if __name__ == '__main__':
-    drivers = NationalEventDriver.all()
+    import sys
+    year = sys.argv[1]
+    drivers = NationalEventDriver.all(year)
     for driver in drivers:
         print('')
         for key, value in driver.as_dict().items():
