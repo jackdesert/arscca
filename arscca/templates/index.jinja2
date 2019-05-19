@@ -43,7 +43,13 @@
 
 
     <h2 class='h2_banner'>Driver Photos</h2>
-    <p>No photos yet. Sorry!</p>
+    <p>Thanks everyone who let me take their pictures at Event 3! If I missed you, please send me a photo of yourself to my email listed at the bottom of this page. </p>
+    {% for photo in photos %}
+        <div class='photo__holder'>
+            <img class='photo__img' src='{{ photo.path("small") }}'></img>
+            <div class='photo__driver-name'>{{ photo.driver_name }} </div>
+        </div>
+    {% endfor %}
 
 
     <div class='about-section'>

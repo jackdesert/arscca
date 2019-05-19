@@ -7,6 +7,7 @@ from pyramid.httpexceptions import HTTPFound
 from .models.driver import Driver
 from .models.national_event_driver import NationalEventDriver
 from .models.parser import Parser
+from .models.photo import Photo
 
 REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
 REDIS_EXPIRATION_IN_SECONDS = 3600
@@ -15,7 +16,8 @@ LOCK = Lock()
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
 def home_view(request):
-    return dict()
+    photos = Photo.all(size=Photo.SMALL)
+    return dict(photos=photos)
 
 
 

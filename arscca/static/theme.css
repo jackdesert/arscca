@@ -125,6 +125,14 @@ tr.selected
   margin-top: 2rem;
 }
 
+.photo__holder
+{
+  max-width: 300px;
+  margin-bottom: 2rem;
+  display: inline-block;
+}
+
+
 @media (max-width: 1199px) {
 }
 @media (max-width: 991px) {
