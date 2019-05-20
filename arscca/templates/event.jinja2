@@ -68,7 +68,13 @@
             <tr id='{{ id }}' class='{{ row_klass }}'>
                 <td class='position-overall'>{{ position_overall }}</td>
                 <td class='position-pax'>{{ position_pax }}</td>
-                <td class='driver-name'>{{ name }}</td>
+                <td class='driver-name'>
+                    {{#if slug}}
+                        <a href='/drivers/{{ slug }}'>{{ name }}</a>
+                    {{else}}
+                        {{ name }}
+                    {{/if}}
+                </td>
                 <td class='car-number'>{{ car_number }}</td>
                 <td class='car-class'>{{ car_class }}</td>
                 <td class='position-class'>{{ position_class }}</td>

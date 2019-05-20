@@ -2,6 +2,7 @@ import pdb
 import re
 from decimal import Decimal
 from .pax import Pax
+from .photo import Photo
 
 class Driver:
     DNF_REGEX     = re.compile('(dnf)|(dsq)', re.IGNORECASE)
@@ -101,11 +102,15 @@ class Driver:
         #print(f'fastest_pax   {self.fastest_pax_time()}')
 
     def properties(self):
+        slug_and_head_shot = Photo.slug_and_head_shot(self.name)
+
         props = self.__dict__.copy()
         props.update(best_combined = str(self.best_combined()),
                      best_combined_pax = str(self.best_combined_pax()),
                      #fastest_time = str(self.fastest_time()),
                      #fastest_pax_time = str(self.fastest_pax_time()),
-                     pax_factor = str(self.pax_factor()))
+                     pax_factor = str(self.pax_factor()),
+                     slug = slug_and_head_shot.get('slug') or '',
+                     headshot = slug_and_head_shot.get('head_shot') or '')
         return props
 

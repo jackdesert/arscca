@@ -16,7 +16,7 @@ LOCK = Lock()
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
 def home_view(request):
-    photos = Photo.all(size=Photo.SMALL)
+    photos = Photo.all()
     return dict(photos=photos)
 
 
@@ -29,6 +29,15 @@ def events_view(request):
 def events_with_slash_view(request):
     return HTTPFound(location='/')
 
+@view_config(route_name='driver',
+             renderer='templates/driver.jinja2')
+def driver_view(request):
+    slug = request.matchdict.get('slug')
+
+    name = slug.replace('_', ' ').title()
+    photos = Photo.all_for_driver(slug)
+
+    return dict(name=name, photos=photos)
 
 @view_config(route_name='national_event',
              renderer='templates/national_event.jinja2')

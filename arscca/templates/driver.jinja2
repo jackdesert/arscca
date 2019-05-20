@@ -1,0 +1,21 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        Drivers
+        ->
+        {{ name }}
+    </div>
+
+    <div class='driver__name'>{{ name }}</div>
+    {% for photo in photos %}
+        <img class='driver__photo' src='{{ photo.path("medium") }}'></img>
+    {% endfor %}
+
+
+</div>
+{% endblock content %}

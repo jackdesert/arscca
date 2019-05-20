@@ -21,6 +21,11 @@ h6 {
 
 
 
+.footer-banner
+{
+  background: #a80006;
+  height: 0.5rem;
+}
 .banner, .h2_banner
 {
   color: #d8adaf;
@@ -108,6 +113,11 @@ tr.selected
   background: #f88;
 }
 
+tr.selected a
+{
+  color: #55f;
+}
+
 .tr_stripe
 {
   background: #e9e8e8;
@@ -130,6 +140,11 @@ tr.selected
   max-width: 300px;
   margin-bottom: 2rem;
   display: inline-block;
+}
+
+.driver__name
+{
+  font-size: 2rem;
 }
 
 
