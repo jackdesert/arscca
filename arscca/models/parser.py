@@ -37,6 +37,7 @@ class Parser:
             # 1
             '2019-03-24' : 'http://arscca.org/index.php?option=com_content&view=article&id=444',
             '2019-04-28' : 'http://arscca.org/index.php?option=com_content&view=article&id=452',
+            '2019-05-19' : 'http://arscca.org/index.php?option=com_content&view=article&id=456',
             }
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
