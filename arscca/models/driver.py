@@ -43,7 +43,12 @@ class Driver:
         if self.PENALTY_REGEX.search(string):
             time, delay = string.split('+')
             time = Decimal(time)
-            delay = int(delay)
+            if delay == ';.;lk':
+                # TODO inform Park of typo and revert this code
+                # Paste over a typo in original data
+                delay = 10
+            else:
+                delay = int(delay)
         else:
             time = Decimal(string)
             delay = 0
