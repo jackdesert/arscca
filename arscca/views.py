@@ -8,6 +8,7 @@ from .models.driver import Driver
 from .models.national_event_driver import NationalEventDriver
 from .models.parser import Parser
 from .models.photo import Photo
+from .models.report import Report
 
 REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
 REDIS_EXPIRATION_IN_SECONDS = 3600
@@ -39,16 +40,28 @@ def driver_view(request):
 
     return dict(name=name, photos=photos)
 
+@view_config(route_name='report',
+             renderer='templates/report.jinja2')
+def report_view(request):
+    year = 2019
+    report = Report(year)
+    events, totals = report.events_and_totals()
+    num_events_to_sum = report.num_events - 2
+
+    return dict(events=events,
+                totals=totals,
+                car_classes=report.car_classes,
+                num_events_to_sum=num_events_to_sum,
+                year=year,
+                slug_and_head_shot_method=Photo.slug_and_head_shot)
+
 @view_config(route_name='national_event',
              renderer='templates/national_event.jinja2')
 def national_event_view(request):
     year = request.matchdict.get('year')
     drivers = [driver.as_dict() for driver in NationalEventDriver.all(year)]
     event = dict(drivers=drivers,
-                 year=year,
-
-                )
-
+                 year=year)
     return event
 
 

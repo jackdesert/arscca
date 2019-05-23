@@ -1,77 +1,77 @@
 <!DOCTYPE html>
 <html lang="{{request.locale_name}}">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ARSCCA Results, Sortable by Column">
-    <meta name="author" content="Jack Desert">
-    <link rel="shortcut icon" href="{{request.static_path('arscca:static/pyramid-16x16.png')}}">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="ARSCCA Results, Sortable by Column">
+        <meta name="author" content="Jack Desert">
+        <link rel="shortcut icon" href="{{request.static_path('arscca:static/pyramid-16x16.png')}}">
 
-    <title>ARSCCA Results</title>
+        <title>The unOFFICIAL Guide to ARSCCA</title>
 
-    <link href="{{request.static_path('arscca:static/bootstrap_4.1.2.css')}}" rel="stylesheet">
-    <link href="{{request.static_path('arscca:static/theme.css')}}" rel="stylesheet">
+        <link href="{{request.static_path('arscca:static/bootstrap_4.1.2.css')}}" rel="stylesheet">
+        <link href="{{request.static_path('arscca:static/theme.css')}}" rel="stylesheet">
 
-  </head>
+    </head>
 
-  <body>
-
-
-
-      <div class="container">
-          <div class='row'>
-              <div class='col-12'>
-                  <div class='banner'>
-                      <h1 class='page__title'>
-                          The unOFFICIAL Guide
-                          <br>
-                          <span class='page__subtitle'>to SCCA in Arkansas
-                      </h1>
-                  </div>
-              </div>
-          </div>
-
-          <div class="row">
-              <div class="col-12">
-                  {% block content %}
-                  <p>No content</p>
-                  {% endblock content %}
-              </div>
-          </div>
-          <div class="row">
-              <div class='col-12'>
-                  <hr class='footer-banner' />
-                  <div class='author-block'>
-                      <div>
-                          Site by Jack Desert
-                      </div>
-                      <div>
-                          Little Rock, AR
-                      </div>
-                      <div>
-                          {% set email = 'developer@jackdesert.com' %}
-                          email: <a href='mailto:{{email}}'>{{email}}</a>
-                      </div>
-
-                      <div>
-                          {% set facebook = 'facebook.com/jworky' %}
-                          facebook: <a href='//{{ facebook }}'>{{ facebook }}</a>
-                      </div>
-
-                      <div>
-                          phone: +1 (971) 901-7899
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
+    <body>
 
 
-    <script src="{{request.static_path('arscca:static/handlebars.js')}}"></script>
-    <script src="{{request.static_path('arscca:static/drivers.js')}}"></script>
-    <script>
-        window.onload = initializeDriversTable()
-    </script>
-  </body>
+
+        <div class="container">
+            <div class='row'>
+                <div class='col-12'>
+                    <div class='banner'>
+                        <h1 class='page__title'>
+                            The unOFFICIAL Guide
+                            <br>
+                            <span class='page__subtitle'>to SCCA in Arkansas</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {% block content %}
+                    <p>No content</p>
+                    {% endblock content %}
+                </div>
+            </div>
+            <div class="row">
+                <div class='col-12'>
+                    <hr class='footer-banner' />
+                    <div class='author-block'>
+                        <div>
+                            Site by Jack Desert
+                        </div>
+                        <div>
+                            Little Rock, AR
+                        </div>
+                        <div>
+                            {% set email = 'developer@jackdesert.com' %}
+                            email: <a href='mailto:{{email}}'>{{email}}</a>
+                        </div>
+
+                        <div>
+                            {% set facebook = 'facebook.com/jworky' %}
+                            facebook: <a href='//{{ facebook }}'>{{ facebook }}</a>
+                        </div>
+
+                        <div>
+                            phone: +1 (971) 901-7899
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="{{request.static_path('arscca:static/handlebars.js')}}"></script>
+        <script src="{{request.static_path('arscca:static/drivers.js')}}"></script>
+        <script>
+            window.onload = initializeDriversTable()
+        </script>
+    </body>
 </html>

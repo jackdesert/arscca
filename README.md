@@ -45,11 +45,7 @@ the pdfs produced by SCCA.
 Backlog
 -------
 
-  * Fix replace so tony_carter displays name correctly
-  * view for /drivers/name that shows all photos
-  * get nginx to serve files
-  * Make /events url redirect to home
-  * Change title tags to the unOFFICIAL guide
+  * canonize name in season points report
   * Make heading text smaller on smaller devices (so page__title does not wrap)
   * Render also in html (at least basic version)
   * List with Yandex and Google

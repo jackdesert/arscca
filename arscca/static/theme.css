@@ -17,6 +17,33 @@ h6 {
   line-height: 1;
 }
 
+.left
+{
+  float: left;
+  padding-right: 2rem;
+}
+
+.clear
+{
+  clear: both;
+}
+
+.trophy__holder
+{
+  width: 10rem;
+}
+
+.trophy__link
+{
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.trophy__image
+{
+  width: 5rem;
+  margin-left: 0.3rem;
+}
 
 
 
@@ -145,6 +172,24 @@ tr.selected a
 .driver__name
 {
   font-size: 2rem;
+}
+
+.trophy-table__car-class
+{
+  font-size: 2rem;
+  text-transform: uppercase;
+  vertical-align: bottom;
+  height: 5rem;
+}
+
+.trophy-table__references
+{
+  margin-top: 3rem;
+}
+
+.trophy-table__td_numeric
+{
+  text-align: right;
 }
 
 

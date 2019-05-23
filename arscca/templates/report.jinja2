@@ -1,0 +1,87 @@
+{% extends 'layout.jinja2' %}
+
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        {{ year }} Trophy Standings
+    </div>
+
+
+    <h1>{{ year }} Trophy Standings</h1>
+    <table class='trophy-table'>
+        {% for car_class in car_classes %}
+            {% set cols = events.keys() | length  + 3 %}
+            <tr>
+                <td colspan={{ cols }} class='trophy-table__car-class'>{{ car_class }}</td>
+            </tr>
+            <tr>
+                <th>Place</th>
+                <th>Driver</th>
+                {% for event_date in events.keys() | sort %}
+                    <th>
+                        <a href='/events/{{ event_date }}'>Ev {{ loop.index }}</a>
+                    </th>
+                {% endfor %}
+                <th>Total*</th>
+            </tr>
+            {% for driver_name, summed_scores in totals[car_class] | dictsort(True, 'value', reverse=True) %}
+                <tr>
+                    <td class='trophy-table__td_numeric'>{{ loop.index }}</td>
+                    <td>
+                        {% set slug = slug_and_head_shot_method(driver_name)['slug'] %}
+                        {% if slug %}
+                            <a href='/drivers/{{ slug }}'>{{ driver_name }}</a>
+                        {% else %}
+                            {{ driver_name }}
+                        {% endif %}
+                    </td>
+                    {% for event_date in events.keys() | sort %}
+                        <td class='trophy-table__td_numeric'>
+                            {% if car_class in events[event_date] %}
+                                {{ events[event_date][car_class].get(driver_name) or '' }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    <td class='trophy-table__td_numeric'>{{ summed_scores }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+
+    <div class='trophy-table__references'>
+        <div class='trophy-table__reference'>* Two lowest events are dropped. So if there are N events, your best N-2 events count toward your total.</div>
+    </div>
+
+    <h2 class='h2_banner'>Scoring Basics</h2>
+    <table>
+        <tr>
+            <th>Place</th>
+            <th>Points</th>
+        </tr>
+        <tr><td>1st</td><td>10 for PAX, 11 for class</td></tr>
+        <tr><td>2nd</td><td>9</td></tr>
+        <tr><td>3rd</td><td>8</td></tr>
+        <tr><td>4th</td><td>7</td></tr>
+        <tr><td>5th</td><td>6</td></tr>
+        <tr><td>6th</td><td>5</td></tr>
+        <tr><td>7th</td><td>4</td></tr>
+        <tr><td>8th</td><td>3</td></tr>
+        <tr><td>9th</td><td>2</td></tr>
+        <tr><td>10th</td><td>1</td></tr>
+    </table>
+
+    <h2 class='h2_banner'>Multiple Class Trophies??</h2>
+    <div>
+        To get a class trophy, you must compete in that class for at least half of the season's events. The results on this page do not reflect this rule, but the awards banquet will.
+    </div>
+    <div>
+        To get a PAX trophy, there is no minimum number of events.
+    </div>
+</div>
+
+
+{% endblock content %}
+

@@ -7,7 +7,7 @@ from .photo import Photo
 class Driver:
     DNF_REGEX     = re.compile('(dnf)|(dsq)', re.IGNORECASE)
     PENALTY_REGEX = re.compile('\+')
-    INF           = 1000
+    INF           = Decimal('inf')
 
     def __init__(self, year):
         self.year = year
@@ -32,7 +32,7 @@ class Driver:
     #
     #    def fastest_pax_time(self):
     #        fastest = self.fastest_time() * self.pax_factor()
-    #        if fastest == Decimal('inf'):
+    #        if fastest == self.INF:
     #            return fastest
     #        else:
     #            return fastest.quantize(Decimal('.001'))
@@ -40,7 +40,7 @@ class Driver:
 
     def time_from_string(self, string):
         if self.DNF_REGEX.search(string) or (string == '\xa0'):
-            return Decimal('inf')
+            return self.INF
         if self.PENALTY_REGEX.search(string):
             time, delay = string.split('+')
             time = Decimal(time)
@@ -75,7 +75,7 @@ class Driver:
 
     def best_combined_pax(self):
         fastest = self.best_combined() * self.pax_factor()
-        if fastest == Decimal('inf'):
+        if fastest == self.INF:
             return fastest
         else:
             return fastest.quantize(Decimal('.001'))
