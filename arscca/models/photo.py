@@ -47,9 +47,14 @@ class Photo:
             raise self.SlugError
         self.slug = slug
 
-    def path(self, size):
+    def path(self, size, request=None):
         directory = self.DIRS[size]
-        return f'{directory}/{self.slug}.jpg'
+        output = f'{directory}/{self.slug}.jpg'
+        if request:
+            # Skip first character because it's a forward slash
+            base = f'arscca:{output[1:]}'
+            output = request.static_path(base)
+        return output
 
     @property
     def driver_name(self):
