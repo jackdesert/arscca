@@ -66,8 +66,10 @@
 
     <h3 class='h3'>Download CSV</h3>
     <ul>
-        <li><a href='/static/{{ year }}-national-results.csv'>Trimmed CSV File</a> (Only the columns used on this page)</li>
-        <li><a href='/static/{{ year }}-national-results__full.csv'>Full CSV File</a> (Includes all columns present in both data sources, plus a couple of interpolated columns)</li>
+        {% set trimmed = request.static_path('arscca:static/%s-national-results.csv' % year) %}
+        {% set full    = request.static_path('arscca:static/%s-national-results__full.csv' % year) %}
+        <li><a href='{{ trimmed }}'>Trimmed CSV File</a> (Only the columns used on this page)</li>
+        <li><a href='{{ full }}'>Full CSV File</a> (Includes all columns present in both data sources, plus a couple of interpolated columns)</li>
     </ul>
 
 

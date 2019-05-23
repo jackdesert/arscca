@@ -15,7 +15,7 @@
     </div>
     <div class='left trophy__holder'>
         <a href='/standings'>
-            <img class='trophy__image' src='/static/images/trophy.png'></img>
+            <img class='trophy__image' src='{{ request.static_path('arscca:static/images/trophy.png') }}'></img>
             <div class='trophy__link'>Standings</div>
         </a>
     </div>
@@ -57,7 +57,7 @@
     {% for photo in photos %}
         <div class='photo__holder'>
             <a href='/drivers/{{ photo.driver_slug }}'>
-                <img class='photo__img' src='{{ photo.path("small") }}'></img>
+                <img class='photo__img' src='{{ photo.path("small", request=request) }}'></img>
             </a>
             <a href='/drivers/{{ photo.driver_slug }}'>
                 <div class='photo__driver-name'>{{ photo.driver_name }} </div>
