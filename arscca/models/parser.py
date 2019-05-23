@@ -1,9 +1,13 @@
-from datetime import date as Date
-import requests
-from bs4 import BeautifulSoup
 from .driver import Driver
+from bs4 import BeautifulSoup
+from collections import defaultdict
+from datetime import date as Date
+import json
 import pdb
 import re
+import redis
+import requests
+
 class Parser:
 
     # Required params: ['com_content', 'view', 'id']
@@ -41,10 +45,13 @@ class Parser:
             }
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
+    REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
+    PAX = 'PAX'
 
     def __init__(self, date, url):
         self.date = date
         self.url = url
+        self._point_storage = defaultdict(int)
 
     def parse(self):
         rr = requests.get(self.url, allow_redirects=False, timeout=10)
@@ -91,6 +98,8 @@ class Parser:
         for index, driver in enumerate(self.drivers):
             driver.position_pax = index + 1
 
+        self._apply_points()
+
         self.drivers.sort(key=Driver.best_combined)
         for index, driver in enumerate(self.drivers):
             driver.position_overall = index + 1
@@ -117,6 +126,41 @@ class Parser:
 
     def _year(self):
         return int(self.date[0:4])
+
+    def _apply_points(self):
+        data = defaultdict(dict)
+        for index, driver in enumerate(self.drivers):
+            if driver.best_combined() == Driver.INF:
+                # No points unless you scored
+                print(f'{driver.name} did not score')
+                continue
+            pax_points = self._point(self.PAX)
+            if pax_points > 0:
+                data[self.PAX][driver.name] = pax_points
+            car_class = driver.car_class.lower()
+            car_class_points = self._point(car_class)
+            if car_class_points > 0:
+                data[car_class][driver.name] = car_class_points
+            print(f'{driver.name} awarded {pax_points} pax points and {car_class_points} {car_class} points')
+        self.REDIS.set(f'points-from-{self.date}', json.dumps(data))
+
+    def _point(self, pax_or_car_class):
+        num_drivers_ahead = self._point_storage[pax_or_car_class]
+        if num_drivers_ahead == 0 and (pax_or_car_class != self.PAX):
+            points = 11
+        else:
+            points = 10 - num_drivers_ahead
+
+        # points do not go lower than zero
+        points = max([0, points])
+
+        self._point_storage[pax_or_car_class] += 1
+
+        return points
+
+
+
+
 
 
 
