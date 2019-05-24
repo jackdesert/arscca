@@ -7,6 +7,7 @@ import redis
 class Report:
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     KEY_PREPEND = 'points-from-'
+    NUM_EVENTS_TO_SCORE = 8
 
     def __init__(self, year):
         self.year = year
@@ -77,8 +78,7 @@ class Report:
 
     def _sum_best_n(self, scores):
         scores = sorted(scores, reverse=True)
-        num_events_to_score = self.num_events - 2
-        scores_to_use = [score for score, _ in zip(scores, range(num_events_to_score))]
+        scores_to_use = [score for score, _ in zip(scores, range(self.NUM_EVENTS_TO_SCORE))]
         summed = sum(scores_to_use)
         return summed
 
