@@ -9,6 +9,8 @@ class Driver:
     PENALTY_REGEX = re.compile('\+')
     INF           = Decimal('inf')
 
+    PYLON_PENALTY_IN_SECONDS = 2
+
     def __init__(self, year):
         self.year = year
 
@@ -42,14 +44,14 @@ class Driver:
         if self.DNF_REGEX.search(string) or (string == '\xa0'):
             return self.INF
         if self.PENALTY_REGEX.search(string):
-            time, delay = string.split('+')
+            time, num_pylons = string.split('+')
             time = Decimal(time)
-            delay = int(delay)
+            penalty = int(num_pylons) * self.PYLON_PENALTY_IN_SECONDS
         else:
             time = Decimal(string)
-            delay = 0
+            penalty = 0
 
-        return time + delay
+        return time + penalty
 
     def _best_of_three(self, one, two, three):
         runs = [one, two, three]

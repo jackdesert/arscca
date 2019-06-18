@@ -74,7 +74,11 @@ Web Engineer
 Backlog
 -------
 
-Highlight any rows that I click on so I can compare people.
+Throw error in development mode if totals do not add up
+Add apology message at top of page
+Add note at bottom of page saying that 39+1 == 41
+Add error checking that compares my math to master time??
+Dynamicize links to "PAX SOURCE DATA" on each page to use the correct year
 
 
 
