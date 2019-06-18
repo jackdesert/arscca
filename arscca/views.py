@@ -1,3 +1,4 @@
+import hashlib
 import json
 import pdb
 import redis
@@ -125,6 +126,10 @@ def fetch_event(date, url):
                  event_date=parser.event_date,
                  source_url=url)
     json_event = json.dumps(event)
+    m = hashlib.sha256()
+    m.update(json_event.encode())
+    digest = m.hexdigest()
+    pdb.set_trace()
     return json_event
 
 

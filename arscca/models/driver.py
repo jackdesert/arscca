@@ -13,6 +13,7 @@ class Driver:
 
     def __init__(self, year):
         self.year = year
+        # See Parser.parse() for a list of instance variables stored on Driver
 
     def pax_factor(self):
         return Pax.factor(self.year, self.car_class)
