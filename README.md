@@ -18,9 +18,12 @@ Getting Started
 
     python3 -m venv env
 
-- Upgrade packaging tools.
+- Pip install from requirements.txt
 
-    env/bin/pip install --upgrade pip setuptools requests bs4 redis plim
+    env/bin/pip install -r requirements.txt
+
+    # Uses these packages:
+    # pip setuptools requests bs4 redis plim
 
 - Install the project in editable mode with its testing requirements.
 
@@ -54,12 +57,13 @@ To add driver gossip, create or update the file:
 Requirements.txt
 ----------------
 
-requirements.txt is not being used (yet) in this project because `pip freeze` 
-creates an arscca egg, which appears to lead to the source code being copied 
-to env/src, which leads to deployment headaches because you change what's in git
-and the stale code in env/src runs instead...
+When you generate requirements.txt, make sure you use the --exclude-editable flag
 
-TODO: Figure out how to use requirements.txt without source code being copied
+    env/bin/pip freeze --exclude-editable > requirements.txt
+
+Otherwise an arscca egg will be created, and you may end up serving stale code
+in production.
+
 
 Backlog
 -------
