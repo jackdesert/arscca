@@ -16,6 +16,16 @@
         <img class='driver__photo' src='{{ photo.path("medium", request=request) }}'></img>
     {% endfor %}
 
+    {% if gossip %}
+        <div class='gossip'>
+            {% if not '<h2>' in gossip %}
+                <h2>About {{ name.split(' ')[0] }}</h2>
+            {% endif %}
+
+            {{ gossip | safe }}
+        </div>
+    {% endif %}
+
 
 </div>
 {% endblock content %}
