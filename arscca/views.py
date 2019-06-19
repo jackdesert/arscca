@@ -6,6 +6,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from .models.driver import Driver
 from .models.national_event_driver import NationalEventDriver
+from .models.gossip import Gossip
 from .models.parser import Parser
 from .models.photo import Photo
 from .models.report import Report
@@ -34,11 +35,12 @@ def events_with_slash_view(request):
              renderer='templates/driver.jinja2')
 def driver_view(request):
     slug = request.matchdict.get('slug')
+    gossip = Gossip(slug)
 
     name = slug.replace('_', ' ').title()
     photos = Photo.all_for_driver(slug)
 
-    return dict(name=name, photos=photos)
+    return dict(name=name, photos=photos, gossip=gossip.html())
 
 @view_config(route_name='report',
              renderer='templates/report.jinja2')

@@ -192,6 +192,15 @@ tr.selected a
   text-align: right;
 }
 
+.gossip
+{
+  margin-top: 2rem;
+}
+
+.gossip h2
+{
+  margin-bottom: 0.5rem;
+}
 
 @media (max-width: 1199px) {
 }
