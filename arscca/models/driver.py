@@ -46,6 +46,9 @@ class Driver:
         if self.PENALTY_REGEX.search(string):
             time, num_pylons = string.split('+')
             time = Decimal(time)
+            if num_pylons in ['', ' ']:
+                print(f'WARNING PARSING {self.name}')
+                num_pylons = 0
             penalty = int(num_pylons) * self.PYLON_PENALTY_IN_SECONDS
         else:
             time = Decimal(string)
