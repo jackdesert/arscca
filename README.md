@@ -20,7 +20,7 @@ Getting Started
 
 - Upgrade packaging tools.
 
-    env/bin/pip install --upgrade pip setuptools requests bs4 redis
+    env/bin/pip install --upgrade pip setuptools requests bs4 redis plim
 
 - Install the project in editable mode with its testing requirements.
 
@@ -41,6 +41,25 @@ National Events
 See related repository, named arscca-pdf, for generating CSV files from
 the pdfs produced by SCCA.
 
+
+Gossip
+------
+
+To add driver gossip, create or update the file:
+
+    templates/gossip/<driver_slug>.plim
+
+
+
+Requirements.txt
+----------------
+
+requirements.txt is not being used (yet) in this project because `pip freeze` 
+creates an arscca egg, which appears to lead to the source code being copied 
+to env/src, which leads to deployment headaches because you change what's in git
+and the stale code in env/src runs instead...
+
+TODO: Figure out how to use requirements.txt without source code being copied
 
 Backlog
 -------
