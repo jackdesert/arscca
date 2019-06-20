@@ -68,6 +68,7 @@ in production.
 Backlog
 -------
 
+  * Decide whether to skip event 3 or not (numbering convention)
   * canonize name in season points report
   * Make heading text smaller on smaller devices (so page__title does not wrap)
   * Render also in html (at least basic version)
