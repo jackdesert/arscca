@@ -194,12 +194,13 @@ tr.selected a
 
 .gossip
 {
-  margin-top: 2rem;
+  margin-top: 0rem;
 }
 
 .gossip h2
 {
   margin-bottom: 0.5rem;
+  margin-top: 2rem;
 }
 
 @media (max-width: 1199px) {
