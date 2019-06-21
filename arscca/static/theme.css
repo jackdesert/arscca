@@ -87,11 +87,32 @@ h6 {
   top: -0.8rem;
 }
 
-.sortable-header, a
+.sortable-header, a, .feedback__link
 {
   cursor: pointer;
   color: red;
   text-decoration: underline;
+}
+.feedback__link
+{
+  font-weight: bold;
+  background: white;
+  z-index: 1;
+  position: fixed !important;
+  right: -1.7rem !important;
+  border: 1px solid #fcc;
+  padding: 0 0.5rem !important;
+  border-radius: 0.4rem 0.4rem 0 0 !important;
+}
+
+.feedback__link:hover
+{
+  border-color: #eaa;
+}
+
+.sortable-header:hover, a:hover, .feedback__link:hover
+{
+  color: #b00; /* dark red */
 }
 
 .sortable-header_active
