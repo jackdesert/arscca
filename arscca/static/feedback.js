@@ -13,11 +13,6 @@ let bindFeedbackLink = (linkId, extraData) => {
     const submitButtonText = 'Send'
 
 
-
-
-
-    //
-
     let acceptMessage = () => {
         const activeElements = []
 
@@ -39,7 +34,8 @@ let bindFeedbackLink = (linkId, extraData) => {
         const textareaClass = 'feedback__textarea'
 
         const buildFeedbackPayload = (message) => {
-            const payload = {'feedback': {'message': message}}
+            const payload = {'feedback': {'message': message,
+                                          'page': window.location.toString()}}
 
             for (var key in extraData){
                 if (extraData.hasOwnProperty(key)){
@@ -114,7 +110,6 @@ let bindFeedbackLink = (linkId, extraData) => {
 
     const linkEl = document.getElementById(linkId)
 
-    console.log('bound')
 
     if (typeof(extraData) !== 'object'){
         extraData = {}
