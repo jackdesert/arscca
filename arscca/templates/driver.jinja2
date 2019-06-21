@@ -18,7 +18,7 @@
 
     {% if gossip %}
         <div class='gossip'>
-            {% if not '<h2>' in gossip %}
+            {% if not gossip.startswith('<h2>') %}
                 <h2>About {{ name.split(' ')[0] }}</h2>
             {% endif %}
 
