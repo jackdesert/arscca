@@ -1,0 +1,16 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+<div class="content">
+
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        Drivers
+    </div>
+
+    {% include '_driver_photos.jinja2' %}
+
+
+</div>
+{% endblock content %}

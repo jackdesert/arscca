@@ -68,6 +68,15 @@ in production.
 Backlog
 -------
 
+  * photo of chris
+  * get phone to ring
+  * send feedback url in POST instead of using http_referer
+  * Adapt Feedback link to be noticeable on HUGE WIDE SCREENS
+  * Footer that looks like a footer (instead of contact info for a driver)
+  * Throw error in development mode if totals do not add up
+  * Add note at bottom of page saying that 39+1 == 41
+  * Add error checking that compares my math to master time??
+  * Dynamicize links to "PAX SOURCE DATA" on each page to use the correct year
   * Decide whether to skip event 3 or not (numbering convention)
   * canonize name in season points report
   * Make heading text smaller on smaller devices (so page__title does not wrap)
@@ -95,14 +104,7 @@ Web Engineer
 *Race Engineer*
 
 
-Backlog
--------
 
-Throw error in development mode if totals do not add up
-Add apology message at top of page
-Add note at bottom of page saying that 39+1 == 41
-Add error checking that compares my math to master time??
-Dynamicize links to "PAX SOURCE DATA" on each page to use the correct year
 
 
 
