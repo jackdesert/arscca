@@ -52,19 +52,7 @@
     <div class='event__link'><a href='/national_events/2017'>2017 Nationals</a></div>
 
 
-
-    <h2 class='h2_banner'>Driver Photos</h2>
-    <p>Thanks everyone who let me take their pictures at Event 3! If I missed you, please send me a photo of yourself to my email listed at the bottom of this page. </p>
-    {% for photo in photos %}
-        <div class='photo__holder'>
-            <a href='/drivers/{{ photo.driver_slug }}'>
-                <img class='photo__img' src='{{ photo.path("small", request=request) }}'></img>
-            </a>
-            <a href='/drivers/{{ photo.driver_slug }}'>
-                <div class='photo__driver-name'>{{ photo.driver_name }} </div>
-            </a>
-        </div>
-    {% endfor %}
+    {% include '_driver_photos.jinja2' %}
 
 
     <div class='about-section'>

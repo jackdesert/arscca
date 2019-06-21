@@ -31,6 +31,13 @@ def events_view(request):
 def events_with_slash_view(request):
     return HTTPFound(location='/')
 
+
+@view_config(route_name='drivers',
+             renderer='templates/drivers.jinja2')
+def drivers_view(request):
+    photos = Photo.all()
+    return dict(photos=photos)
+
 @view_config(route_name='driver',
              renderer='templates/driver.jinja2')
 def driver_view(request):
