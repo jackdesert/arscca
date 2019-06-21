@@ -1,0 +1,89 @@
+/* Mini Reset Stylesheet */
+
+.feedback, .feedback__text, .feedback__textarea, .feedback__submit, .feedback__link
+{
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  line-height: 1.3;
+  border-radius: 0.3rem;
+}
+
+/* End Reset Stylesheet */
+
+
+.feedback
+{
+  height: 16rem;
+  width: 100%;
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  background: white;
+  border: 2px solid grey;
+  padding: 1rem;
+}
+
+.feedback__overlay
+{
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  bottom: 0;
+  right: 0;
+  background: grey;
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.feedback__link
+{
+  position: absolute;
+  right: 2rem;
+  top: 10rem;
+  transform: rotate(-90deg);
+  color: #ea1c24; /* same as $red-heart-text */
+  cursor: pointer;
+}
+
+.feedback__link:hover, .feedback__cancel:hover
+{
+  color: #c00; /* Dark Red */
+}
+
+.feedback__text, .feedback__textarea, .feedback__submit
+{
+  display: block;
+}
+
+.feedback__textarea
+{
+  width: 100%;
+  height: 10rem;
+  padding: 0.5rem;
+}
+
+.feedback__cancel
+{
+  position: absolute;
+  right: 0.1rem;
+  top: -0.3rem;
+  font-size: 1.5rem;
+}
+
+.feedback__submit
+{
+  padding: 0.25rem;
+}
+
+@media only screen and (min-width: 700px) {
+
+  .feedback
+  {
+    width: 80%;
+    top: 10%;
+    right: 10%;
+    margin: 0 auto;
+  }
+}
