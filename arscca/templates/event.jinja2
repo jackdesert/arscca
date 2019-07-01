@@ -41,6 +41,15 @@
         </tbody>
     </table>
 
+
+
+
+            <link href="{{request.static_path('arscca:static/bootstrap_4.1.2.css')}}" rel="stylesheet">
+
+
+            {% set histogram_src_arg = histogram_filename.replace('/', ':', 1) %}
+            <img src='{{ request.static_path(histogram_src_arg) }}'></img>
+
     <h3 class='h3'>Tips</h3>
     <ul>
         <li>Click on any column heading to sort</li>

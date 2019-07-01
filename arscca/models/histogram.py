@@ -2,12 +2,17 @@ from decimal import Decimal
 import hashlib
 import math
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import numpy as np
+import os
 import pdb
 
 class Histogram:
 
     BIN_WIDTH = 2
+    WRITE_DIR = 'arscca/static/histograms'
+
+
 
     def __init__(self, drivers):
         # WARNING: drivers is a mutable list; don't change it
@@ -26,19 +31,26 @@ class Histogram:
         print(f'{len(bins)} bins')
         #hist = np.histogram(values, bins=bins)
         plt.hist(values, bins=bins)
-        plt.savefig('/tmp/hi.png')
+        plt.title('Distribution of Scores')
+        plt.ylabel('Drivers Per Bin')
+        plt.xlabel('Time*')
+
+        plt.axes().xaxis.set_major_locator(ticker.MultipleLocator(self.BIN_WIDTH * 2))
+        plt.savefig(self.filename)
+
+    @property
+    def filename(self):
+        return f'{self.WRITE_DIR}/{self._digest}.png'
 
     def _construct_digest(self):
         m = hashlib.sha256()
         assert self._raw_values
 
+        # value comes in as Decimal()
         for value in self._raw_values:
-            m.update(str(value))
+            encoded = str(value).encode()
+            m.update(encoded)
         return m.hexdigest()
-
-    def _filename(self):
-        return f'{self._digest}.png'
-
 
 
 if __name__ == '__main__':
@@ -51,4 +63,5 @@ if __name__ == '__main__':
 
     histogram = Histogram(parser.drivers)
     histogram.plot()
+    print(histogram.filename)
 
