@@ -24,19 +24,22 @@ class Histogram:
         min_value = min(values)
         max_value = max(values)
         left_edge = math.floor(min_value)
-        right_edge = math.ceil(max_value)
+        if left_edge % 2 == 1:
+            left_edge -= 1
+        right_edge = math.ceil(max_value) + self.BIN_WIDTH
 
         bins = np.arange(left_edge, right_edge, self.BIN_WIDTH)
         print(f'{len(values)} values')
         print(f'{len(bins)} bins')
         #hist = np.histogram(values, bins=bins)
-        plt.hist(values, bins=bins)
+        plt.hist(values, bins=bins, edgecolor='black', linewidth=0.8)
         plt.title('Distribution of Scores')
-        plt.ylabel('Drivers Per Bin')
+        plt.ylabel('Number of Drivers')
         plt.xlabel('Time*')
 
         plt.axes().xaxis.set_major_locator(ticker.MultipleLocator(self.BIN_WIDTH * 2))
         plt.savefig(self.filename)
+        plt.clf()
 
     @property
     def filename(self):

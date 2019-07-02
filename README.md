@@ -68,7 +68,8 @@ in production.
 Backlog
 -------
 
-  * photo of chris
+  * histogram bars color that matches theme
+  * Add "Percentile Rank" (optionally click thing by histogram to display)
   * get phone to ring
   * send feedback url in POST instead of using http_referer
   * Adapt Feedback link to be noticeable on HUGE WIDE SCREENS
