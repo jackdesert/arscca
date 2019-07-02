@@ -1,3 +1,4 @@
+import hashlib
 import json
 import pdb
 import redis
@@ -5,6 +6,7 @@ from threading import Lock
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from .models.driver import Driver
+from .models.histogram import Histogram
 from .models.national_event_driver import NationalEventDriver
 from .models.gossip import Gossip
 from .models.parser import Parser
@@ -128,12 +130,19 @@ def fetch_event(date, url):
     parser = Parser(date, url)
     parser.parse()
     parser.rank_drivers()
+
+    histogram = Histogram(parser.drivers)
+    histogram.plot()
+
     drivers_as_dicts = [driver.properties() for driver in parser.drivers]
+
     event = dict(drivers=drivers_as_dicts,
                  event_name=parser.event_name,
                  event_date=parser.event_date,
-                 source_url=url)
+                 source_url=url,
+                 histogram_filename=histogram.filename)
     json_event = json.dumps(event)
     return json_event
+
 
 

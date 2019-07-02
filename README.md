@@ -68,13 +68,9 @@ in production.
 Backlog
 -------
 
-  * photo of chris
-  * get phone to ring
-  * send feedback url in POST instead of using http_referer
   * Adapt Feedback link to be noticeable on HUGE WIDE SCREENS
   * Footer that looks like a footer (instead of contact info for a driver)
   * Throw error in development mode if totals do not add up
-  * Add note at bottom of page saying that 39+1 == 41
   * Add error checking that compares my math to master time??
   * Dynamicize links to "PAX SOURCE DATA" on each page to use the correct year
   * Decide whether to skip event 3 or not (numbering convention)
@@ -89,7 +85,6 @@ Backlog
   * Allow highlight a single driver (This interaction design may need
     me to observe several people using the site so I can see if they intuit
     how it works)
-  * Maybe we want to be able to highlight multiple drivers?
 
 
 

@@ -95,15 +95,21 @@ class Parser:
 
     def rank_drivers(self):
 
+        scores = [driver.best_combined() for driver in self.drivers]
+        num_drivers = len([score for score in scores if score < Driver.INF])
+
         self.drivers.sort(key=Driver.best_combined_pax)
         for index, driver in enumerate(self.drivers):
-            driver.position_pax = index + 1
+            if driver.best_combined() < Driver.INF:
+                driver.position_pax = index + 1
 
         self._apply_points()
 
         self.drivers.sort(key=Driver.best_combined)
         for index, driver in enumerate(self.drivers):
-            driver.position_overall = index + 1
+            if driver.best_combined() < Driver.INF:
+                driver.position_overall = index + 1
+                driver.position_percentile = round(100 * index / num_drivers)
 
         self.drivers.sort(key=Driver.car_class_sortable)
         rank = 1

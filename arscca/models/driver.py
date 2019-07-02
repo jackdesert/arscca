@@ -13,6 +13,7 @@ class Driver:
 
     def __init__(self, year):
         self.year = year
+        # See Parser.parse() for a list of instance variables stored on Driver
 
     def pax_factor(self):
         return Pax.factor(self.year, self.car_class)
@@ -68,10 +69,7 @@ class Driver:
 
     def best_combined(self):
         if self.best_am() and self.best_pm():
-            try:
-                return self.best_am() + self.best_pm()
-            except:
-                pdb.set_trace()
+            return self.best_am() + self.best_pm()
         else:
             return self.INF
 

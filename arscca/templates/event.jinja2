@@ -18,14 +18,15 @@
             <tr>
                 <th id='position-overall' class='sortable-header'>Position (Overall)</th>
                 <th id='position-pax' class='sortable-header'>Position (PAX)</th>
+                <th id='position-percentile'>Position (Percentile)</th>
                 <th id='driver-name' class='sortable-header'>Driver Name</th>
                 <th id='car-number' class='sortable-header'>Driver Number</th>
                 <th id='car-class' class='sortable-header'>Class</th>
                 <th id='position-class' class='sortable-header'>Position (Class)</th>
                 <th id='car-model' class='sortable-header'>Model</th>
-                <th id='best-combined' class='sortable-header'>Time*</th>
+                <th id='best-combined' class='sortable-header'>Score*</th>
                 <th id='pax-factor' class='sortable-header'>PAX Factor</th>
-                <th id='best-combined-pax' class='sortable-header'>PAX Time*</th>
+                <th id='best-combined-pax' class='sortable-header'>PAX Score*</th>
                 <th>Run 1</th>
                 <th>Run 2</th>
                 <th>Run 3</th>
@@ -41,16 +42,27 @@
         </tbody>
     </table>
 
+
+
+    <div class='space-2rem'></div>
     <h3 class='h3'>Tips</h3>
     <ul>
         <li>Click on any column heading to sort</li>
         <li>Click on any row to highlight that row. (Persists even after sorting)</li>
     </ul>
 
-    <h3 class='h3'>* Timing Details</h3>
+    <h3 class='h3'>* Scoring Details</h3>
     <ul>
-        <li>Time is computed by adding best morning run to the best afternoon run.</li>
+        <li>Score is computed by adding best morning run to the best afternoon run.</li>
+        <li>Two seconds are added for each pylon. That is, <b>29.723+1</b> is counted as 31.723 seconds.</li>
+        <li>PAX Score is Score x PAX Factor</li>
+        <li>Position (Percentile) is the percentage of scoring drivers who were faster than you. See <a href='https://en.wikipedia.org/wiki/Percentile_rank'>Percentile Rank</a>.
     </ul>
+
+    <h3 class='h3'>Histogram</h3>
+
+    {% set histogram_src_arg = histogram_filename.replace('/', ':', 1) %}
+    <img src='{{ request.static_path(histogram_src_arg) }}' class='histogram'></img>
 
     <h3 class='h3'>Data Sources</h3>
     <ul>
@@ -68,6 +80,7 @@
             <tr id='{{ id }}' class='{{ row_klass }}'>
                 <td class='position-overall'>{{ position_overall }}</td>
                 <td class='position-pax'>{{ position_pax }}</td>
+                <td class='position-percentile'>{{ position_percentile }}</td>
                 <td class='driver-name'>
                     {{#if slug}}
                         <a href='/drivers/{{ slug }}'>{{ name }}</a>
