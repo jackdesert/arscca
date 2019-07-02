@@ -23,7 +23,7 @@ Getting Started
     env/bin/pip install -r requirements.txt
 
     # Uses these packages:
-    # pip setuptools requests bs4 redis plim
+    # pip setuptools requests bs4 redis plim matplotlib
 
 - Install the project in editable mode with its testing requirements.
 
