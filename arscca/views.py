@@ -131,16 +131,25 @@ def fetch_event(date, url):
     parser.parse()
     parser.rank_drivers()
 
+    errors = []
+    for driver in parser.drivers:
+        error = driver.error_in_best_combined()
+        if error:
+            errors.append(error)
+
     histogram = Histogram(parser.drivers)
     histogram.plot()
 
     drivers_as_dicts = [driver.properties() for driver in parser.drivers]
+    runs_per_driver = 2 * parser.runs_per_course
 
     event = dict(drivers=drivers_as_dicts,
                  event_name=parser.event_name,
                  event_date=parser.event_date,
                  source_url=url,
-                 histogram_filename=histogram.filename)
+                 histogram_filename=histogram.filename,
+                 runs_per_driver=runs_per_driver,
+                 errors=errors)
     json_event = json.dumps(event)
     return json_event
 

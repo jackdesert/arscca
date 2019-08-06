@@ -22,50 +22,37 @@ class Driver:
         # This is defined as a method only so it can be used to sort a list of drivers
         return self.car_class
 
-    #    def fastest_time(self):
-    #        runs = [self.run_1,
-    #                self.run_2,
-    #                self.run_3,
-    #                self.run_4,
-    #                self.run_5,
-    #                self.run_6]
-    #
-    #        times = [self.time_from_string(r) for r in runs]
-    #        return min(times)
-    #
-    #    def fastest_pax_time(self):
-    #        fastest = self.fastest_time() * self.pax_factor()
-    #        if fastest == self.INF:
-    #            return fastest
-    #        else:
-    #            return fastest.quantize(Decimal('.001'))
-    #
+    def _penalty_from_pylons(self, num_pylons):
+        # Sometimes the official results have something like '25.625+ '
+        # We count no penalty in this instance
+        num_pylons = num_pylons.strip()
+        if num_pylons:
+            return int(num_pylons) * self.PYLON_PENALTY_IN_SECONDS
+        return 0
 
     def time_from_string(self, string):
         if self.DNF_REGEX.search(string) or (string == '\xa0'):
             return self.INF
         if self.PENALTY_REGEX.search(string):
             time, num_pylons = string.split('+')
+            penalty = self._penalty_from_pylons(num_pylons)
             time = Decimal(time)
-            penalty = int(num_pylons) * self.PYLON_PENALTY_IN_SECONDS
         else:
             time = Decimal(string)
             penalty = 0
 
         return time + penalty
 
-    def _best_of_three(self, one, two, three):
-        runs = [one, two, three]
+    def _best_of_n(self, runs):
         runs_to_use = [rr for rr in runs if rr]
         times = [self.time_from_string(rr) for rr in runs_to_use]
         return min(times)
 
     def best_am(self):
-        return self._best_of_three(self.run_1, self.run_2, self.run_3)
+        return self._best_of_n(self.am_runs)
 
     def best_pm(self):
-        return self._best_of_three(self.run_4, self.run_5, self.run_6)
-
+        return self._best_of_n(self.pm_runs)
 
     def best_combined(self):
         if self.best_am() and self.best_pm():
@@ -81,6 +68,18 @@ class Driver:
             return fastest.quantize(Decimal('.001'))
 
 
+    def error_in_best_combined(self):
+        calculated = self.best_combined()
+
+        try:
+            if calculated == self.INF:
+                assert self.published_best_combined == 'dns'
+            else:
+                assert calculated == Decimal(self.published_best_combined)
+        except AssertionError:
+            return dict(driver_name=self.name,
+                        calculated=float(calculated),
+                        published=float(self.published_best_combined))
 
     def print(self):
         print('')

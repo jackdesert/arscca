@@ -151,9 +151,13 @@ td, th
   padding-right: 0.4rem;
 }
 
-td.run-1, td.run-4
+td.am-run, td.pm-run
 {
   border-left: 1px solid #faa !important;
+}
+td.am-run + td.am-run, td.pm-run + td.pm-run
+{
+  border-left: none !important
 }
 
 tr:hover
@@ -228,6 +232,12 @@ tr.selected a
 {
   margin-bottom: 0.5rem;
   margin-top: 2rem;
+}
+
+.errors
+{
+  border: 4px solid orange;
+  padding: 1rem;
 }
 
 @media (max-width: 1199px) {

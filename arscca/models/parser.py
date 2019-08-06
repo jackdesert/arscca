@@ -1,4 +1,4 @@
-from .driver import Driver
+from arscca.models.driver import Driver
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from datetime import date as Date
@@ -43,16 +43,26 @@ class Parser:
             '2019-04-28' : 'http://arscca.org/index.php?option=com_content&view=article&id=452',
             '2019-05-19' : 'http://arscca.org/index.php?option=com_content&view=article&id=456',
             '2019-06-16' : 'http://arscca.org/index.php?option=com_content&view=article&id=460',
+            '2019-07-14' : 'http://arscca.org/index.php?option=com_content&view=article&id=464',
             }
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
+    D1_OR_D2_REGEX = re.compile('D1|D2')
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     PAX = 'PAX'
+    FIRST_RUN_COLUMN = 7
+
+    # Most events have 3 am_runs (morning course)
+    # and 3 pm_runs (afternoon_course)
+    DEFAULT_RUNS_PER_COURSE = 3
+    RUNS_PER_COURSE = defaultdict(lambda: Parser.DEFAULT_RUNS_PER_COURSE)
+    RUNS_PER_COURSE['2019-07-14'] = 4
 
     def __init__(self, date, url):
         self.date = date
         self.url = url
         self._point_storage = defaultdict(int)
+        self.runs_per_course = self.RUNS_PER_COURSE[date]
 
     def parse(self):
         rr = requests.get(self.url, allow_redirects=False, timeout=10)
@@ -71,7 +81,9 @@ class Parser:
         data = []
         for tr in table('tr'):
             row = [td.text for td in tr('td')]
-            if row:
+            # Ensure that the seventh column has 'D1' or 'D2'.
+            # Otherwise this is a (mostly) blank row
+            if row and self.D1_OR_D2_REGEX.match(row[6]):
                 data.append(row)
 
         drivers = []
@@ -84,12 +96,9 @@ class Parser:
             driver.car_number = data[row_idx][2]
             driver.name       = data[row_idx][3].title()
             driver.car_model  = data[row_idx][4]
-            driver.run_1      = data[row_idx][7]
-            driver.run_2      = data[row_idx][8]
-            driver.run_3      = data[row_idx][9]
-            driver.run_4      = data[row_idx + 1][7]
-            driver.run_5      = data[row_idx + 1][8]
-            driver.run_6      = data[row_idx + 1][9]
+            driver.am_runs = [data[row_idx][col_idx]     for col_idx in self._run_columns]
+            driver.pm_runs = [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
+            driver.published_best_combined = data[row_idx][-1]
             drivers.append(driver)
         self.drivers = drivers
 
@@ -131,6 +140,10 @@ class Parser:
         date  = Date(year, month, day)
         return date.strftime('%B %-d, %Y')
 
+    @property
+    def _run_columns(self):
+        return range(self.FIRST_RUN_COLUMN,
+                     self.FIRST_RUN_COLUMN + self.runs_per_course)
     def _year(self):
         return int(self.date[0:4])
 
@@ -178,9 +191,17 @@ class Parser:
 
 if __name__ == '__main__':
 
-    url = 'http://arscca.org/index.php?option=com_content&view=article&id=398:2018-solo-ii-event-6-final&catid=125&Itemid=103'
+    date = '2019-07-14'
+    url = 'http://arscca.org/index.php?option=com_content&view=article&id=464'
 
-    parser = Parser(url)
+    parser = Parser(date, url)
     parser.parse()
+
+    pdb.set_trace()
+    for driver in parser.drivers:
+        print(driver.name)
+        if driver.car_class == '\xa0':
+            print('NBSP')
+    pdb.set_trace()
     parser.rank_drivers()
     pdb.set_trace()
