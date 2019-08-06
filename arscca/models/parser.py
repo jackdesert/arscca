@@ -197,11 +197,6 @@ if __name__ == '__main__':
     parser = Parser(date, url)
     parser.parse()
 
-    pdb.set_trace()
-    for driver in parser.drivers:
-        print(driver.name)
-        if driver.car_class == '\xa0':
-            print('NBSP')
-    pdb.set_trace()
     parser.rank_drivers()
     pdb.set_trace()
+    1
