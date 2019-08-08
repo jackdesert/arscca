@@ -68,6 +68,7 @@ in production.
 Backlog
 -------
 
+  * Aliases for driver names for Standings so Nick/Nicholas share credit
   * Adapt Feedback link to be noticeable on HUGE WIDE SCREENS
   * Footer that looks like a footer (instead of contact info for a driver)
   * Throw error in development mode if totals do not add up

@@ -56,6 +56,7 @@ class Parser:
     # and 3 pm_runs (afternoon_course)
     DEFAULT_RUNS_PER_COURSE = 3
     RUNS_PER_COURSE = defaultdict(lambda: Parser.DEFAULT_RUNS_PER_COURSE)
+    RUNS_PER_COURSE['2018-06-10'] = 4
     RUNS_PER_COURSE['2019-07-14'] = 4
 
     def __init__(self, date, url):

@@ -5,7 +5,7 @@ from .pax import Pax
 from .photo import Photo
 
 class Driver:
-    DNF_REGEX     = re.compile('(dnf)|(dsq)', re.IGNORECASE)
+    DNF_REGEX     = re.compile('(dnf)|(dns)|(dsq)', re.IGNORECASE)
     PENALTY_REGEX = re.compile('\+')
     INF           = Decimal('inf')
 
@@ -73,7 +73,7 @@ class Driver:
 
         try:
             if calculated == self.INF:
-                assert self.published_best_combined == 'dns'
+                assert self.DNF_REGEX.match(self.published_best_combined)
             else:
                 assert calculated == Decimal(self.published_best_combined)
         except AssertionError:
