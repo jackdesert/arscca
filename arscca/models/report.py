@@ -1,3 +1,4 @@
+from arscca.models.canon import Canon
 from collections import defaultdict
 from copy import deepcopy
 import json
@@ -71,8 +72,9 @@ class Report:
             events[date] = data_for_one_event
             for pax_or_car_class, nested_data in data_for_one_event.items():
                 for driver_name, points in nested_data.items():
+                    canonical_driver_name = Canon(driver_name).name
                     self._car_classes.add(pax_or_car_class)
-                    totals[pax_or_car_class][driver_name].append(points)
+                    totals[pax_or_car_class][canonical_driver_name].append(points)
         self._totals = totals
         self._events = events
 

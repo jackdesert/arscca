@@ -1,4 +1,5 @@
 from arscca.models.driver import Driver
+from arscca.models.canon import Canon
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from datetime import date as Date
@@ -151,18 +152,20 @@ class Parser:
     def _apply_points(self):
         data = defaultdict(dict)
         for index, driver in enumerate(self.drivers):
+            canonical_driver_name = Canon(driver.name).name
+
             if driver.best_combined() == Driver.INF:
                 # No points unless you scored
-                print(f'{driver.name} did not score')
+                print(f'{canonical_driver_name} did not score')
                 continue
             pax_points = self._point(self.PAX)
             if pax_points > 0:
-                data[self.PAX][driver.name] = pax_points
+                data[self.PAX][canonical_driver_name] = pax_points
             car_class = driver.car_class.lower()
             car_class_points = self._point(car_class)
             if car_class_points > 0:
-                data[car_class][driver.name] = car_class_points
-            print(f'{driver.name} awarded {pax_points} pax points and {car_class_points} {car_class} points')
+                data[car_class][canonical_driver_name] = car_class_points
+            print(f'{canonical_driver_name} awarded {pax_points} pax points and {car_class_points} {car_class} points')
         self.REDIS.set(f'points-from-{self.date}', json.dumps(data))
 
     def _point(self, pax_or_car_class):

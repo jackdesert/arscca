@@ -1,3 +1,4 @@
+from arscca.models.canon import Canon
 import os
 import pdb
 import re
@@ -14,9 +15,6 @@ class Photo:
              'medium': '/static/images/driver_photos/medium',
            }
 
-    UNDERSCORE = '_'
-    SPACE = ' '
-
     TORSO_SUFFIX = re.compile(r'_torso(\.jpg)?$')
     CAR_SUFFIX = re.compile(r'_car(\.jpg)?$')
 
@@ -24,20 +22,6 @@ class Photo:
 
     LOCK = threading.Lock()
     HEAD_SHOTS = {}
-
-    NON_WORD_CHARS = re.compile(r'[^\w]+')
-    WHITESPACE_CHARS = re.compile(r'\s+')
-
-    # { website_slug : photo_slug }
-    ALIASES = {'joshua_mapili': 'josh_mapili',
-               'nicholas_mellenthin': 'nick_mellenthin',
-               'richard_davis': 'rick_davis',
-               'kenneth_hiegel': 'kenny_hiegel',
-               'james_express_lane': 'james_lane',
-               'philip_rucker': 'phil_rucker',
-               'alexander_ross': 'alex_ross',
-               'jeff_gibson': 'jeff_gilson'}
-
 
     def __init__(self, slug):
         # slug is expected to be the filename of the photo,
@@ -58,7 +42,7 @@ class Photo:
 
     @property
     def driver_name(self):
-        name = self.driver_slug.replace(self.UNDERSCORE, self.SPACE).title()
+        name = Canon(self.driver_slug).name
         return name
 
     @property
@@ -102,14 +86,11 @@ class Photo:
 
     @classmethod
     def slug_and_head_shot(cls, name):
-        slug = cls.WHITESPACE_CHARS.sub(cls.UNDERSCORE, name)
-        slug = cls.NON_WORD_CHARS.sub('', slug)
-        slug = slug.lower()
-        canonical_slug = cls.ALIASES.get(slug) or slug
-        head_shot = cls._head_shots_memoized().get(canonical_slug)
+        slug = Canon(name).slug
+        head_shot = cls._head_shots_memoized().get(slug)
         if not head_shot:
             return {}
-        return dict(slug=canonical_slug, head_shot=head_shot)
+        return dict(slug=slug, head_shot=head_shot)
 
 
     @classmethod
