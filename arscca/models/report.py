@@ -1,4 +1,5 @@
 from arscca.models.canon import Canon
+from arscca.models.util import Util
 from collections import defaultdict
 from copy import deepcopy
 import json
@@ -9,6 +10,8 @@ class Report:
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     KEY_PREPEND = 'points-from-'
     NUM_EVENTS_TO_SCORE = 8
+    SKIPPED_EVENT_NUMBERS = defaultdict(list)
+    SKIPPED_EVENT_NUMBERS[2019] = [3,7]
 
     def __init__(self, year):
         self.year = year
@@ -39,6 +42,11 @@ class Report:
     @property
     def num_events(self):
         return self._num_events
+
+    @property
+    def event_numbers(self):
+        skipped_event_numbers = self.SKIPPED_EVENT_NUMBERS[self.year]
+        return Util.range_with_skipped_values(self.num_events, skipped_event_numbers)
 
     @property
     def _redis_key_prepend(self):

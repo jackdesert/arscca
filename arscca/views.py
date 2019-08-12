@@ -57,12 +57,11 @@ def report_view(request):
     year = 2019
     report = Report(year)
     events, totals = report.events_and_totals()
-    num_events_to_sum = report.num_events - 2
 
     return dict(events=events,
                 totals=totals,
                 car_classes=report.car_classes,
-                num_events_to_sum=num_events_to_sum,
+                event_numbers=report.event_numbers,
                 year=year,
                 slug_and_head_shot_method=Photo.slug_and_head_shot)
 

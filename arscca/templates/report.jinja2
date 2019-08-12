@@ -22,7 +22,7 @@
                 <th>Driver</th>
                 {% for event_date in events.keys() | sort %}
                     <th>
-                        <a href='/events/{{ event_date }}'>Ev {{ loop.index }}</a>
+                        <a href='/events/{{ event_date }}'>Ev {{ event_numbers[loop.index - 1] }}</a>
                     </th>
                 {% endfor %}
                 <th>Total*</th>

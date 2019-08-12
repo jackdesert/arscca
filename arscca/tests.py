@@ -6,6 +6,7 @@ from pyramid import testing
 from arscca.models.photo import Photo
 from arscca.models.gossip import Gossip
 from arscca.models.canon import Canon
+from arscca.models.util import Util
 
 
 class ViewTests(unittest.TestCase):
@@ -91,4 +92,16 @@ class CanonTests(unittest.TestCase):
         for name_or_slug, expected_name in data.items():
             slug = Canon(name_or_slug).name
             self.assertEqual(slug, expected_name)
+
+class UtilTests(unittest.TestCase):
+    def test_range_with_skipped_values_1(self):
+        result = Util.range_with_skipped_values(5, [2,3])
+        self.assertEqual(result, [1, 4, 5, 6, 7])
+    def test_range_with_skipped_values_2(self):
+        result = Util.range_with_skipped_values(6, [1, 5])
+        self.assertEqual(result, [2, 3, 4, 6, 7, 8])
+    def test_range_with_skipped_values_3(self):
+        # When a skipped value is larger than the biggest value
+        result = Util.range_with_skipped_values(3, [1, 5])
+        self.assertEqual(result, [2, 3, 4])
 

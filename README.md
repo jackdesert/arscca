@@ -68,6 +68,8 @@ in production.
 Backlog
 -------
 
+  * Show ties in standings when two people both have 5 points
+  * Consistent sorting order in case of ties for easy compare dev vs production
   * Aliases for driver names for Standings so Nick/Nicholas share credit
   * Adapt Feedback link to be noticeable on HUGE WIDE SCREENS
   * Footer that looks like a footer (instead of contact info for a driver)
