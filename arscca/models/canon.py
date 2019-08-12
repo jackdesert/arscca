@@ -23,7 +23,8 @@ class Canon:
                'alexander_ross': 'alex_ross',
                'jeff_gibson': 'jeff_gilson',
                'robert_darin_laughard': 'darin_laughard',
-               'william_eldridge': 'william_eldredge'}
+               'william_eldridge': 'william_eldredge',
+               'robin_steffon': 'steffon_robin'}
 
 
     def __init__(self, name_or_slug):
