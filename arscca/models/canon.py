@@ -21,7 +21,8 @@ class Canon:
                'james_express_lane': 'james_lane',
                'philip_rucker': 'phil_rucker',
                'alexander_ross': 'alex_ross',
-               'jeff_gibson': 'jeff_gilson'}
+               'jeff_gibson': 'jeff_gilson',
+               'robert_darin_laughard': 'darin_laughard'}
 
 
     def __init__(self, name_or_slug):
