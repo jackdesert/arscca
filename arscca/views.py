@@ -80,12 +80,22 @@ def national_event_view(request):
              renderer='templates/event.jinja2')
 def live_event_view(request):
     date = str(Date.today())
-    event_url = None
+    event_url = '/live/raw'
 
-    json_event = fetch_event(date, event_url, True)
+    try:
+        json_event = fetch_event(date, event_url, True)
+    except:
+        # If any errors occur, serve them the raw data instead
+        request.override_renderer = Parser.LIVE_FILENAME
+        return {}
 
     event = json.loads(json_event)
     return event
+
+@view_config(route_name='live_event_raw',
+             renderer=Parser.LIVE_FILENAME)
+def live_event_raw_view(request):
+    return {}
 
 @view_config(route_name='event',
              renderer='templates/event.jinja2')
@@ -159,6 +169,7 @@ def fetch_event(date, url, live=False):
                  event_name=parser.event_name,
                  event_date=parser.event_date,
                  source_url=url,
+                 live=live,
                  histogram_filename=histogram.filename,
                  runs_per_driver=runs_per_driver,
                  errors=errors)

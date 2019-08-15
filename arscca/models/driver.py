@@ -81,7 +81,9 @@ class Driver:
         try:
             if calculated == self.INF:
                 assert self.DNF_REGEX.match(self.published_best_combined)
-            else:
+            elif self.second_half_started:
+                # AXWare shows "dns" for two day events if day two has
+                # not started. So ignore this
                 assert calculated == Decimal(self.published_best_combined)
         except AssertionError:
             return dict(driver_name=self.name,

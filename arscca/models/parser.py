@@ -61,7 +61,8 @@ class Parser:
     RUNS_PER_COURSE['2018-06-10'] = 4
     RUNS_PER_COURSE['2019-07-14'] = 4
 
-    LIVE_FILENAME = '/tmp/arscca-live.html'
+    # This filename ends in jinja2 because it is used as a view template
+    LIVE_FILENAME = '/tmp/arscca-live.jinja2'
 
     def __init__(self, date, url, live):
         self.date = date

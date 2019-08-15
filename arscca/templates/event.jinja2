@@ -78,7 +78,13 @@
 
     <h3 class='h3'>Data Sources</h3>
     <ul>
-        <li><a href='{{ source_url }}'>The official ARSCCA results page</a></li>
+        <li><a href='{{ source_url }}'>
+            {% if live %}
+                Raw Output from AXWare
+            {% else %}
+                The official ARSCCA results page
+            {% endif %}
+        </a></li>
         <li><a href='http://solotime.info/pax/rtp2019.html'>The official PAX page</a></li>
     </ul>
 </div>
