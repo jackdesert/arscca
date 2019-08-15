@@ -46,7 +46,8 @@ class Driver:
     def _best_of_n(self, runs):
         runs_to_use = [rr for rr in runs if rr]
         times = [self.time_from_string(rr) for rr in runs_to_use]
-        return min(times)
+        if times:
+            return min(times)
 
     def best_am(self):
         return self._best_of_n(self.am_runs)
@@ -54,9 +55,15 @@ class Driver:
     def best_pm(self):
         return self._best_of_n(self.pm_runs)
 
+    @property
+    def am_runs_only(self):
+        return not self.second_half_started
+
     def best_combined(self):
         if self.best_am() and self.best_pm():
             return self.best_am() + self.best_pm()
+        elif self.best_am() and self.am_runs_only:
+            return self.best_am()
         else:
             return self.INF
 

@@ -61,18 +61,31 @@ class Parser:
     RUNS_PER_COURSE['2018-06-10'] = 4
     RUNS_PER_COURSE['2019-07-14'] = 4
 
-    def __init__(self, date, url):
+    LIVE_FILENAME = '/tmp/arscca-live.html'
+
+    def __init__(self, date, url, live):
         self.date = date
         self.url = url
+        self.live = live # Boolean
         self._point_storage = defaultdict(int)
         self.runs_per_course = self.RUNS_PER_COURSE[date]
 
     def parse(self):
-        rr = requests.get(self.url, allow_redirects=False, timeout=10)
-        soup = BeautifulSoup(rr.text, 'html.parser')
+        if self.live:
+            with open(self.LIVE_FILENAME, 'r') as ff:
+                html = ff.read()
+        else:
+            rr = requests.get(self.url, allow_redirects=False, timeout=10)
+            html = rr.text
 
-        # First h2 has title
-        self.event_name = soup.find('h2').text.strip().replace('Final', '')
+        soup = BeautifulSoup(html, 'html.parser')
+
+
+        if self.live:
+            self.event_name = f'Live Results {self.date}'
+        else:
+            # First h2 has title
+            self.event_name = soup.find('h2').text.strip().replace('Final', '')
 
         # First table has datethe event name and date
         date_table = soup('table')[0]
@@ -89,6 +102,7 @@ class Parser:
             if row and self.D1_OR_D2_REGEX.match(row[6]):
                 data.append(row)
 
+        second_half_started = False
         drivers = []
         # Two rows are used to represent a single driver
         for row_idx in range(0, len(data), 2):
@@ -101,8 +115,13 @@ class Parser:
             driver.car_model  = data[row_idx][4]
             driver.am_runs = [data[row_idx][col_idx]     for col_idx in self._run_columns]
             driver.pm_runs = [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
+            if driver.best_pm():
+                second_half_started = True
             driver.published_best_combined = data[row_idx][-1]
             drivers.append(driver)
+
+        for driver in drivers:
+            driver.second_half_started = second_half_started
         self.drivers = drivers
 
     def rank_drivers(self):
@@ -115,7 +134,8 @@ class Parser:
             if driver.best_combined() < Driver.INF:
                 driver.position_pax = index + 1
 
-        self._apply_points()
+        if not self.live:
+            self._apply_points()
 
         self.drivers.sort(key=Driver.best_combined)
         for index, driver in enumerate(self.drivers):

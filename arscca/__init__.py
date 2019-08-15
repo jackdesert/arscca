@@ -22,6 +22,7 @@ def main(global_config, **settings):
     config.add_route('drivers', '/drivers')
     config.add_route('driver', '/drivers/{slug}')
     config.add_route('report', '/standings')
+    config.add_route('live_event', '/live')
     config.add_route('event', '/events/{date}')
     config.add_route('national_event', '/national_events/{year}')
     config.scan()

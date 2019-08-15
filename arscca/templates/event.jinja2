@@ -84,7 +84,7 @@
 </div>
     <script>
         // Use |safe filter so jinja2 does not escape the quotes
-        var drivers = {{ drivers |safe }}
+        var drivers = JSON.parse('{{ drivers | replace("'", '"') | safe}}')
     </script>
 
     <script id='driver-template' type='text/x-handlebars-template'>

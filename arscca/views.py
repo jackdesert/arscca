@@ -2,6 +2,7 @@ import hashlib
 import json
 import pdb
 import redis
+from datetime import date as Date
 from threading import Lock
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -75,6 +76,17 @@ def national_event_view(request):
     return event
 
 
+@view_config(route_name='live_event',
+             renderer='templates/event.jinja2')
+def live_event_view(request):
+    date = str(Date.today())
+    event_url = None
+
+    json_event = fetch_event(date, event_url, True)
+
+    event = json.loads(json_event)
+    return event
+
 @view_config(route_name='event',
              renderer='templates/event.jinja2')
 def event_view(request):
@@ -125,8 +137,8 @@ def populate_redis_and_yield_event(date, url_aka_redis_key):
         LOCK.release()
 
 # Fetch directly from other site; Do not read or write to Redis
-def fetch_event(date, url):
-    parser = Parser(date, url)
+def fetch_event(date, url, live=False):
+    parser = Parser(date, url, live)
     parser.parse()
     parser.rank_drivers()
 
@@ -140,9 +152,10 @@ def fetch_event(date, url):
     histogram.plot()
 
     drivers_as_dicts = [driver.properties() for driver in parser.drivers]
+    drivers_as_json = json.dumps(drivers_as_dicts)
     runs_per_driver = 2 * parser.runs_per_course
 
-    event = dict(drivers=drivers_as_dicts,
+    event = dict(drivers=drivers_as_json,
                  event_name=parser.event_name,
                  event_date=parser.event_date,
                  source_url=url,
