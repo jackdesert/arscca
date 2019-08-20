@@ -7,9 +7,10 @@ from threading import Lock
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from .models.driver import Driver
-from .models.histogram import Histogram
-from .models.national_event_driver import NationalEventDriver
 from .models.gossip import Gossip
+from .models.histogram import Histogram
+from .models.live_event_presenter import LiveEventPresenter
+from .models.national_event_driver import NationalEventDriver
 from .models.parser import Parser
 from .models.photo import Photo
 from .models.report import Report
@@ -17,6 +18,11 @@ from .models.report import Report
 REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
 REDIS_EXPIRATION_IN_SECONDS = 3600
 LOCK = Lock()
+LIVE_UPDATE_LOCK = Lock()
+
+REDIS_KEY_LIVE_EVENT          = 'live-event'
+REDIS_KEY_LIVE_EVENT_DRIVERS  = 'live-event-drivers'
+REDIS_KEY_LIVE_EVENT_REVISION = 'live-event-revision'
 
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
@@ -76,11 +82,95 @@ def national_event_view(request):
     return event
 
 
+@view_config(route_name='live_event_revision',
+             renderer='json')
+def live_event_revision_view(request):
+    revision = REDIS.get(REDIS_KEY_LIVE_EVENT_REVISION)
+    return dict(revision=revision)
+
+@view_config(route_name='live_event_drivers',
+             renderer='json')
+def live_event_drivers_view(request):
+    json_output = REDIS.get(REDIS_KEY_LIVE_EVENT_DRIVERS)
+    output = json.loads(json_ouput)
+
+    # It's extra work to call json.loads on the redis data
+    # and then expect the renderer to turn it back into json.
+    # But at least it sets the Content-Type to application/json for us
+    return output
+
+
+@view_config(route_name='live_event_update_redis',
+             renderer='json')
+def live_event_update_redis_view(request):
+    # This method is called by the gingerbread man
+    # when Parser.LIVE_FILENAME is updated
+    # This method writes data to redis
+    # and returns a diff
+    #
+    # live_event_view, on the other hand, only reads data from redis
+    # (does not read from file at all)
+
+    date = str(Date.today())
+    event_url = '/live/raw'
+
+    # Only allow one thread to use this method at a time
+    # Otherwise, revision may be out of sync between
+    # event(includes revision), drivers_and_revision, and revision
+    LIVE_UPDATE_LOCK.acquire()
+
+    try:
+        # This json_event includes the updated revision
+        json_event = fetch_event(date, event_url, True)
+        event = json.loads(json_event)
+        json_drivers = event['drivers']
+        drivers = json.loads(json_drivers)
+        revision = event['revision']
+
+        drivers_and_revision = dict(drivers=drivers,
+                                    revision=revision)
+
+        json_drivers_and_revision = json.dumps(drivers_and_revision)
+
+        json_previous_event = REDIS.get(REDIS_KEY_LIVE_EVENT) or '{"drivers": []}'
+        previous_event = json.loads(json_previous_event)
+        previous_drivers = previous_event['drivers']
+        pdb.set_trace()
+
+        drivers_diff = LiveEventPresenter.diff(previous_drivers, drivers)
+
+        # Ideally, these three writes to redis would be atomic
+        # But since we have a Lock on this view method,
+        # and this is the only method that writes to these redis keys,
+        # we are probably fine.
+        #
+        # There is such a thing as redis transactions,
+        # But I did not find any documentation of that feature
+        # for the redis-py package that this project uses.
+        #
+        # Therefore, all dicts are converted to json strings
+        # above so that if there are any errors they will likely
+        # happen BEFORE these three lines
+        REDIS.set(REDIS_KEY_LIVE_EVENT, json_event)
+        REDIS.set(REDIS_KEY_LIVE_EVENT_DRIVERS, json_drivers_and_revision)
+        REDIS.incr(REDIS_KEY_LIVE_EVENT_REVISION)
+
+
+        return dict(revision=revision,
+                    drivers=drivers_diff)
+    finally:
+        LIVE_UPDATE_LOCK.release()
+
+
+
 @view_config(route_name='live_event',
              renderer='templates/event.jinja2')
 def live_event_view(request):
+    # this method reads data from redis
     date = str(Date.today())
     event_url = '/live/raw'
+
+    json_event = REDIS.get(url_aka_redis_key)
 
     try:
         json_event = fetch_event(date, event_url, True)
@@ -173,6 +263,10 @@ def fetch_event(date, url, live=False):
                  histogram_filename=histogram.filename,
                  runs_per_driver=runs_per_driver,
                  errors=errors)
+    if live:
+        # Set revision but do not increment in REDIS
+        old_revision = REDIS.get(REDIS_KEY_LIVE_EVENT_REVISION) or 0
+        event['revision'] = old_revision + 1
     json_event = json.dumps(event)
     return json_event
 

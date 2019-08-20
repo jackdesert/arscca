@@ -7,6 +7,7 @@ from arscca.models.photo import Photo
 from arscca.models.gossip import Gossip
 from arscca.models.canon import Canon
 from arscca.models.util import Util
+from arscca.models.live_event_presenter import LiveEventPresenter
 
 
 class ViewTests(unittest.TestCase):
@@ -105,3 +106,21 @@ class UtilTests(unittest.TestCase):
         result = Util.range_with_skipped_values(3, [1, 5])
         self.assertEqual(result, [2, 3, 4])
 
+class LiveEventPresenterTests(unittest.TestCase):
+    def test_diff(self):
+
+        previous_drivers = [{'name': 'Toledo', 'speed': 5},
+                            {'name': 'Waltham', 'speed': 4},
+                            {'name': 'Augusta', 'speed': 2}] # Augusta goes away
+
+        drivers = [{'name': 'Toledo', 'speed': 15},           # Toledo changes
+                   {'name': 'Waltham', 'speed': 4},          # Waltham stays the same
+                   {'name': 'Cincinnati', 'speed': 15}]      # Cincinatti is new
+
+        result = LiveEventPresenter.diff(previous_drivers, drivers)
+        expected = {'create': ['Cincinnati'],
+                    'destroy': ['Augusta'],
+                    'update': [{'name': 'Toledo', 'speed': 15},     # Toledo Changed
+                               {'name': 'Cincinnati', 'speed': 15}]}# Cincinnati is new
+
+        self.assertEqual(result, expected)
