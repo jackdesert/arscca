@@ -17,3 +17,10 @@ White tape at events for blue cars.
 A new computer mouse.
   - for event day. Old one is busted
 
+
+
+Brainstorming Regarding Unified Messaging
+  - for example, the carts class that was sent out as an ad-hoc email to newsletter recipients:
+    - Where all should that announcement go?
+      - newsletter / facebook / front page of website / calendar?
+

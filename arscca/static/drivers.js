@@ -1,39 +1,40 @@
-// DUPLICATE
-// This file is copypasta from drivers.js with a few changes
-// The original drivers.js is left untouched to make sure we don't break it
-var initializeDriversTable = function(){
+var initializeDriversTable = function(liveBoolean){
     'use strict'
 
     const hugeNumber = 1000000
+    const delimiters = ['${', '}']
 
-    var templateSource = document.getElementById('driver-template').innerHTML,
-        template = Handlebars.compile(templateSource),
-        target = document.getElementById('drivers-tbody'),
-        displayDrivers = function(){
-            var content = '',
-                html
+    let currentSortFunction
+    let currentActiveHeader
+    let mySocket
 
-            drivers.forEach(function(driver, index){
-                var k = ''
-                if (index % 2 === 0){
-                    k = 'tr_stripe '
-                }
+    //var templateSource = document.getElementById('driver-template').innerHTML,
+    //var template = Handlebars.compile(templateSource),
 
-                driver.row_klass = k
 
-                if (selectedDriverIds.has(driver.id)){
-                    driver.row_klass += klassToToggle
-                }
+    let vueRevisionStatus
+    if (liveBoolean){
 
-                html = template(driver)
-                content += html
+        vueRevisionStatus = new Vue({
+            delimiters: delimiters,
+            el: '#current-revision',
+            data: {
+                currentRevision: -1
+            }
+        })
 
-            })
 
-            target.innerHTML = content
-            bindClickDriverRow()
-            replaceInfinity()
-        },
+    }
+
+    const vueDriversTable = new Vue({
+        delimiters: delimiters,
+        el: '#drivers-tbody',
+        data: {
+            drivers: drivers
+        }
+    })
+
+    var target = document.getElementById('drivers-tbody'),
         replaceInfinity = function(){
             var elements = document.querySelectorAll('td.best-combined,td.best-combined-pax')
 
@@ -208,9 +209,13 @@ var initializeDriversTable = function(){
                 }
                 header.addEventListener('click', function(){
                     var that = this
+                    // Store which sort function most recently selected
+                    currentSortFunction = func
+                    currentActiveHeader = that
                     func()
-                    displayDrivers()
+                    //displayDrivers()
                     styleActiveHeader(that)
+                    setTimeout(replaceInfinity, 1)
                 })
             })
         },
@@ -245,37 +250,202 @@ var initializeDriversTable = function(){
 
         selectedDriverIds = new Set(),
 
-        bindClickDriverRow = function(){
-            console.log('binding')
+        reapplyBindClickDriverRow = function(additions, subtractions){
+            // Simply checking if there are any additions or subtractions
+            if (additions + subtractions){
+                // unbind
+                setTimeout(function(){
+                    bindClickDriverRow(true)
+                }, 1000)
+                // bind
+                setTimeout(bindClickDriverRow, 2000)
+            }
+        },
+
+        bindClickDriverRow = function(unbind){
+            // Call this function with no arguments to bind
+            // Call this function with a truthy argument to unbind
             var rows = document.querySelectorAll('tbody tr')
+            var funcToBind = function(event){
+                var cellParent = event.target.parentElement,
+                    driverId = parseInt(cellParent.id, 10)
+                if (isNaN(driverId)){
+                    console.log('Please include an ID in each table row')
+                }
+
+                if (selectedDriverIds.has(driverId)){
+                    selectedDriverIds.delete(driverId)
+                }else{
+                    selectedDriverIds.add(driverId)
+                }
+
+                cellParent.classList.toggle(klassToToggle)
+            }
+
+            console.log('Binding in bindClickDriverRow')
 
             rows.forEach(function(row){
-                row.addEventListener('click', function(event){
-                    var cellParent = event.target.parentElement,
-                        driverId = parseInt(cellParent.id, 10)
-                    if (isNaN(driverId)){
-                        console.log('Please include an ID in each table row')
-                    }
-
-                    if (selectedDriverIds.has(driverId)){
-                        selectedDriverIds.delete(driverId)
-                    }else{
-                        selectedDriverIds.add(driverId)
-                    }
-
-                    cellParent.classList.toggle(klassToToggle)
-                })
-
+                if (unbind){
+                    row.removeEventListener('click', funcToBind)
+                }else{
+                    row.addEventListener('click', funcToBind)
+                }
             })
 
-        }
+
+        },
+
+        fetchLiveDriversAndKickoff = function(){
+            const request = new XMLHttpRequest()
+            request.open('GET', '/live/drivers', true)
+
+            request.onload = function() {
+                if (this.status >= 200 && this.status < 400) {
+                    // Success!
+                    const data = JSON.parse(this.response)
+                    // Remove all drivers from array
+                    drivers.splice(0)
+                    data.drivers.forEach(function(row){
+                        drivers.push(row)
+                    })
+
+                    vueRevisionStatus.currentRevision = data.revision
+                    kickoff()
+                } else {
+                    // We reached our target server, but it returned an error
+                    console.log(`status ${this.status} fetching drivers`)
+                }
+            }
+
+            request.onerror = function() {
+                console.log('error fetching live drivers')
+            }
+
+            request.send()
 
 
 
+        },
 
-    sortByOverallPosition()
-    displayDrivers()
+        kickoff = function(){
+            // Apply the most recently selected sort function
+            currentSortFunction()
+
+            // These next methods are called with setTimeout
+            // so the view can populate before it takes action
+            // I wonder if slow devices will need more than the token 1 ms
+            setTimeout(function(){
+                styleActiveHeader(currentActiveHeader)
+            }, 1)
+
+            setTimeout(bindClickDriverRow, 1)
+            setTimeout(replaceInfinity, 1)
+            setTimeout(initializeWebsocket, 1000)
+        },
+
+        driverIndexFromName = function(name){
+            const index = drivers.findIndex(function(item){
+                return item.name === name
+            })
+
+            return index
+        },
+
+        processWebsocketMessage = function(event){
+            const messageData = JSON.parse(event.data),
+                revision = messageData.revision,
+                driverChanges = messageData.driver_changes,
+                removeDriver = function(name){
+                    const index = driverIndexFromName(name)
+                    console.log('Deleting driver: ', name)
+                    // Use splice to delete driver
+                    drivers.splice(index, 1)
+                },
+                addDriver = function(name){
+                    console.log('Adding driver: ', name)
+                    drivers.push({name: name})
+                },
+                updateDriver = function(driverObject){
+                    // Note that if a driver is removed,
+                    // "position_overall" will change for any
+                    // slower drivers, and hence they will be updated
+
+                    const index = driverIndexFromName(driverObject.name)
+
+                    console.log('Updating driver: ', driverObject)
+                    Vue.set(drivers, index, driverObject)
+                }
+
+
+            console.log('Message received: ', messageData)
+
+            if (revision <= vueRevisionStatus.currentRevision){
+                console.log(`skipping revision ${revision} because currentRevision is ${vueRevisionStatus.currentRevision}`)
+            }else if (revision === vueRevisionStatus.currentRevision + 1){
+                vueRevisionStatus.currentRevision = revision
+
+                driverChanges.create.forEach(addDriver)
+                driverChanges.destroy.forEach(removeDriver)
+                driverChanges.update.forEach(updateDriver)
+                // apply sorting
+                currentSortFunction()
+                // re-bind clickDriverRow
+                reapplyBindClickDriverRow(driverChanges.create, driverChanges.destroy)
+
+            }else{
+                // Close socket and start over
+                console.log('SYNC ERROR: Closing socket and starting over')
+                mySocket.close()
+                fetchLiveDriversAndKickoff()
+            }
+        },
+
+        initializeWebsocketSoon = function(){
+            setTimeout(initializeWebsocket, 1000)
+        },
+        initializeWebsocket = function(){
+            const printConnectionState = function(){
+                const element = document.getElementById('connection-state'),
+                    stateInteger = mySocket.readyState,
+                    labels = ['0  CONNECTING  Socket has been created. The connection is not yet open.',
+                              '1  OPEN  The connection is open and ready to communicate.',
+                              '2  CLOSING   The connection is in the process of closing.',
+                              '3  CLOSED  The connection is closed or could not be opened.']
+
+
+
+                element.textContent = labels[stateInteger]
+
+                // Long delay so we can actually read the inital state before the div changes
+                setTimeout(printConnectionState, 400)
+            },
+            hostname = window.location.hostname
+
+            if (liveBoolean){
+
+                // create websocket instance
+                mySocket = new WebSocket(`ws://${hostname}:6544/ws`)
+
+                mySocket.onmessage = processWebsocketMessage
+                mySocket.onclose = initializeWebsocketSoon
+
+                printConnectionState()
+            }
+    }
+
+
+
+    // Specify initial sort
+    currentSortFunction = sortByOverallPosition
+    currentActiveHeader = document.getElementById('best-combined')
+
     bindHeaders()
-    styleActiveHeader(document.getElementById('best-combined'))
+    if (liveBoolean){
+        fetchLiveDriversAndKickoff()
+    }else{
+        kickoff()
+    }
+
+
 
 }

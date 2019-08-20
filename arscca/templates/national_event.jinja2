@@ -36,9 +36,29 @@
                 <th>Run 6</th>
             </tr>
         </thead>
+
+    </script>
+
         <tbody id='drivers-tbody'>
-            <tr>
-                <td colspan='15'>Please enable JavaScript</td>
+            <tr v-for='(driver, index) in drivers' v-bind:id='driver.id' v-bind:class='index % 2 ? "" : "tr_stripe"'>
+                <td class='position-overall'>${ driver.position_overall }</td>
+                <td class='position-pax'>${ driver.position_pax }</td>
+                <td class='driver-name'>${ driver.name }</td>
+                <td class='car-number'>${ driver.car_number }</td>
+                <td class='codriver-car-number'>${ driver.codriver_car_number }</td>
+                <td class='car-class'>${ driver.car_class }</td>
+                <td class='position-class'>${ driver.position_class }</td>
+                <td class='car-year'>${ driver.car_year }</td>
+                <td class='car-model'>${ driver.car_model }</td>
+                <td class='best-combined'>${ driver.best_combined }</td>
+                <td class='pax-factor'>${ driver.pax_factor }</td>
+                <td class='best-combined-pax'>${ driver.best_combined_pax }</td>
+                <td class='am-run'>${ driver.run_1 }</td>
+                <td class='am-run'>${ driver.run_2 }</td>
+                <td class='am-run'>${ driver.run_3 }</td>
+                <td class='pm-run'>${ driver.run_4 }</td>
+                <td class='pm-run'>${ driver.run_5 }</td>
+                <td class='pm-run'>${ driver.run_6 }</td>
             </tr>
         </tbody>
     </table>
@@ -81,35 +101,10 @@
     </script>
 
 
-    <script id='driver-template' type='text/x-handlerbars-template'>
-        {% raw %}
-            <tr id='{{ id }}' class='{{ row_klass }}'>
-                <td class='position-overall'>{{ position_overall }}</td>
-                <td class='position-pax'>{{ position_pax }}</td>
-                <td class='driver-name'>{{ name }}</td>
-                <td class='car-number'>{{ car_number }}</td>
-                <td class='codriver-car-number'>{{ codriver_car_number }}</td>
-                <td class='car-class'>{{ car_class }}</td>
-                <td class='position-class'>{{ position_class }}</td>
-                <td class='car-year'>{{ car_year }}</td>
-                <td class='car-model'>{{ car_model }}</td>
-                <td class='best-combined'>{{ best_combined }}</td>
-                <td class='pax-factor'>{{ pax_factor }}</td>
-                <td class='best-combined-pax'>{{ best_combined_pax }}</td>
-                <td class='run-1'>{{ run_1 }}</td>
-                <td>{{ run_2 }}</td>
-                <td>{{ run_3 }}</td>
-                <td class='run-4'>{{ run_4 }}</td>
-                <td>{{ run_5 }}</td>
-                <td>{{ run_6 }}</td>
-            </tr>
-        {% endraw %}
-
-    </script>
 
     <script>
         ready(function(){
-            initializeDriversTable()
+            initializeDriversTable(0)
         })
     </script>
 

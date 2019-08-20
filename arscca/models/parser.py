@@ -72,21 +72,25 @@ class Parser:
         self.runs_per_course = self.RUNS_PER_COURSE[date]
 
     def parse(self):
-        if self.live:
-            with open(self.LIVE_FILENAME, 'r') as ff:
-                html = ff.read()
-        else:
-            rr = requests.get(self.url, allow_redirects=False, timeout=10)
-            html = rr.text
+        try:
+            if self.live:
+                with open(self.LIVE_FILENAME, 'r') as ff:
+                    html = ff.read()
+            else:
+                rr = requests.get(self.url, allow_redirects=False, timeout=10)
+                html = rr.text
 
-        soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(html, 'html.parser')
 
 
-        if self.live:
-            self.event_name = f'Live Results {self.date}'
-        else:
-            # First h2 has title
-            self.event_name = soup.find('h2').text.strip().replace('Final', '')
+            if self.live:
+                self.event_name = f'Live Results {self.date}'
+            else:
+                # First h2 has title
+                self.event_name = soup.find('h2').text.strip().replace('Final', '')
+        except:
+            pdb.set_trace()
+            1
 
         # First table has datethe event name and date
         date_table = soup('table')[0]

@@ -24,7 +24,11 @@ def main(global_config, **settings):
     config.add_route('report', '/standings')
     config.add_route('live_event', '/live')
     config.add_route('live_event_raw', '/live/raw')
+    config.add_route('live_event_drivers', '/live/drivers')
+    config.add_route('live_event_update_redis', '/live/update_redis')
+    config.add_route('live_event_revision', '/live/revision')
     config.add_route('event', '/events/{date}')
     config.add_route('national_event', '/national_events/{year}')
     config.scan()
     return config.make_wsgi_app()
+

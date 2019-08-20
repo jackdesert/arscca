@@ -48,12 +48,32 @@
             </tr>
         </thead>
         <tbody id='drivers-tbody'>
-            <tr>
-                <td colspan='15'>Please enable JavaScript</td>
+            <tr v-for='(driver, index) in drivers' v-bind:id='driver.id' v-bind:class='index % 2 ? "" : "tr_stripe"'>
+                <td class='position-overall'>${ driver.position_overall }</td>
+                <td class='position-pax'>${ driver.position_pax }</td>
+                <td class='position-percentile'>${ driver.position_percentile }</td>
+
+                <td class='driver-name'>
+
+                    <div v-if='driver.slug'>
+                        <a v-bind:href='`/drivers/${driver.slug}`'>${ driver.name }</a>
+                    </div>
+                    <div v-else>
+                        ${ driver.name }
+                    </div>
+                </td>
+                <td class='car-number'>${ driver.car_number }</td>
+                <td class='car-class'>${ driver.car_class }</td>
+                <td class='position-class'>${ driver.position_class }</td>
+                <td class='car-model'>${ driver.car_model }</td>
+                <td class='best-combined'>${ driver.best_combined }</td>
+                <td class='pax-factor'>${ driver.pax_factor }</td>
+                <td class='best-combined-pax'>${ driver.best_combined_pax }</td>
+                <td v-for='run in driver.am_runs' class='am-run'>${ run }</td>
+                <td v-for='run in driver.pm_runs' class='pm-run'>${ run }</td>
             </tr>
         </tbody>
     </table>
-
 
 
     <div class='space-2rem'></div>
@@ -71,10 +91,13 @@
         <li>Position (Percentile) is the percentage of scoring drivers who were faster than you. See <a href='https://en.wikipedia.org/wiki/Percentile_rank'>Percentile Rank</a>.
     </ul>
 
-    <h3 class='h3'>Histogram</h3>
+    {# No histogram for live data in order to reduce bandwidth for individual users #}
+    {% if not live %}
+        <h3 class='h3'>Histogram</h3>
 
-    {% set histogram_src_arg = histogram_filename.replace('/', ':', 1) %}
-    <img src='{{ request.static_path(histogram_src_arg) }}' class='histogram'></img>
+        {% set histogram_src_arg = histogram_filename.replace('/', ':', 1) %}
+        <img src='{{ request.static_path(histogram_src_arg) }}' class='histogram'></img>
+    {% endif %}
 
     <h3 class='h3'>Data Sources</h3>
     <ul>
@@ -87,47 +110,30 @@
         </a></li>
         <li><a href='http://solotime.info/pax/rtp2019.html'>The official PAX page</a></li>
     </ul>
+
+    {% if live %}
+        <h3 id='current-revision'>Revision: ${ currentRevision } </h3>
+        Connection: <span id='connection-state'></span>
+    {% endif %}
 </div>
-    <script>
-        // Use |safe filter so jinja2 does not escape the quotes
-        var drivers = JSON.parse('{{ drivers | replace("'", '"') | safe}}')
-    </script>
 
-    <script id='driver-template' type='text/x-handlebars-template'>
-        {% raw %}
-            <tr id='{{ id }}' class='{{ row_klass }}'>
-                <td class='position-overall'>{{ position_overall }}</td>
-                <td class='position-pax'>{{ position_pax }}</td>
-                <td class='position-percentile'>{{ position_percentile }}</td>
-                <td class='driver-name'>
-                    {{#if slug}}
-                        <a href='/drivers/{{ slug }}'>{{ name }}</a>
-                    {{else}}
-                        {{ name }}
-                    {{/if}}
-                </td>
-                <td class='car-number'>{{ car_number }}</td>
-                <td class='car-class'>{{ car_class }}</td>
-                <td class='position-class'>{{ position_class }}</td>
-                <td class='car-model'>{{ car_model }}</td>
-                <td class='best-combined'>{{ best_combined }}</td>
-                <td class='pax-factor'>{{ pax_factor }}</td>
-                <td class='best-combined-pax'>{{ best_combined_pax }}</td>
-                {{#each am_runs}}
-                    <td class='am-run'>{{ this }}</td>
-                {{/each}}
-                {{#each pm_runs}}
-                    <td class='pm-run'>{{ this }}</td>
-                {{/each}}
-            </tr>
-        {% endraw %}
+<script>
+    // Use |safe filter so jinja2 does not escape the quotes
+    {% if live %}
+        {# Make the browser fetch from /live/drivers so we can fail fast #}
+        let drivers = []
+    {% else %}
+        let drivers = JSON.parse('{{ drivers_json | replace("'", '"') | safe}}')
+    {% endif %}
+</script>
 
-    </script>
-    <script>
-        ready(function(){
-            initializeDriversTable()
-        })
-    </script>
+
+</script>
+<script>
+    ready(function(){
+        initializeDriversTable({{ live | int }})
+    })
+</script>
 
 
 
