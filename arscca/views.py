@@ -123,19 +123,19 @@ def live_event_update_redis_view(request):
         # This json_event includes the updated revision
         json_event = fetch_event(date, event_url, True)
         event = json.loads(json_event)
-        json_drivers = event['drivers']
-        drivers = json.loads(json_drivers)
-        revision = event['revision']
+        drivers_json = event['drivers']
+        drivers = json.loads(drivers_json)
+        revision = int(event['revision'])
 
         drivers_and_revision = dict(drivers=drivers,
                                     revision=revision)
 
         json_drivers_and_revision = json.dumps(drivers_and_revision)
 
-        json_previous_event = REDIS.get(REDIS_KEY_LIVE_EVENT) or '{"drivers": []}'
+        json_previous_event = REDIS.get(REDIS_KEY_LIVE_EVENT) or '{"drivers": "[]"}'
         previous_event = json.loads(json_previous_event)
-        previous_drivers = previous_event['drivers']
-        pdb.set_trace()
+        previous_drivers_json = previous_event['drivers']
+        previous_drivers = json.loads(previous_drivers_json)
 
         drivers_diff = LiveEventPresenter.diff(previous_drivers, drivers)
 
@@ -266,7 +266,7 @@ def fetch_event(date, url, live=False):
     if live:
         # Set revision but do not increment in REDIS
         old_revision = REDIS.get(REDIS_KEY_LIVE_EVENT_REVISION) or 0
-        event['revision'] = old_revision + 1
+        event['revision'] = int(old_revision) + 1
     json_event = json.dumps(event)
     return json_event
 
