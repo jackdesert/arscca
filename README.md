@@ -68,6 +68,8 @@ in production.
 Backlog
 -------
 
+  * Use production vue.js
+  * Remove unneeded pieces from handlebars
   * Show ties in standings when two people both have 5 points
   * Consistent sorting order in case of ties for easy compare dev vs production
   * Aliases for driver names for Standings so Nick/Nicholas share credit

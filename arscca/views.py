@@ -171,7 +171,6 @@ def live_event_view(request):
     event_url = '/live/raw'
 
     event_json = REDIS.get(REDIS_KEY_LIVE_EVENT)
-    pdb.set_trace()
 
     #try:
     #    event_json = fetch_event(date, event_url, True)

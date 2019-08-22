@@ -6,9 +6,22 @@ var initializeDriversTable = function(){
 
     const hugeNumber = 1000000
 
-    var templateSource = document.getElementById('driver-template').innerHTML,
-        template = Handlebars.compile(templateSource),
-        target = document.getElementById('drivers-tbody'),
+    //var templateSource = document.getElementById('driver-template').innerHTML,
+    //var template = Handlebars.compile(templateSource),
+    //
+
+
+
+
+    var app = new Vue({
+        delimiters: ['${', '}'],
+        el: '#drivers-tbody',
+        data: {
+            drivers: drivers
+        }
+    })
+
+    var target = document.getElementById('drivers-tbody'),
         displayDrivers = function(){
             var content = '',
                 html
@@ -209,7 +222,7 @@ var initializeDriversTable = function(){
                 header.addEventListener('click', function(){
                     var that = this
                     func()
-                    displayDrivers()
+                    //displayDrivers()
                     styleActiveHeader(that)
                 })
             })
@@ -274,8 +287,8 @@ var initializeDriversTable = function(){
 
 
     sortByOverallPosition()
-    displayDrivers()
-    bindHeaders()
+    //displayDrivers()
+    //bindHeaders()
     styleActiveHeader(document.getElementById('best-combined'))
 
 }
