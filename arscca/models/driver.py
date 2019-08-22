@@ -31,7 +31,7 @@ class Driver:
         return 0
 
     def time_from_string(self, string):
-        if self.DNF_REGEX.search(string) or (string == '\xa0'):
+        if self.DNF_REGEX.search(string) or (string == '\xa0') or (string == ' '):
             return self.INF
         if self.PENALTY_REGEX.search(string):
             time, num_pylons = string.split('+')
