@@ -91,8 +91,8 @@ def live_event_revision_view(request):
 @view_config(route_name='live_event_drivers',
              renderer='json')
 def live_event_drivers_view(request):
-    json_output = REDIS.get(REDIS_KEY_LIVE_EVENT_DRIVERS)
-    output = json.loads(json_ouput)
+    output_json = REDIS.get(REDIS_KEY_LIVE_EVENT_DRIVERS)
+    output = json.loads(output_json)
 
     # It's extra work to call json.loads on the redis data
     # and then expect the renderer to turn it back into json.
@@ -120,21 +120,21 @@ def live_event_update_redis_view(request):
     LIVE_UPDATE_LOCK.acquire()
 
     try:
-        # This json_event includes the updated revision
-        json_event = fetch_event(date, event_url, True)
-        event = json.loads(json_event)
-        drivers_json = event['drivers']
+        # This event_json includes the updated revision
+        event_json = fetch_event(date, event_url, True)
+        event = json.loads(event_json)
+        drivers_json = event['drivers_json']
         drivers = json.loads(drivers_json)
         revision = int(event['revision'])
 
         drivers_and_revision = dict(drivers=drivers,
                                     revision=revision)
 
-        json_drivers_and_revision = json.dumps(drivers_and_revision)
+        drivers_and_revision_json = json.dumps(drivers_and_revision)
 
-        json_previous_event = REDIS.get(REDIS_KEY_LIVE_EVENT) or '{"drivers": "[]"}'
-        previous_event = json.loads(json_previous_event)
-        previous_drivers_json = previous_event['drivers']
+        previous_event_json = REDIS.get(REDIS_KEY_LIVE_EVENT) or '{"drivers_json": "[]"}'
+        previous_event = json.loads(previous_event_json)
+        previous_drivers_json = previous_event['drivers_json']
         previous_drivers = json.loads(previous_drivers_json)
 
         drivers_diff = LiveEventPresenter.diff(previous_drivers, drivers)
@@ -151,8 +151,8 @@ def live_event_update_redis_view(request):
         # Therefore, all dicts are converted to json strings
         # above so that if there are any errors they will likely
         # happen BEFORE these three lines
-        REDIS.set(REDIS_KEY_LIVE_EVENT, json_event)
-        REDIS.set(REDIS_KEY_LIVE_EVENT_DRIVERS, json_drivers_and_revision)
+        REDIS.set(REDIS_KEY_LIVE_EVENT, event_json)
+        REDIS.set(REDIS_KEY_LIVE_EVENT_DRIVERS, drivers_and_revision_json)
         REDIS.incr(REDIS_KEY_LIVE_EVENT_REVISION)
 
 
@@ -170,16 +170,17 @@ def live_event_view(request):
     date = str(Date.today())
     event_url = '/live/raw'
 
-    json_event = REDIS.get(url_aka_redis_key)
+    event_json = REDIS.get(REDIS_KEY_LIVE_EVENT)
+    pdb.set_trace()
 
-    try:
-        json_event = fetch_event(date, event_url, True)
-    except:
-        # If any errors occur, serve them the raw data instead
-        request.override_renderer = Parser.LIVE_FILENAME
-        return {}
+    #try:
+    #    event_json = fetch_event(date, event_url, True)
+    #except:
+    #    # If any errors occur, serve them the raw data instead
+    #    request.override_renderer = Parser.LIVE_FILENAME
+    #    return {}
 
-    event = json.loads(json_event)
+    event = json.loads(event_json)
     return event
 
 @view_config(route_name='live_event_raw',
@@ -199,21 +200,21 @@ def event_view(request):
     if request.params.get('cb'):
         # If "cache-buste" param is set, fetch drivers directly
         print('Cache busting')
-        json_event = fetch_event(date, event_url)
+        event_json = fetch_event(date, event_url)
     else:
         # Otherwise attempt to pull them from cache
-        json_event = event_from_redis_or_network_call(date, event_url)
+        event_json = event_from_redis_or_network_call(date, event_url)
 
-    event = json.loads(json_event)
+    event = json.loads(event_json)
     return event
 
 
 # Pull from redis, if available
 def event_from_redis_or_network_call(date, url_aka_redis_key):
-    json_event = REDIS.get(url_aka_redis_key)
-    if json_event:
+    event_json = REDIS.get(url_aka_redis_key)
+    if event_json:
         print('Serving event cached in Redis')
-        return json_event
+        return event_json
     else:
         print('Nothing in Redis, so serving event fetched from the Web')
         return populate_redis_and_yield_event(date, url_aka_redis_key)
@@ -223,16 +224,16 @@ def populate_redis_and_yield_event(date, url_aka_redis_key):
     # drivers will only be fetched once
     LOCK.acquire()
     try:
-        json_event = REDIS.get(url_aka_redis_key)
+        event_json = REDIS.get(url_aka_redis_key)
         # If lots of request have built up, the first one will populate
         # redis, and the others will find redis populated and return from here
-        if json_event:
-            return json_event
+        if event_json:
+            return event_json
 
-        generated_json_event = fetch_event(date, url_aka_redis_key)
+        generated_event_json = fetch_event(date, url_aka_redis_key)
         REDIS.set(url_aka_redis_key,
-                  generated_json_event, ex=REDIS_EXPIRATION_IN_SECONDS)
-        return generated_json_event
+                  generated_event_json, ex=REDIS_EXPIRATION_IN_SECONDS)
+        return generated_event_json
     finally:
         LOCK.release()
 
@@ -252,10 +253,10 @@ def fetch_event(date, url, live=False):
     histogram.plot()
 
     drivers_as_dicts = [driver.properties() for driver in parser.drivers]
-    drivers_as_json = json.dumps(drivers_as_dicts)
+    drivers_json = json.dumps(drivers_as_dicts)
     runs_per_driver = 2 * parser.runs_per_course
 
-    event = dict(drivers=drivers_as_json,
+    event = dict(drivers_json=drivers_json,
                  event_name=parser.event_name,
                  event_date=parser.event_date,
                  source_url=url,
@@ -267,8 +268,8 @@ def fetch_event(date, url, live=False):
         # Set revision but do not increment in REDIS
         old_revision = REDIS.get(REDIS_KEY_LIVE_EVENT_REVISION) or 0
         event['revision'] = int(old_revision) + 1
-    json_event = json.dumps(event)
-    return json_event
+    event_json = json.dumps(event)
+    return event_json
 
 
 
