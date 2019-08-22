@@ -3,7 +3,10 @@ var initializeDriversTable = function(){
 
     const hugeNumber = 1000000
     const delimiters = ['${', '}']
+
     let currentRevision = -1
+    let currentSortFunction
+    let currentActiveHeader
 
     //var templateSource = document.getElementById('driver-template').innerHTML,
     //var template = Handlebars.compile(templateSource),
@@ -227,6 +230,9 @@ var initializeDriversTable = function(){
                 }
                 header.addEventListener('click', function(){
                     var that = this
+                    // Store which sort function most recently selected
+                    currentSortFunction = func
+                    currentActiveHeader = that
                     func()
                     //displayDrivers()
                     styleActiveHeader(that)
@@ -267,7 +273,6 @@ var initializeDriversTable = function(){
         bindClickDriverRow = function(unbind){
             // Call this function with no arguments to bind
             // Call this function with a truthy argument to unbind
-            console.log('binding')
             var rows = document.querySelectorAll('tbody tr')
             var funcToBind = function(event){
                 var cellParent = event.target.parentElement,
@@ -285,6 +290,8 @@ var initializeDriversTable = function(){
                 cellParent.classList.toggle(klassToToggle)
             }
 
+            console.log('Binding in bindClickDriverRow')
+
             rows.forEach(function(row){
                 if (unbind){
                     row.removeEventListener('click', funcToBind)
@@ -293,9 +300,10 @@ var initializeDriversTable = function(){
                 }
             })
 
+
         },
 
-        fetchDrivers = function(){
+        fetchDriversAndKickoff = function(){
             const request = new XMLHttpRequest()
             request.open('GET', '/live/drivers', true)
 
@@ -312,6 +320,7 @@ var initializeDriversTable = function(){
                     // Is there a way to only set this once and have it render?
                     currentRevision = data['revision']
                     vueRevisionStatus.currentRevision = currentRevision
+                    kickoff()
                 } else {
                     // We reached our target server, but it returned an error
                     console.log(`status ${this.status} fetching drivers`)
@@ -326,15 +335,33 @@ var initializeDriversTable = function(){
 
 
 
+        },
+
+        kickoff = function(){
+            // Apply the most recently selected sort function
+            currentSortFunction()
+
+            // These next methods are called with setTimeout
+            // so the view can populate before it takes action
+            // I wonder if slow devices will need more than the token 1 ms
+            setTimeout(function(){
+                styleActiveHeader(currentActiveHeader)
+            }, 1)
+
+            setTimeout(bindClickDriverRow, 1)
+            setTimeout(replaceInfinity, 1)
         }
 
 
 
 
-    sortByOverallPosition()
+    // Specify initial sort
+    currentSortFunction = sortByOverallPosition
+    currentActiveHeader = document.getElementById('best-combined')
+
     bindHeaders()
-    bindClickDriverRow()
-    styleActiveHeader(document.getElementById('best-combined'))
-    fetchDrivers()
+    fetchDriversAndKickoff()
+
+    window.ee = fetchDriversAndKickoff
 
 }
