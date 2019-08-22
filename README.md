@@ -68,6 +68,7 @@ in production.
 Backlog
 -------
 
+  * replace Infinity with '-'
   * Use production vue.js
   * Remove unneeded pieces from handlebars
   * Show ties in standings when two people both have 5 points

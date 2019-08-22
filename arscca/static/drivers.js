@@ -1,20 +1,26 @@
-// DUPLICATE
-// This file is copypasta from drivers.js with a few changes
-// The original drivers.js is left untouched to make sure we don't break it
 var initializeDriversTable = function(){
     'use strict'
 
     const hugeNumber = 1000000
+    const delimiters = ['${', '}']
+    let currentRevision = -1
 
     //var templateSource = document.getElementById('driver-template').innerHTML,
     //var template = Handlebars.compile(templateSource),
     //
 
 
+    const vueRevisionStatus = new Vue({
+        delimiters: delimiters,
+        el: '#current-revision',
+        data: {
+            currentRevision: currentRevision
+        }
+    })
 
 
-    var app = new Vue({
-        delimiters: ['${', '}'],
+    var vueDriversTable = new Vue({
+        delimiters: delimiters,
         el: '#drivers-tbody',
         data: {
             drivers: drivers
@@ -258,28 +264,67 @@ var initializeDriversTable = function(){
 
         selectedDriverIds = new Set(),
 
-        bindClickDriverRow = function(){
+        bindClickDriverRow = function(unbind){
+            // Call this function with no arguments to bind
+            // Call this function with a truthy argument to unbind
             console.log('binding')
             var rows = document.querySelectorAll('tbody tr')
+            var funcToBind = function(event){
+                var cellParent = event.target.parentElement,
+                    driverId = parseInt(cellParent.id, 10)
+                if (isNaN(driverId)){
+                    console.log('Please include an ID in each table row')
+                }
+
+                if (selectedDriverIds.has(driverId)){
+                    selectedDriverIds.delete(driverId)
+                }else{
+                    selectedDriverIds.add(driverId)
+                }
+
+                cellParent.classList.toggle(klassToToggle)
+            }
 
             rows.forEach(function(row){
-                row.addEventListener('click', function(event){
-                    var cellParent = event.target.parentElement,
-                        driverId = parseInt(cellParent.id, 10)
-                    if (isNaN(driverId)){
-                        console.log('Please include an ID in each table row')
-                    }
-
-                    if (selectedDriverIds.has(driverId)){
-                        selectedDriverIds.delete(driverId)
-                    }else{
-                        selectedDriverIds.add(driverId)
-                    }
-
-                    cellParent.classList.toggle(klassToToggle)
-                })
-
+                if (unbind){
+                    row.removeEventListener('click', funcToBind)
+                }else{
+                    row.addEventListener('click', funcToBind)
+                }
             })
+
+        },
+
+        fetchDrivers = function(){
+            const request = new XMLHttpRequest()
+            request.open('GET', '/live/drivers', true)
+
+            request.onload = function() {
+                if (this.status >= 200 && this.status < 400) {
+                    // Success!
+                    const data = JSON.parse(this.response)
+                    // Remove all drivers from array
+                    drivers.splice(0)
+                    data['drivers'].forEach(function(row){
+                        drivers.push(row)
+                    })
+
+                    // Is there a way to only set this once and have it render?
+                    currentRevision = data['revision']
+                    vueRevisionStatus.currentRevision = currentRevision
+                } else {
+                    // We reached our target server, but it returned an error
+                    console.log(`status ${this.status} fetching drivers`)
+                }
+            }
+
+            request.onerror = function() {
+                console.log('error fetching drivers')
+            }
+
+            request.send()
+
+
 
         }
 
@@ -287,8 +332,9 @@ var initializeDriversTable = function(){
 
 
     sortByOverallPosition()
-    //displayDrivers()
-    //bindHeaders()
+    bindHeaders()
+    bindClickDriverRow()
     styleActiveHeader(document.getElementById('best-combined'))
+    fetchDrivers()
 
 }

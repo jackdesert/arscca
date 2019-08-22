@@ -107,10 +107,19 @@
         </a></li>
         <li><a href='http://solotime.info/pax/rtp2019.html'>The official PAX page</a></li>
     </ul>
+
+    {% if live %}
+        <h3 id='current-revision'>Revision: ${ currentRevision } </h3>
+    {% endif %}
 </div>
     <script>
         // Use |safe filter so jinja2 does not escape the quotes
-        var drivers = JSON.parse('{{ drivers_json | replace("'", '"') | safe}}')
+        {% if live %}
+            {# Make the browser fetch from /live/drivers so we can fail fast #}
+            let drivers = []
+        {% else %}
+            let drivers = JSON.parse('{{ drivers_json | replace("'", '"') | safe}}')
+        {% endif %}
     </script>
 
 
