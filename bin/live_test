@@ -1,0 +1,13 @@
+#! /bin/bash
+
+TARGET_PATH=/tmp/arscca-live.jinja2
+
+while true
+do
+  for D in `find bin/live_test_versions -type f`
+  do
+    echo "copying $D to $TARGET_PATH"
+    cp $D $TARGET_PATH
+    sleep 1
+  done
+done
