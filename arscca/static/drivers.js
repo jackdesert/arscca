@@ -271,6 +271,18 @@ var initializeDriversTable = function(liveBoolean){
 
         selectedDriverIds = new Set(),
 
+        reapplyBindClickDriverRow = function(additions, subtractions){
+            // Simply checking if there are any additions or subtractions
+            if (additions + subtractions){
+                // unbind
+                setTimeout(function(){
+                    bindClickDriverRow(true)
+                }, 1000)
+                // bind
+                setTimeout(bindClickDriverRow, 2000)
+            }
+        },
+
         bindClickDriverRow = function(unbind){
             // Call this function with no arguments to bind
             // Call this function with a truthy argument to unbind
@@ -399,6 +411,9 @@ var initializeDriversTable = function(liveBoolean){
                 driverChanges.update.forEach(updateDriver)
                 // apply sorting
                 currentSortFunction()
+                // re-bind clickDriverRow
+                reapplyBindClickDriverRow(driverChanges.create, driverChanges.destroy)
+
             }else{
                 // Close socket and start over
                 console.log('SYNC ERROR: Closing socket and starting over')
