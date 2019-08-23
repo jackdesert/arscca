@@ -20,6 +20,13 @@ class LiveEventPresenter:
         for name in common_names:
             driver = d_dict[name]
             p_driver = pd_dict[name]
+
+            # Note that if a driver is added or deleted,
+            # position_overall for many other drivers may
+            # change, leading to their being updated
+            # IDEALLY: the javascript handles the numbering for position_overall,
+            # and then less frequent updates required.
+            # BUT: once the event starts, we expect few additions and subtractions
             if driver != p_driver:
                 updates.append(driver)
 

@@ -1,4 +1,4 @@
-var initializeDriversTable = function(){
+var initializeDriversTable = function(liveBoolean){
     'use strict'
 
     const hugeNumber = 1000000
@@ -7,6 +7,7 @@ var initializeDriversTable = function(){
     let currentRevision = -1
     let currentSortFunction
     let currentActiveHeader
+    let mySocket
 
     //var templateSource = document.getElementById('driver-template').innerHTML,
     //var template = Handlebars.compile(templateSource),
@@ -22,7 +23,7 @@ var initializeDriversTable = function(){
     })
 
 
-    var vueDriversTable = new Vue({
+    const vueDriversTable = new Vue({
         delimiters: delimiters,
         el: '#drivers-tbody',
         data: {
@@ -47,7 +48,7 @@ var initializeDriversTable = function(){
                     driver.row_klass += klassToToggle
                 }
 
-                html = template(driver)
+                //html = template(driver)
                 content += html
 
             })
@@ -313,12 +314,12 @@ var initializeDriversTable = function(){
                     const data = JSON.parse(this.response)
                     // Remove all drivers from array
                     drivers.splice(0)
-                    data['drivers'].forEach(function(row){
+                    data.drivers.forEach(function(row){
                         drivers.push(row)
                     })
 
                     // Is there a way to only set this once and have it render?
-                    currentRevision = data['revision']
+                    currentRevision = data.revision
                     vueRevisionStatus.currentRevision = currentRevision
                     kickoff()
                 } else {
@@ -350,8 +351,87 @@ var initializeDriversTable = function(){
 
             setTimeout(bindClickDriverRow, 1)
             setTimeout(replaceInfinity, 1)
-        }
+            setTimeout(initializeWebsocket, 1000)
+        },
 
+        driverIndexFromName = function(name){
+            const index = drivers.findIndex(function(item){
+                return item.name === name
+            })
+
+            return index
+        },
+
+        processMessage = function(event){
+            const messageData = JSON.parse(event.data),
+                revision = messageData.revision,
+                driverChanges = messageData.driver_changes,
+                removeDriver = function(name){
+                    const index = driverIndexFromName(name)
+                    console.log('Deleting driver: ', name)
+                    // Use splice to delete driver
+                    drivers.splice(index, 1)
+                },
+                addDriver = function(name){
+                    console.log('Adding driver: ', name)
+                    drivers.push({name: name})
+                },
+                updateDriver = function(driverObject){
+                    // Note that if a driver is removed,
+                    // "position_overall" will change for any
+                    // slower drivers, and hence they will be updated
+
+                    const index = driverIndexFromName(driverObject.name)
+
+                    console.log('Updating driver: ', driverObject)
+                    Vue.set(drivers, index, driverObject)
+                }
+
+
+            console.log('Message received: ', messageData)
+
+            if (revision <= currentRevision){
+                console.log(`skipping revision ${revision} because currentRevision is ${currentRevision}`)
+            }else if (revision === currentRevision + 1){
+                currentRevision = revision
+                driverChanges.create.forEach(addDriver)
+                driverChanges.destroy.forEach(removeDriver)
+                driverChanges.update.forEach(updateDriver)
+                // apply sorting
+                currentSortFunction()
+            }else{
+                // Close socket and start over
+                console.log('SYNC ERROR: Closing socket and starting over')
+                mySocket.close()
+                fetchDriversAndKickoff()
+            }
+        },
+
+        initializeWebsocket = function(){
+            const printConnectionState = function(){
+                const element = document.getElementById('connection-state'),
+                    stateInteger = mySocket.readyState,
+                    labels = ['0  CONNECTING  Socket has been created. The connection is not yet open.',
+                              '1  OPEN  The connection is open and ready to communicate.',
+                              '2  CLOSING   The connection is in the process of closing.',
+                              '3  CLOSED  The connection is closed or could not be opened.']
+
+
+
+                element.textContent = labels[stateInteger]
+
+                // Long delay so we can actually read the inital state before the div changes
+                setTimeout(printConnectionState, 400)
+            }
+
+            // create websocket instance
+            mySocket = new WebSocket("ws://localhost:8080/ws")
+
+            mySocket.onmessage = processMessage
+
+
+        printConnectionState()
+    }
 
 
 
@@ -362,6 +442,5 @@ var initializeDriversTable = function(){
     bindHeaders()
     fetchDriversAndKickoff()
 
-    window.ee = fetchDriversAndKickoff
 
 }

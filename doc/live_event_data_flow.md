@@ -111,10 +111,10 @@ There is only one message format that is sent over the Websocket.
 It is always sent from twisted-server to the browser.
 
       { version: 1,
-        drivers: {create: ['Josh Newfoundland'].
-                  update: [{driver_name: 'Josh Newfoundland', ...},
-                           {driver_name: 'Sylvia Existentialista', ...}],
-                  destroy: ['Perry Usedtobe', 'Yve Solongfarewell' } }
+        driver_changes: {create: ['Josh Newfoundland'].
+                         update: [{driver_name: 'Josh Newfoundland', ...},
+                                  {driver_name: 'Sylvia Existentialista', ...}],
+                         destroy: ['Perry Usedtobe', 'Yve Solongfarewell' } }
 
 
 Browser: On Message Received

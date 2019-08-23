@@ -110,6 +110,7 @@
 
     {% if live %}
         <h3 id='current-revision'>Revision: ${ currentRevision } </h3>
+        Connection: <span id='connection-state'></span>
     {% endif %}
 </div>
     <script>
@@ -126,7 +127,7 @@
     </script>
     <script>
         ready(function(){
-            initializeDriversTable()
+            initializeDriversTable({{ live | int }})
         })
     </script>
 

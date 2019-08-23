@@ -157,7 +157,7 @@ def live_event_update_redis_view(request):
 
 
         return dict(revision=revision,
-                    drivers=drivers_diff)
+                    driver_changes=drivers_diff)
     finally:
         LIVE_UPDATE_LOCK.release()
 
