@@ -21,3 +21,4 @@ Data.fs*
 coverage
 test
 /arscca/static/histograms/*.png
+/config/environment.txt

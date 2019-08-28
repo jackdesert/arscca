@@ -8,6 +8,7 @@ Type=simple
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/arscca
+EnvironmentFile=/home/ubuntu/arscca/config/environment.txt
 
 ExecStart=/home/ubuntu/arscca/env/bin/pserve production.ini
 

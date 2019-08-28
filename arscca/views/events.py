@@ -1,4 +1,3 @@
-import hashlib
 import json
 import pdb
 import redis
@@ -6,14 +5,12 @@ from datetime import date as Date
 from threading import Lock
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
-from .models.driver import Driver
-from .models.gossip import Gossip
-from .models.histogram import Histogram
-from .models.live_event_presenter import LiveEventPresenter
-from .models.national_event_driver import NationalEventDriver
-from .models.parser import Parser
-from .models.photo import Photo
-from .models.report import Report
+from arscca.models.histogram import Histogram
+from arscca.models.live_event_presenter import LiveEventPresenter
+from arscca.models.national_event_driver import NationalEventDriver
+from arscca.models.parser import Parser
+from arscca.models.photo import Photo
+from arscca.models.report import Report
 
 REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
 REDIS_EXPIRATION_IN_SECONDS = 3600
@@ -22,7 +19,6 @@ LIVE_UPDATE_LOCK = Lock()
 
 REDIS_KEY_LIVE_EVENT          = 'live-event'
 REDIS_KEY_LIVE_EVENT_DRIVERS  = 'live-event-drivers'
-REDIS_KEY_LIVE_EVENT_REVISION = 'live-event-revision'
 
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
@@ -40,23 +36,6 @@ def events_view(request):
 def events_with_slash_view(request):
     return HTTPFound(location='/')
 
-
-@view_config(route_name='drivers',
-             renderer='templates/drivers.jinja2')
-def drivers_view(request):
-    photos = Photo.all()
-    return dict(photos=photos)
-
-@view_config(route_name='driver',
-             renderer='templates/driver.jinja2')
-def driver_view(request):
-    slug = request.matchdict.get('slug')
-    gossip = Gossip(slug)
-
-    name = slug.replace('_', ' ').title()
-    photos = Photo.all_for_driver(slug)
-
-    return dict(name=name, photos=photos, gossip=gossip.html())
 
 @view_config(route_name='report',
              renderer='templates/report.jinja2')
@@ -81,12 +60,6 @@ def national_event_view(request):
                  year=year)
     return event
 
-
-@view_config(route_name='live_event_revision',
-             renderer='json')
-def live_event_revision_view(request):
-    revision = REDIS.get(REDIS_KEY_LIVE_EVENT_REVISION)
-    return dict(revision=revision)
 
 @view_config(route_name='live_event_drivers',
              renderer='json')

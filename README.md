@@ -38,6 +38,11 @@ Getting Started
     env/bin/pserve development.ini
 
 
+Production Deploy
+-----------------
+
+Set the ARSCCA_SLACK_HOOK in config/environment.txt
+
 National Events
 ---------------
 
