@@ -3,8 +3,15 @@ body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;
   color: #222;
+  transition: background 500ms;
   /*background: #bc2131;*/
 }
+
+body.body_dimmed
+{
+  background: #bbb;
+}
+
 h1,
 h2,
 h3,

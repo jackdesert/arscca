@@ -21,6 +21,8 @@ class Histogram:
 
     def plot(self):
         values = [float(value) for value in self._raw_values if value < Decimal('inf')]
+        if not values:
+            return
         min_value = min(values)
         max_value = max(values)
         left_edge = math.floor(min_value)

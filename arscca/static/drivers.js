@@ -7,6 +7,7 @@ var initializeDriversTable = function(liveBoolean){
     let currentSortFunction
     let currentActiveHeader
     let mySocket
+    let dimmed = false
 
     //var templateSource = document.getElementById('driver-template').innerHTML,
     //var template = Handlebars.compile(templateSource),
@@ -391,6 +392,7 @@ var initializeDriversTable = function(liveBoolean){
                 currentSortFunction()
                 // re-bind clickDriverRow
                 reapplyBindClickDriverRow(driverChanges.create, driverChanges.destroy)
+                dimScreen()
 
             }else{
                 // Close socket and start over
@@ -431,6 +433,20 @@ var initializeDriversTable = function(liveBoolean){
 
                 printConnectionState()
             }
+    },
+    dimScreen = function(){
+        const body = document.getElementById('body'),
+            dimKlass = 'body_dimmed',
+            unDimScreen = function(){
+                body.classList.remove(dimKlass)
+            }
+
+
+        if (!dimmed){
+            body.classList.add(dimKlass)
+            dimmed = true
+            setTimeout(unDimScreen, 600)
+        }
     }
 
 

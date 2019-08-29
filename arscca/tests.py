@@ -2,12 +2,15 @@ import unittest
 import pytest
 import pdb
 
-from pyramid import testing
-from arscca.models.photo import Photo
-from arscca.models.gossip import Gossip
 from arscca.models.canon import Canon
-from arscca.models.util import Util
+from arscca.models.driver import Driver
+from arscca.models.gossip import Gossip
 from arscca.models.live_event_presenter import LiveEventPresenter
+from arscca.models.photo import Photo
+from arscca.models.util import Util
+
+from decimal import Decimal
+from pyramid import testing
 
 
 class ViewTests(unittest.TestCase):
@@ -18,7 +21,7 @@ class ViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_my_view(self):
-        from .views import home_view
+        from arscca.views.events import home_view
         request = testing.DummyRequest()
         info = home_view(request)
         self.assertTrue(isinstance(info['photos'], list))
@@ -124,3 +127,16 @@ class LiveEventPresenterTests(unittest.TestCase):
                                {'name': 'Cincinnati', 'speed': 15}]}# Cincinnati is new
 
         self.assertEqual(result, expected)
+
+class DriverTests(unittest.TestCase):
+    def test__best_of_n(self):
+        driver = Driver(1942)
+        data = {('1', '2', '3'): Decimal('1'),
+                ('', '1'): Decimal('1'),
+                (' ', '1'): Decimal('1'),
+                ('', ' '): None,
+                ('1.5+1', '2.5'): Decimal('2.5'),
+                ('1.5+2', '1300'): Decimal('5.5')
+               }
+        for inputs, best in data.items():
+            self.assertEqual(best, driver._best_of_n(inputs))

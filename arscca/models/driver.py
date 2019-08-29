@@ -31,7 +31,7 @@ class Driver:
         return 0
 
     def time_from_string(self, string):
-        if self.DNF_REGEX.search(string) or (string == '\xa0') or (string == ' '):
+        if self.DNF_REGEX.search(string) or (string == '\xa0'):
             return self.INF
         if self.PENALTY_REGEX.search(string):
             time, num_pylons = string.split('+')
@@ -44,7 +44,7 @@ class Driver:
         return time + penalty
 
     def _best_of_n(self, runs):
-        runs_to_use = [rr for rr in runs if rr]
+        runs_to_use = [rr for rr in runs if rr.strip()]
         times = [self.time_from_string(rr) for rr in runs_to_use]
         if times:
             return min(times)

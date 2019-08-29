@@ -73,6 +73,9 @@ in production.
 Backlog
 -------
 
+  * Create a test event with two drivers and make sure drivers are sorted both before and after lunch
+  * Verify that page reload does not show any errant errors with aforementioned test.
+  * only plot histogram for non-live events
   * Use production vue.js
   * Show ties in standings when two people both have 5 points
   * Consistent sorting order in case of ties for easy compare dev vs production
