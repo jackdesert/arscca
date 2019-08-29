@@ -19,6 +19,7 @@ LIVE_UPDATE_LOCK = Lock()
 
 REDIS_KEY_LIVE_EVENT          = 'live-event'
 REDIS_KEY_LIVE_EVENT_DRIVERS  = 'live-event-drivers'
+REDIS_KEY_LIVE_EVENT_REVISION = 'live-event-revision'
 
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
@@ -152,7 +153,7 @@ def live_event_view(request):
     #    request.override_renderer = Parser.LIVE_FILENAME
     #    return {}
 
-    event = json.loads(event_json)
+    event = json.loads(event_json) # If TypeError, no event stored in redis
     return event
 
 @view_config(route_name='live_event_raw',
