@@ -1,6 +1,6 @@
 #! /bin/bash
 
-TARGET_PATH=/tmp/arscca-live.jinja2
+TARGET_PATH=/home/arscca/arscca-live.jinja2
 
 while true
 do
