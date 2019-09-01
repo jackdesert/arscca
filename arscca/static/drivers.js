@@ -393,6 +393,7 @@ var initializeDriversTable = function(liveBoolean){
                 // re-bind clickDriverRow
                 reapplyBindClickDriverRow(driverChanges.create, driverChanges.destroy)
                 dimScreen()
+                setTimeout(replaceInfinity, 1)
 
             }else{
                 // Close socket and start over

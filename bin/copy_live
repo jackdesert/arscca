@@ -1,3 +1,3 @@
 #! /bin/bash
 
-rsync -e "ssh -i ~/.ssh/bip-a.pem" ubuntu@arscca.jackdesert.com:/tmp/arscca-live.jinja2 /tmp
+sudo -u arscca rsync arscca@arscca.jackdesert.com:arscca-live.jinja2 /home/arscca/.

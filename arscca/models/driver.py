@@ -1,6 +1,7 @@
 import pdb
 import re
 from decimal import Decimal
+from decimal import InvalidOperation
 from .pax import Pax
 from .photo import Photo
 
@@ -77,6 +78,7 @@ class Driver:
 
     def error_in_best_combined(self):
         calculated = self.best_combined()
+        msg = f'{self.name} calculated: {calculated}, published: {self.published_best_combined}'
 
         try:
             if calculated == self.INF:
@@ -86,9 +88,14 @@ class Driver:
                 # not started. So ignore this
                 assert calculated == Decimal(self.published_best_combined)
         except AssertionError:
+            print(msg)
             return dict(driver_name=self.name,
                         calculated=float(calculated),
                         published=float(self.published_best_combined))
+        except InvalidOperation as exc:
+            # We end up here when attempting to parse Decimal('dns')
+            print(msg)
+            raise exc
 
     def print(self):
         print('')

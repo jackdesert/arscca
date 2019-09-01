@@ -50,6 +50,7 @@ class Parser:
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
     D1_OR_D2_REGEX = re.compile('D1|D2')
+    KART_KLASS_REGEX = re.compile('\Aj')
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     PAX = 'PAX'
     FIRST_RUN_COLUMN = 7
@@ -72,25 +73,21 @@ class Parser:
         self.runs_per_course = self.RUNS_PER_COURSE[date]
 
     def parse(self):
-        try:
-            if self.live:
-                with open(self.LIVE_FILENAME, 'r') as ff:
-                    html = ff.read()
-            else:
-                rr = requests.get(self.url, allow_redirects=False, timeout=10)
-                html = rr.text
+        if self.live:
+            with open(self.LIVE_FILENAME, 'r') as ff:
+                html = ff.read()
+        else:
+            rr = requests.get(self.url, allow_redirects=False, timeout=10)
+            html = rr.text
 
-            soup = BeautifulSoup(html, 'html.parser')
+        soup = BeautifulSoup(html, 'html.parser')
 
 
-            if self.live:
-                self.event_name = f'Live Results {self.date}'
-            else:
-                # First h2 has title
-                self.event_name = soup.find('h2').text.strip().replace('Final', '')
-        except:
-            pdb.set_trace()
-            1
+        if self.live:
+            self.event_name = f'Live Results {self.date}'
+        else:
+            # First h2 has title
+            self.event_name = soup.find('h2').text.strip().replace('Final', '')
 
         # First table has datethe event name and date
         date_table = soup('table')[0]
@@ -120,7 +117,8 @@ class Parser:
             driver.car_model  = data[row_idx][4]
             driver.am_runs = [data[row_idx][col_idx]     for col_idx in self._run_columns]
             driver.pm_runs = [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
-            if driver.best_pm():
+            if driver.best_pm() and not self.KART_KLASS_REGEX.match(driver.car_class):
+                # Second half is triggered when a non-kart-driver has afternoon score
                 second_half_started = True
             driver.published_best_combined = data[row_idx][-1]
             drivers.append(driver)
