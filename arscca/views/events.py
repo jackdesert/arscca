@@ -2,6 +2,7 @@ import json
 import pdb
 import redis
 from datetime import date as Date
+from datetime import datetime
 from threading import Lock
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -68,6 +69,10 @@ def live_event_drivers_view(request):
     output_json = REDIS.get(REDIS_KEY_LIVE_EVENT_DRIVERS)
     output = json.loads(output_json)
 
+    # Send a requiest timestamp so client can compare
+    # revision timestamps truthfully
+    output['request_timestamp'] = datetime.now().isoformat()
+
     # It's extra work to call json.loads on the redis data
     # and then expect the renderer to turn it back into json.
     # But at least it sets the Content-Type to application/json for us
@@ -100,9 +105,11 @@ def live_event_update_redis_view(request):
         drivers_json = event['drivers_json']
         drivers = json.loads(drivers_json)
         revision = int(event['revision'])
+        revision_timestamp = datetime.now().isoformat()
 
         drivers_and_revision = dict(drivers=drivers,
-                                    revision=revision)
+                                    revision=revision,
+                                    revision_timestamp=revision_timestamp)
 
         drivers_and_revision_json = json.dumps(drivers_and_revision)
 
@@ -130,7 +137,9 @@ def live_event_update_redis_view(request):
         REDIS.incr(REDIS_KEY_LIVE_EVENT_REVISION)
 
 
+
         return dict(revision=revision,
+                    revision_timestamp=revision_timestamp,
                     driver_changes=drivers_diff)
     finally:
         LIVE_UPDATE_LOCK.release()

@@ -76,7 +76,17 @@
     </table>
 
 
-    <div class='space-2rem'></div>
+    <div class='space-2rem'>&nbsp;</div>
+    {% if live %}
+        <div id='current-revision'>
+            <h3>Updated ${ timestampAgo() } min ago</h3>
+            <ul>
+                <li>Revision: ${ currentRevision } </li>
+                <li>Connection: <span id='connection-state'></span></li>
+            </ul>
+        </div>
+    {% endif %}
+
     <h3 class='h3'>Tips</h3>
     <ul>
         <li>Click on any column heading to sort</li>
@@ -111,10 +121,6 @@
         <li><a href='http://solotime.info/pax/rtp2019.html'>The official PAX page</a></li>
     </ul>
 
-    {% if live %}
-        <h3 id='current-revision'>Revision: ${ currentRevision } </h3>
-        Connection: <span id='connection-state'></span>
-    {% endif %}
 </div>
 
 <script>

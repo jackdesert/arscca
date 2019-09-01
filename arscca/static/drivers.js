@@ -20,7 +20,20 @@ var initializeDriversTable = function(liveBoolean){
             delimiters: delimiters,
             el: '#current-revision',
             data: {
-                currentRevision: -1
+                currentRevision: -1,
+                timestampOffsetMS: 0,
+                timestamp: '1970-01-01T00:00:00.000000',
+                now: new Date()
+            },
+            methods:{
+                timestampAgo: function(event){
+                    const then = Date.parse(this.timestamp),
+                        deltaMS = this.now - then - this.timestampOffsetMS,
+                        deltaS = deltaMS / 1000,
+                        deltaM = deltaS / 60
+                    // absolute value so that it doesn't start counting from -0.0
+                    return Math.abs(deltaM).toFixed(1)
+                }
             }
         })
 
@@ -303,7 +316,8 @@ var initializeDriversTable = function(liveBoolean){
             request.onload = function() {
                 if (this.status >= 200 && this.status < 400) {
                     // Success!
-                    const data = JSON.parse(this.response)
+                    const data = JSON.parse(this.response),
+                        requestTimestamp = Date.parse(data.request_timestamp)
                     // Remove all drivers from array
                     drivers.splice(0)
                     data.drivers.forEach(function(row){
@@ -311,6 +325,8 @@ var initializeDriversTable = function(liveBoolean){
                     })
 
                     vueRevisionStatus.currentRevision = data.revision
+                    vueRevisionStatus.timestamp = data.revision_timestamp
+                    vueRevisionStatus.timestampOffsetMS = new Date() - requestTimestamp
                     kickoff()
                 } else {
                     // We reached our target server, but it returned an error
@@ -355,6 +371,7 @@ var initializeDriversTable = function(liveBoolean){
         processWebsocketMessage = function(event){
             const messageData = JSON.parse(event.data),
                 revision = messageData.revision,
+                revisionTimestamp = messageData.revision_timestamp,
                 driverChanges = messageData.driver_changes,
                 removeDriver = function(name){
                     const index = driverIndexFromName(name)
@@ -384,6 +401,7 @@ var initializeDriversTable = function(liveBoolean){
                 console.log(`skipping revision ${revision} because currentRevision is ${vueRevisionStatus.currentRevision}`)
             }else if (revision === vueRevisionStatus.currentRevision + 1){
                 vueRevisionStatus.currentRevision = revision
+                vueRevisionStatus.timestamp = revisionTimestamp
 
                 driverChanges.create.forEach(addDriver)
                 driverChanges.destroy.forEach(removeDriver)
@@ -448,6 +466,10 @@ var initializeDriversTable = function(liveBoolean){
             dimmed = true
             setTimeout(unDimScreen, 600)
         }
+    },
+    updateTimeAgo = function(){
+        vueRevisionStatus.now = new Date()
+        setTimeout(updateTimeAgo, 6000)
     }
 
 
@@ -459,6 +481,7 @@ var initializeDriversTable = function(liveBoolean){
     bindHeaders()
     if (liveBoolean){
         fetchLiveDriversAndKickoff()
+        updateTimeAgo()
     }else{
         kickoff()
     }
