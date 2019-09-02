@@ -45,20 +45,18 @@ var initializeDriversTable = function(liveBoolean){
         el: '#drivers-tbody',
         data: {
             drivers: drivers
+        },
+        methods: {
+            replaceInfinity(value){
+                if(value === 'Infinity'){
+                    return '-'
+                }
+                return value
+            }
         }
     })
 
     var target = document.getElementById('drivers-tbody'),
-        replaceInfinity = function(){
-            var elements = document.querySelectorAll('td.best-combined,td.best-combined-pax')
-
-            elements.forEach(function(element){
-                if(element.textContent === 'Infinity'){
-                    element.textContent = '-'
-                }
-            })
-
-        },
         sortByCarModel = function(){
             sortString('car_model')
         },
@@ -229,7 +227,6 @@ var initializeDriversTable = function(liveBoolean){
                     func()
                     //displayDrivers()
                     styleActiveHeader(that)
-                    setTimeout(replaceInfinity, 1)
                 })
             })
         },
@@ -356,7 +353,6 @@ var initializeDriversTable = function(liveBoolean){
             }, 1)
 
             setTimeout(bindClickDriverRow, 1)
-            setTimeout(replaceInfinity, 1)
             setTimeout(initializeWebsocket, 1000)
         },
 
@@ -411,7 +407,6 @@ var initializeDriversTable = function(liveBoolean){
                 // re-bind clickDriverRow
                 reapplyBindClickDriverRow(driverChanges.create, driverChanges.destroy)
                 dimScreen()
-                setTimeout(replaceInfinity, 1)
 
             }else{
                 // Close socket and start over
@@ -457,6 +452,7 @@ var initializeDriversTable = function(liveBoolean){
         const body = document.getElementById('body'),
             dimKlass = 'body_dimmed',
             unDimScreen = function(){
+                dimmed = false
                 body.classList.remove(dimKlass)
             }
 
