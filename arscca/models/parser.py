@@ -90,7 +90,7 @@ class Parser:
             self.event_name = soup.find('h2').text.strip().replace('Final', '')
 
         # First table has datethe event name and date
-        date_table = soup('table')[0]
+        date_table = soup('table')[0] # Failure here means file is empty; check twisted
         date_string = date_table('th')[0].text
         self.event_date = self.format_date(date_string)
 
