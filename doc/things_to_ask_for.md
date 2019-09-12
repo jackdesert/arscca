@@ -19,8 +19,13 @@ A new computer mouse.
 
 
 
+
+
+
 Brainstorming Regarding Unified Messaging
   - for example, the carts class that was sent out as an ad-hoc email to newsletter recipients:
     - Where all should that announcement go?
       - newsletter / facebook / front page of website / calendar?
+
+
 
