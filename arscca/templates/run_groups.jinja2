@@ -1,0 +1,52 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        Run Group Generator
+    </div>
+
+    <h1 class='run-group__h1'>Run Group Generator ({{ num_drivers }} Drivers)</h1>
+    <div>This page randomly assigns drivers to a run group, but keeps ladies' classes in the same run group as the associated open class.</div>
+    <h2 class='run-group__h2'>How To</h2>
+    <div>Print this out or write it down. (Refreshing page re-shuffles)</div>
+    <div>If Number of drivers appears incorrect, press <b>Standings</b> button in AxWare to push drivers to cloud. Then refresh this page.</div>
+
+    {% for group in run_groups %}
+        {% if loop.index < 3 %}
+        <h2 class='h2_banner'>Run Group {{ loop.index }}</h2>
+        {% else %}
+        <h2 class='h2_banner'>Karts</h2>
+        {% endif %}
+
+        {% for car_class, driver_names in group | dictsort %}
+            <div class='run-group__car-class'>{{ car_class }}</div>
+            <ul>
+            {% for name in driver_names | sort %}
+                <li class='run-group__driver-name'>{{ name }}</li>
+            {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endfor %}
+
+
+
+    <div class='space-2rem'>&nbsp;</div>
+    {% if live %}
+        <div id='current-revision'>
+            <h3>Updated ${ timestampAgo() } min ago</h3>
+            <ul>
+                <li>Revision: ${ currentRevision } </li>
+                <li>Connection: <span id='connection-state'></span></li>
+            </ul>
+        </div>
+    {% endif %}
+
+
+</div>
+
+
+
+{% endblock content %}

@@ -1,17 +1,20 @@
 import json
 import pdb
 import redis
-from datetime import date as Date
-from datetime import datetime
-from threading import Lock
-from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+
 from arscca.models.histogram import Histogram
 from arscca.models.live_event_presenter import LiveEventPresenter
 from arscca.models.national_event_driver import NationalEventDriver
 from arscca.models.parser import Parser
 from arscca.models.photo import Photo
 from arscca.models.report import Report
+from arscca.models.util import Util
+from collections import defaultdict
+from datetime import date as Date
+from datetime import datetime
+from pyramid.httpexceptions import HTTPFound
+from pyramid.view import view_config
+from threading import Lock
 
 REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
 REDIS_EXPIRATION_IN_SECONDS = 3600
@@ -61,6 +64,23 @@ def national_event_view(request):
     event = dict(drivers=drivers,
                  year=year)
     return event
+
+
+@view_config(route_name='run_groups',
+             renderer='templates/run_groups.jinja2')
+def run_groups_view(request):
+    drivers_etc_json = REDIS.get(REDIS_KEY_LIVE_EVENT_DRIVERS)
+    drivers_etc = json.loads(drivers_etc_json)
+    data = defaultdict(list)
+    drivers = drivers_etc['drivers']
+    for driver in drivers:
+        driver_name = driver['name']
+        car_class = driver['car_class']
+        data[car_class].append(driver_name)
+
+    run_groups = Util.randomize_run_groups(data)
+    return dict(run_groups=run_groups,
+                num_drivers=len(drivers))
 
 
 @view_config(route_name='live_event_drivers',

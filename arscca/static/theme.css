@@ -247,6 +247,17 @@ tr.selected a
   padding: 1rem;
 }
 
+.run-group__car-class
+{
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+.run-group__h2
+{
+  margin-top: 1rem;
+}
+
 @media (max-width: 1199px) {
 }
 @media (max-width: 991px) {

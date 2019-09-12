@@ -1,5 +1,6 @@
 from arscca.models.driver import Driver
 from arscca.models.canon import Canon
+from arscca.models.util import Util
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from datetime import date as Date
@@ -50,7 +51,6 @@ class Parser:
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
     D1_OR_D2_REGEX = re.compile('D1|D2')
-    KART_KLASS_REGEX = re.compile('\Aj')
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     PAX = 'PAX'
     FIRST_RUN_COLUMN = 7
@@ -117,7 +117,7 @@ class Parser:
             driver.car_model  = data[row_idx][4]
             driver.am_runs = [data[row_idx][col_idx]     for col_idx in self._run_columns]
             driver.pm_runs = [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
-            if driver.best_pm() and not self.KART_KLASS_REGEX.match(driver.car_class):
+            if driver.best_pm() and not Util.KART_KLASS_REGEX.match(driver.car_class):
                 # Second half is triggered when a non-kart-driver has afternoon score
                 second_half_started = True
             driver.published_best_combined = data[row_idx][-1]

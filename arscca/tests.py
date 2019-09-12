@@ -108,6 +108,24 @@ class UtilTests(unittest.TestCase):
         # When a skipped value is larger than the biggest value
         result = Util.range_with_skipped_values(3, [1, 5])
         self.assertEqual(result, [2, 3, 4])
+    def test_random_run_groups(self):
+        data = {'as': ['George', 'Carla'],
+                'bs': ['Amy'],
+                'bsl': ['Claudia'],
+                'cs': ['Barney', 'Samantha'],
+                'ds': ['Jesus', 'Cepia', 'Pink'],
+                'es': ['Frank', 'Elizabeth', 'Becki', 'Roosevelt'],
+                'fs': ['Michele', 'Tara', 'Vicki'],
+                'gs': ['Joan', 'Mia'],
+                'jm': ['Fred']}
+        # Run this multiple times, since the results are stochastic for large samples
+        for i in range(5):
+            groups = Util.randomize_run_groups(data)
+            for group in groups[0:2]:
+                if 'bs' in group:
+                    assert 'bsl' in group
+            assert abs(len(groups[0]) - len(groups[1])) < 3
+            assert groups[2] == {'jm': ['Fred']}
 
 class LiveEventPresenterTests(unittest.TestCase):
     def test_diff(self):
