@@ -1,8 +1,10 @@
+import itertools
 import os
 import pdb
 import re
 import requests
 
+from collections import defaultdict
 from random import shuffle
 
 class Util:
@@ -62,13 +64,20 @@ class Util:
 
         # Run thin N times and store in results,
         # using "difference" as the key
-        for i in range(50):
-            run_groups = cls._attempt_randomize_run_groups(data)
-            difference = abs(len(run_groups[0]) - len(run_groups[1]))
-            results[difference] = run_groups
+        for i in range(500):
+            a, b, c, difference = cls._attempt_randomize_run_groups(data)
+            results[difference] = (a, b, c)
 
         lowest_difference = min(results.keys())
-        return results[lowest_difference]
+        output = results[lowest_difference]
+
+        counter = [0, 0, 0]
+        for index, group in enumerate(output):
+            for _, driver_names in group.items():
+                counter[index] += len(driver_names)
+
+        return output, tuple(counter)
+
 
     @classmethod
     def _attempt_randomize_run_groups(cls, data):
@@ -86,7 +95,7 @@ class Util:
         for base in bases_list:
             if cls.KART_KLASS_REGEX.match(base.lower()):
                 group = c
-            elif len(a) < len(b):
+            elif cls._num_values(a) < cls._num_values(b):
                 group = a
             else:
                 group = b
@@ -95,5 +104,13 @@ class Util:
             ladies_klass = f'{base}l'
             if ladies_klass in data:
                 group[ladies_klass] = data[ladies_klass]
-        return (a, b, c)
+        difference = abs(cls._num_values(a) - cls._num_values(b))
+        return (a, b, c, difference)
 
+    @classmethod
+    def _num_values(cls, data):
+        # This function returns how many total values
+        # data is expected to be a dict with lists as values
+        items = itertools.chain(*data.values())
+        items_list = list(items)
+        return len(items_list)

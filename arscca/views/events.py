@@ -7,9 +7,8 @@ from arscca.models.live_event_presenter import LiveEventPresenter
 from arscca.models.national_event_driver import NationalEventDriver
 from arscca.models.parser import Parser
 from arscca.models.photo import Photo
+from arscca.models.shared import Shared
 from arscca.models.report import Report
-from arscca.models.util import Util
-from collections import defaultdict
 from datetime import date as Date
 from datetime import datetime
 from pyramid.httpexceptions import HTTPFound
@@ -20,10 +19,6 @@ REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=Tr
 REDIS_EXPIRATION_IN_SECONDS = 3600
 LOCK = Lock()
 LIVE_UPDATE_LOCK = Lock()
-
-REDIS_KEY_LIVE_EVENT          = 'live-event'
-REDIS_KEY_LIVE_EVENT_DRIVERS  = 'live-event-drivers'
-REDIS_KEY_LIVE_EVENT_REVISION = 'live-event-revision'
 
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
@@ -66,27 +61,10 @@ def national_event_view(request):
     return event
 
 
-@view_config(route_name='run_groups',
-             renderer='templates/run_groups.jinja2')
-def run_groups_view(request):
-    drivers_etc_json = REDIS.get(REDIS_KEY_LIVE_EVENT_DRIVERS)
-    drivers_etc = json.loads(drivers_etc_json)
-    data = defaultdict(list)
-    drivers = drivers_etc['drivers']
-    for driver in drivers:
-        driver_name = driver['name']
-        car_class = driver['car_class']
-        data[car_class].append(driver_name)
-
-    run_groups = Util.randomize_run_groups(data)
-    return dict(run_groups=run_groups,
-                num_drivers=len(drivers))
-
-
 @view_config(route_name='live_event_drivers',
              renderer='json')
 def live_event_drivers_view(request):
-    output_json = REDIS.get(REDIS_KEY_LIVE_EVENT_DRIVERS)
+    output_json = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT_DRIVERS)
     output = json.loads(output_json)
 
     # Send a requiest timestamp so client can compare
@@ -133,7 +111,7 @@ def live_event_update_redis_view(request):
 
         drivers_and_revision_json = json.dumps(drivers_and_revision)
 
-        previous_event_json = REDIS.get(REDIS_KEY_LIVE_EVENT) or '{"drivers_json": "[]"}'
+        previous_event_json = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT) or '{"drivers_json": "[]"}'
         previous_event = json.loads(previous_event_json)
         previous_drivers_json = previous_event['drivers_json']
         previous_drivers = json.loads(previous_drivers_json)
@@ -152,9 +130,9 @@ def live_event_update_redis_view(request):
         # Therefore, all dicts are converted to json strings
         # above so that if there are any errors they will likely
         # happen BEFORE these three lines
-        REDIS.set(REDIS_KEY_LIVE_EVENT, event_json)
-        REDIS.set(REDIS_KEY_LIVE_EVENT_DRIVERS, drivers_and_revision_json)
-        REDIS.incr(REDIS_KEY_LIVE_EVENT_REVISION)
+        REDIS.set(Shared.REDIS_KEY_LIVE_EVENT, event_json)
+        REDIS.set(Shared.REDIS_KEY_LIVE_EVENT_DRIVERS, drivers_and_revision_json)
+        REDIS.incr(Shared.REDIS_KEY_LIVE_EVENT_REVISION)
 
 
 
@@ -173,7 +151,7 @@ def live_event_view(request):
     date = str(Date.today())
     event_url = '/live/raw'
 
-    event_json = REDIS.get(REDIS_KEY_LIVE_EVENT)
+    event_json = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT)
 
     #try:
     #    event_json = fetch_event(date, event_url, True)
@@ -268,7 +246,7 @@ def fetch_event(date, url, live=False):
                  errors=errors)
     if live:
         # Set revision but do not increment in REDIS
-        old_revision = REDIS.get(REDIS_KEY_LIVE_EVENT_REVISION) or 0
+        old_revision = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT_REVISION) or 0
         event['revision'] = int(old_revision) + 1
     event_json = json.dumps(event)
     return event_json

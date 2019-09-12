@@ -258,6 +258,21 @@ tr.selected a
   margin-top: 1rem;
 }
 
+.run-group__intro
+{
+  margin-top: 1rem;
+}
+
+.run-group__button_generate
+{
+  background: greenyellow;
+}
+
+.run-group__button_clear
+{
+  background: red;
+}
+
 @media (max-width: 1199px) {
 }
 @media (max-width: 991px) {
