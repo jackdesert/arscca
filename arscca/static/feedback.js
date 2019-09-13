@@ -2,7 +2,7 @@
 // This also does not require jquery. See http://youmightnotneedjquery.com/
 
 // When calling bindFeedback(), you m
-let bindFeedbackLink = (linkId, extraData) => {
+var bindFeedbackLink = (linkId, extraData) => {
     'use strict'
     // CONSTANTS
     const formUrl = 'https://bip.elitecare.com/feedback'

@@ -1,3 +1,4 @@
+// var used here because some browsers throw error if "let" used outside of strict context
 var initializeDriversTable = function(liveBoolean){
     'use strict'
 
@@ -47,7 +48,7 @@ var initializeDriversTable = function(liveBoolean){
             drivers: drivers
         },
         methods: {
-            replaceInfinity(value){
+            replaceInfinity: function(value){
                 if(value === 'Infinity'){
                     return '-'
                 }
