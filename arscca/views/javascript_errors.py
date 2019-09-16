@@ -8,6 +8,7 @@ from arscca.models.util import Util
              renderer='json')
 def javascript_errors_view(request):
     data = json.loads(request.body)
+    data['ip_address'] = request.headers.get('X-Real-Ip')
 
     # First Line
     message = data.pop('message')
