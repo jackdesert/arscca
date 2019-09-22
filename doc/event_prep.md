@@ -16,7 +16,8 @@ In the Truck
 1. Connect Laptop to a WiFi hotspot
 2. Start file watcher in arscca-rsync
    Click Start -> msys (Mingw)
-   run `python run.py`
+   type `python run.py`
+   press ENTER
 3. From AxWare, press "Standings" and watch file upload in Mingw window
 4. Verify that live site shows latest push: live.arscca.org
 

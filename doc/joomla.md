@@ -26,10 +26,11 @@ Search for "schedule"
 Generate Reports
 ----------------
 
-From AxWare, click Generate All Reports.
-From AxWare, click Save.
-Accepting the default location is fine.
-Copy all four files it generated to a thumb drive so you can post them later.
+From AxWare, click Generate All Reports. This generates them temporarily in the
+"announcer" folder.
+While the report windows are still open, open Windows (file) Explorer
+and find the four reports with the name matching the event.
+Copy those four files to a thumb drive so you can post them later.
 
 
 Post Results
@@ -44,6 +45,16 @@ Create an article
   title: <year> Solo II Event <event-number> <final/summary/etc>
   toggle the editor to html
   paste in the contents
+
+
+Ordering of Results withing a Category
+--------------------------------------
+
+Menus -> All Menu Items
+Search for the "2019 Results" menu item.
+Click "List Layouts"
+For "Category Order" choose which order you want.
+(I wanted Category Reverse, but that is not offered.)
 
 
 Backlog
