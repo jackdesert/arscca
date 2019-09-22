@@ -23,17 +23,27 @@ Content -> Articles
 Search for "schedule"
 
 
+Generate Reports
+----------------
+
+From AxWare, click Generate All Reports.
+From AxWare, click Save.
+Accepting the default location is fine.
+Copy all four files it generated to a thumb drive so you can post them later.
+
+
 Post Results
 ------------
 
 Create a new article category.
-  parent: the year
+  title: <year> Solo II Event <event-number>
+  parent: <year> Results
   body: none
 Create an article
-  - parent the new category you created
-  - title: <year> Solo II Event <event-number> <final/summary/etc>
-  - toggle the editor to html
-  - paste in the contents
+  parent: the new category you created
+  title: <year> Solo II Event <event-number> <final/summary/etc>
+  toggle the editor to html
+  paste in the contents
 
 
 Backlog

@@ -73,6 +73,7 @@ in production.
 Backlog
 -------
 
+  * Histogram: remove super slow finishers from histogram so http://arscca.jackdesert.com/events/2019-09-21 looks good
   * Create a test event with two drivers and make sure drivers are sorted both before and after lunch
   * Verify that page reload does not show any errant errors with aforementioned test.
   * only plot histogram for non-live events
