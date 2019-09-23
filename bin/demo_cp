@@ -4,7 +4,7 @@ TARGET_PATH=/home/arscca/arscca-live.jinja2
 
 while true
 do
-  for D in `find bin/archive -type f | sort`
+  for D in `find /home/arscca/event-9-archive/*.jinja2 -type f | sort`
   do
     echo "copying $D to $TARGET_PATH"
     sudo -u arscca cp $D $TARGET_PATH
