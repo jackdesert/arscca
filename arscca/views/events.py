@@ -8,6 +8,7 @@ from arscca.models.national_event_driver import NationalEventDriver
 from arscca.models.parser import Parser
 from arscca.models.photo import Photo
 from arscca.models.shared import Shared
+from arscca.models.short_queue import ShortQueue
 from arscca.models.report import Report
 from datetime import date as Date
 from datetime import datetime
@@ -19,6 +20,7 @@ REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=Tr
 REDIS_EXPIRATION_IN_SECONDS = 3600
 LOCK = Lock()
 LIVE_UPDATE_LOCK = Lock()
+LIVE_UPDATE_QUEUE = ShortQueue()
 
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
@@ -91,10 +93,20 @@ def live_event_update_redis_view(request):
     date = str(Date.today())
     event_url = '/live/raw'
 
+    if not LIVE_UPDATE_QUEUE.join():
+        # If you run the demo with less delay in between each update
+        # than it takes the server to process them, they will stack up.
+        # The LIVE_UPDATE_QUEUE allows us to drop excess requests
+        # But still ensure that the last thing changed gets registered
+        print('Returning 429 because a request is already waiting')
+        request.response.status_code = 429
+        return {}
+
     # Only allow one thread to use this method at a time
     # Otherwise, revision may be out of sync between
     # event(includes revision), drivers_and_revision, and revision
     LIVE_UPDATE_LOCK.acquire()
+    LIVE_UPDATE_QUEUE.leave()
 
     try:
         # This event_json includes the updated revision

@@ -8,6 +8,7 @@ from arscca.models.driver import Driver
 from arscca.models.gossip import Gossip
 from arscca.models.live_event_presenter import LiveEventPresenter
 from arscca.models.photo import Photo
+from arscca.models.short_queue import ShortQueue
 from arscca.models.util import Util
 
 from decimal import Decimal
@@ -163,3 +164,23 @@ class DriverTests(unittest.TestCase):
                }
         for inputs, best in data.items():
             self.assertEqual(best, driver._best_of_n(inputs))
+
+class ShortQueueTests(unittest.TestCase):
+    # Note these tests do not actually exercise the locking mechanisms in the class
+    def test__join(self):
+        queue = ShortQueue()
+        self.assertEqual(queue.join(), True)
+        self.assertEqual(queue.join(), False)
+        self.assertEqual(queue.join(), False)
+        self.assertEqual(queue.join(), False)
+
+    def test__join_then_leave_then_join(self):
+        queue = ShortQueue()
+        self.assertEqual(queue.join(), True)
+        queue.leave()
+        self.assertEqual(queue.join(), True)
+
+    def test__leave(self):
+        queue = ShortQueue()
+        with pytest.raises(ValueError):
+            self.assertEqual(queue.leave(), True)

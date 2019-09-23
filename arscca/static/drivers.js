@@ -391,8 +391,11 @@ var initializeDriversTable = function(liveBoolean){
                     Vue.set(drivers, index, driverObject)
                 }
 
+            if (!revision){
+                console.log('ERROR: No revision in message')
+            }
 
-            console.log('Message received: ', messageData)
+            console.log('Message received: ', revision)
 
             if (revision <= vueRevisionStatus.currentRevision){
                 console.log(`skipping revision ${revision} because currentRevision is ${vueRevisionStatus.currentRevision}`)
@@ -411,7 +414,7 @@ var initializeDriversTable = function(liveBoolean){
 
             }else{
                 // Close socket and start over
-                console.log('SYNC ERROR: Closing socket and starting over')
+                console.log(`Closing socket and starting over because revision ${revision} vs currentRevision ${vueRevisionStatus.currentRevision}`)
                 mySocket.close()
                 fetchLiveDriversAndKickoff()
             }
