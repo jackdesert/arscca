@@ -186,10 +186,11 @@ def live_event_raw_view(request):
              renderer='templates/event.jinja2')
 def event_view(request):
     date = request.matchdict.get('date')
-    event_url = Parser.URLS[date]
+    event_url = Parser.URLS.get(date)
     if not event_url:
         request.response.status_code = 404
-        return dict(flash=f'No event found for date {date}')
+        request.override_renderer = 'static/404.jinja2'
+        return {}
 
     if request.params.get('cb'):
         # If "cache-buste" param is set, fetch drivers directly
