@@ -1,4 +1,5 @@
 import json
+import logging
 import pdb
 import redis
 
@@ -21,6 +22,7 @@ REDIS_EXPIRATION_IN_SECONDS = 3600
 LOCK = Lock()
 LIVE_UPDATE_LOCK = Lock()
 LIVE_UPDATE_QUEUE = ShortQueue()
+LOG = logging.getLogger(__name__)
 
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
@@ -98,7 +100,7 @@ def live_event_update_redis_view(request):
         # than it takes the server to process them, they will stack up.
         # The LIVE_UPDATE_QUEUE allows us to drop excess requests
         # But still ensure that the last thing changed gets registered
-        print('Returning 429 because a request is already waiting')
+        LOG.warn('Returning 429 because a request is already waiting')
         request.response.status_code = 429
         return {}
 
