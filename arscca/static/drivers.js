@@ -45,7 +45,10 @@ var initializeDriversTable = function(liveBoolean){
         delimiters: delimiters,
         el: '#drivers-tbody',
         data: {
-            drivers: drivers
+            drivers: drivers,
+            // selectedDriverIds is an array, not a new Set()
+            // because Vue knows how to be reactive to changes in an array
+            selectedDriverIds: []
         },
         methods: {
             replaceInfinity: function(value){
@@ -53,6 +56,16 @@ var initializeDriversTable = function(liveBoolean){
                     return '-'
                 }
                 return value
+            },
+            rowKlass: function(driverId, rowIndex){
+                let klass = ''
+                if (this.selectedDriverIds.includes(driverId)){
+                    klass = 'selected'
+                }
+                if (rowIndex % 2 == 1){
+                    klass += ' tr_stripe'
+                }
+                return klass
             }
         }
     })
@@ -258,9 +271,6 @@ var initializeDriversTable = function(liveBoolean){
         },
 
 
-        klassToToggle = 'selected',
-
-        selectedDriverIds = new Set(),
 
         reapplyBindClickDriverRow = function(additions, subtractions){
             // Simply checking if there are any additions or subtractions
@@ -280,18 +290,19 @@ var initializeDriversTable = function(liveBoolean){
             var rows = document.querySelectorAll('tbody tr')
             var funcToBind = function(event){
                 var cellParent = event.target.parentElement,
-                    driverId = parseInt(cellParent.id, 10)
+                    driverId = parseInt(cellParent.id, 10),
+                    index = vueDriversTable.selectedDriverIds.indexOf(driverId)
+
                 if (isNaN(driverId)){
                     console.log('Please include an ID in each table row')
                 }
 
-                if (selectedDriverIds.has(driverId)){
-                    selectedDriverIds.delete(driverId)
+                if (index === -1){
+                    vueDriversTable.selectedDriverIds.push(driverId)
                 }else{
-                    selectedDriverIds.add(driverId)
+                    vueDriversTable.selectedDriverIds.splice(index, 1)
                 }
 
-                cellParent.classList.toggle(klassToToggle)
             }
 
             console.log('Binding in bindClickDriverRow')

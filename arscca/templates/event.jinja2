@@ -48,7 +48,7 @@
             </tr>
         </thead>
         <tbody id='drivers-tbody'>
-            <tr v-for='(driver, index) in drivers' v-bind:id='driver.id' v-bind:class='index % 2 ? "" : "tr_stripe"'>
+            <tr v-for='(driver, row_index) in drivers' v-bind:id='driver.id' v-bind:class='rowKlass(driver.id, row_index)'>
                 <td class='position-overall'>${ driver.position_overall }</td>
                 <td class='position-pax'>${ driver.position_pax }</td>
                 <td class='position-percentile'>${ driver.position_percentile }</td>
