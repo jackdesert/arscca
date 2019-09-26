@@ -11,6 +11,7 @@ from arscca.models.photo import Photo
 from arscca.models.shared import Shared
 from arscca.models.short_queue import ShortQueue
 from arscca.models.report import Report
+from arscca.models.timer import Timer
 from datetime import date as Date
 from datetime import datetime
 from pyramid.httpexceptions import HTTPFound
@@ -100,7 +101,7 @@ def live_event_update_redis_view(request):
         # than it takes the server to process them, they will stack up.
         # The LIVE_UPDATE_QUEUE allows us to drop excess requests
         # But still ensure that the last thing changed gets registered
-        LOG.warn('Returning 429 because a request is already waiting')
+        LOG.warn('Live Update returning 429 because a request is already waiting')
         request.response.status_code = 429
         return {}
 
@@ -109,6 +110,7 @@ def live_event_update_redis_view(request):
     # event(includes revision), drivers_and_revision, and revision
     LIVE_UPDATE_LOCK.acquire()
     LIVE_UPDATE_QUEUE.leave()
+    timer = Timer()
 
     try:
         # This event_json includes the updated revision
@@ -148,8 +150,7 @@ def live_event_update_redis_view(request):
         REDIS.set(Shared.REDIS_KEY_LIVE_EVENT_DRIVERS, drivers_and_revision_json)
         REDIS.incr(Shared.REDIS_KEY_LIVE_EVENT_REVISION)
 
-
-
+        LOG.warn(f'Live Update returning 200 with elapsed: {timer.elapsed}')
         return dict(revision=revision,
                     revision_timestamp=revision_timestamp,
                     driver_changes=drivers_diff)
