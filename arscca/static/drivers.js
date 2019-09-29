@@ -43,14 +43,26 @@ var initializeDriversTable = function(liveBoolean){
 
     const vueDriversTable = new Vue({
         delimiters: delimiters,
-        el: '#drivers-tbody',
+        el: '#drivers-table-holder',
         data: {
             drivers: drivers,
             // selectedDriverIds is an array, not a new Set()
             // because Vue knows how to be reactive to changes in an array
-            selectedDriverIds: []
+            selectedDriverIds: [],
+            solo: false
         },
         methods: {
+            visible: function(driverId){
+                if (!this.solo){
+                    return true
+                }
+
+                if (this.selectedDriverIds.includes(driverId)){
+                    return true
+                }
+
+                return false
+            },
             replaceInfinity: function(value){
                 if(value === 'Infinity'){
                     return '-'
@@ -58,14 +70,62 @@ var initializeDriversTable = function(liveBoolean){
                 return value
             },
             rowKlass: function(driverId, rowIndex){
+                if (this.solo){
+                    return this.rowKlassWhenSolo(driverId)
+                }
+
                 let klass = ''
                 if (this.selectedDriverIds.includes(driverId)){
                     klass = 'selected'
                 }
-                if (rowIndex % 2 == 1){
+                if (rowIndex % 2 === 1){
                     klass += ' tr_stripe'
                 }
                 return klass
+            },
+            rowKlassWhenSolo: function(driverId){
+                // This function decides whether this row should be striped
+                // among its peers of other selected drivers
+                //
+                // WARNING: This runs in N*M time
+                // where N is number of drivers and M is number of selected rows
+                let stripe = false
+                for (let driver of this.drivers){
+                    if (this.selectedDriverIds.includes(driver.id)){
+                        stripe = !stripe
+                    }
+                    if (driverId === driver.id){
+                        return stripe ? 'selected tr_stripe' : 'selected'
+                    }
+                }
+            },
+            toggleSolo: function(){
+                if (!this.solo && (this.selectedDriverIds.length === 0)){
+                    alert('Please select one or more rows first')
+                    return
+                }
+
+                this.solo = !this.solo
+
+            },
+            highlightRow: function(driverId){
+                let index = this.selectedDriverIds.indexOf(driverId)
+                if (this.solo){
+                    return
+                }
+
+                if (index === -1){
+                    this.selectedDriverIds.push(driverId)
+                }else{
+                    this.selectedDriverIds.splice(index, 1)
+                }
+            },
+            soloButtonKlass: function(){
+                if (this.solo){
+                    return 'solo-button solo-button_active'
+                }else{
+                    return 'solo-button'
+                }
             }
         }
     })
@@ -271,53 +331,6 @@ var initializeDriversTable = function(liveBoolean){
         },
 
 
-
-        reapplyBindClickDriverRow = function(additions, subtractions){
-            // Simply checking if there are any additions or subtractions
-            if (additions + subtractions){
-                // unbind
-                setTimeout(function(){
-                    bindClickDriverRow(true)
-                }, 1000)
-                // bind
-                setTimeout(bindClickDriverRow, 2000)
-            }
-        },
-
-        bindClickDriverRow = function(unbind){
-            // Call this function with no arguments to bind
-            // Call this function with a truthy argument to unbind
-            var rows = document.querySelectorAll('tbody tr')
-            var funcToBind = function(event){
-                var cellParent = event.target.parentElement,
-                    driverId = parseInt(cellParent.id, 10),
-                    index = vueDriversTable.selectedDriverIds.indexOf(driverId)
-
-                if (isNaN(driverId)){
-                    console.log('Please include an ID in each table row')
-                }
-
-                if (index === -1){
-                    vueDriversTable.selectedDriverIds.push(driverId)
-                }else{
-                    vueDriversTable.selectedDriverIds.splice(index, 1)
-                }
-
-            }
-
-            console.log('Binding in bindClickDriverRow')
-
-            rows.forEach(function(row){
-                if (unbind){
-                    row.removeEventListener('click', funcToBind)
-                }else{
-                    row.addEventListener('click', funcToBind)
-                }
-            })
-
-
-        },
-
         fetchLiveDriversAndKickoff = function(){
             const request = new XMLHttpRequest()
             request.open('GET', '/live/drivers', true)
@@ -364,7 +377,6 @@ var initializeDriversTable = function(liveBoolean){
                 styleActiveHeader(currentActiveHeader)
             }, 1)
 
-            setTimeout(bindClickDriverRow, 1)
             setTimeout(initializeWebsocket, 1000)
         },
 
@@ -420,7 +432,6 @@ var initializeDriversTable = function(liveBoolean){
                 // apply sorting
                 currentSortFunction()
                 // re-bind clickDriverRow
-                reapplyBindClickDriverRow(driverChanges.create, driverChanges.destroy)
                 dimScreen()
 
             }else{

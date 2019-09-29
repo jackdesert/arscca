@@ -183,6 +183,11 @@ tr.selected a
   color: #55f;
 }
 
+tr.selected.tr_stripe
+{
+  background: #f99;
+}
+
 .tr_stripe
 {
   background: #e9e8e8;
@@ -193,6 +198,29 @@ tr.selected a
   background: #4e4;
   border-bottom: 1px solid #e9e8e8 !important;
   border-top:    1px solid #e9e8e8 !important;
+}
+
+.solo-button
+{
+  margin: 0.7rem 0;
+  border: 1px solid red;
+  color: red;
+}
+
+.solo-button:hover
+{
+  border: 2px solid red;
+}
+
+.solo-button_active
+{
+  background: red;
+  color: black;
+}
+
+.solo-button_active:hover
+{
+  border: 2px solid black;
 }
 
 .author-block
