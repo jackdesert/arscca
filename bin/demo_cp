@@ -8,6 +8,7 @@ do
   do
     echo "copying $D to $TARGET_PATH"
     sudo -u arscca cp $D $TARGET_PATH
-    sleep 3
+    # When CPU burst credits are gone, t2.micro on AWS takes 15 seconds to process
+    sleep 30
   done
 done
