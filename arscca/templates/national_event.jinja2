@@ -13,55 +13,58 @@
 
     <h1 class='event__name'>{{ year }} Nationals</h1>
     <div class='event__date'>{{ event_date }}</div>
-    <table>
-        <thead>
-            <tr>
-                <th id='position-overall' class='sortable-header'>Position (Overall)</th>
-                <th id='position-pax' class='sortable-header'>Position (PAX)</th>
-                <th id='driver-name' class='sortable-header'>Driver Name</th>
-                <th id='car-number' class='sortable-header'>Driver Number</th>
-                <th id='codriver-car-number' class='sortable-header'>CoDriver Number</th>
-                <th id='car-class' class='sortable-header'>Class</th>
-                <th id='position-class' class='sortable-header'>Position (Class)</th>
-                <th id='car-year' class='sortable-header'>Year</th>
-                <th id='car-model' class='sortable-header'>Model</th>
-                <th id='best-combined' class='sortable-header'>Time*</th>
-                <th id='pax-factor' class='sortable-header'>PAX Factor</th>
-                <th id='best-combined-pax' class='sortable-header'>PAX Time*</th>
-                <th>Run 1</th>
-                <th>Run 2</th>
-                <th>Run 3</th>
-                <th>Run 4</th>
-                <th>Run 5</th>
-                <th>Run 6</th>
-            </tr>
-        </thead>
+    <div id='drivers-table-holder'>
 
-    </script>
+        <table>
+            <thead>
+                <tr>
+                    <th id='position-overall' class='sortable-header'>Position (Overall)</th>
+                    <th id='position-pax' class='sortable-header'>Position (PAX)</th>
+                    <th id='driver-name' class='sortable-header'>Driver Name</th>
+                    <th id='car-number' class='sortable-header'>Driver Number</th>
+                    <th id='codriver-car-number' class='sortable-header'>CoDriver Number</th>
+                    <th id='car-class' class='sortable-header'>Class</th>
+                    <th id='position-class' class='sortable-header'>Position (Class)</th>
+                    <th id='car-year' class='sortable-header'>Year</th>
+                    <th id='car-model' class='sortable-header'>Model</th>
+                    <th id='best-combined' class='sortable-header'>Time*</th>
+                    <th id='pax-factor' class='sortable-header'>PAX Factor</th>
+                    <th id='best-combined-pax' class='sortable-header'>PAX Time*</th>
+                    <th>Run 1</th>
+                    <th>Run 2</th>
+                    <th>Run 3</th>
+                    <th>Run 4</th>
+                    <th>Run 5</th>
+                    <th>Run 6</th>
+                </tr>
+            </thead>
 
-        <tbody id='drivers-tbody'>
-            <tr v-for='(driver, index) in drivers' v-bind:id='driver.id' v-bind:class='index % 2 ? "" : "tr_stripe"'>
-                <td class='position-overall'>${ driver.position_overall }</td>
-                <td class='position-pax'>${ driver.position_pax }</td>
-                <td class='driver-name'>${ driver.name }</td>
-                <td class='car-number'>${ driver.car_number }</td>
-                <td class='codriver-car-number'>${ driver.codriver_car_number }</td>
-                <td class='car-class'>${ driver.car_class }</td>
-                <td class='position-class'>${ driver.position_class }</td>
-                <td class='car-year'>${ driver.car_year }</td>
-                <td class='car-model'>${ driver.car_model }</td>
-                <td class='best-combined'>${ driver.best_combined }</td>
-                <td class='pax-factor'>${ driver.pax_factor }</td>
-                <td class='best-combined-pax'>${ driver.best_combined_pax }</td>
-                <td class='am-run'>${ driver.run_1 }</td>
-                <td class='am-run'>${ driver.run_2 }</td>
-                <td class='am-run'>${ driver.run_3 }</td>
-                <td class='pm-run'>${ driver.run_4 }</td>
-                <td class='pm-run'>${ driver.run_5 }</td>
-                <td class='pm-run'>${ driver.run_6 }</td>
-            </tr>
-        </tbody>
-    </table>
+        </script>
+
+            <tbody id='drivers-tbody'>
+                <tr v-for='(driver, index) in drivers' v-bind:id='driver.id' v-bind:class='index % 2 ? "" : "tr_stripe"'>
+                    <td class='position-overall'>${ driver.position_overall }</td>
+                    <td class='position-pax'>${ driver.position_pax }</td>
+                    <td class='driver-name'>${ driver.name }</td>
+                    <td class='car-number'>${ driver.car_number }</td>
+                    <td class='codriver-car-number'>${ driver.codriver_car_number }</td>
+                    <td class='car-class'>${ driver.car_class }</td>
+                    <td class='position-class'>${ driver.position_class }</td>
+                    <td class='car-year'>${ driver.car_year }</td>
+                    <td class='car-model'>${ driver.car_model }</td>
+                    <td class='best-combined'>${ driver.best_combined }</td>
+                    <td class='pax-factor'>${ driver.pax_factor }</td>
+                    <td class='best-combined-pax'>${ driver.best_combined_pax }</td>
+                    <td class='am-run'>${ driver.run_1 }</td>
+                    <td class='am-run'>${ driver.run_2 }</td>
+                    <td class='am-run'>${ driver.run_3 }</td>
+                    <td class='pm-run'>${ driver.run_4 }</td>
+                    <td class='pm-run'>${ driver.run_5 }</td>
+                    <td class='pm-run'>${ driver.run_6 }</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <h3 class='h3'>Tips</h3>
     <ul>

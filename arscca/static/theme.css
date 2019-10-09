@@ -307,6 +307,17 @@ span.spoof
   display: none;
 }
 
+.q
+{
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.q::before
+{
+  content: 'Q: '
+}
+
 
 @media (max-width: 1199px) {
 }
