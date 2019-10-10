@@ -139,7 +139,9 @@
         {# Using var instead of let because some browsers expect let to only be inside 'use strict' #}
         var drivers = []
     {% else %}
-        var drivers = JSON.parse('{{ drivers_json | replace("'", '"') | safe}}')
+        {# Javascript strings use four backslashes to escape quotes #}
+        {# Piping through "safe" so jinja2 does not escape quotes   #}
+        var drivers = JSON.parse('{{ drivers_json | replace('\\"', '\\\\"') | safe}}')
     {% endif %}
 </script>
 
