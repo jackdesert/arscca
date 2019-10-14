@@ -1,0 +1,2 @@
+Q: Why are slow outliers grouped (conformed) with the next fastest driver?
+A: To make the histogram labels easier to read. (Less dense)

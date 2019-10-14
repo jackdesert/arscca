@@ -18,9 +18,10 @@ class Histogram:
         # WARNING: drivers is a mutable list; don't change it
         self._raw_values = [driver.best_combined() for driver in drivers]
         self._digest = self._construct_digest()
+        self.conformed_count = 0
 
     def plot(self):
-        values = [float(value) for value in self._raw_values if value < Decimal('inf')]
+        values = self._values_to_use()
         if not values:
             return
         min_value = min(values)
@@ -53,6 +54,36 @@ class Histogram:
             encoded = str(value).encode()
             m.update(encoded)
         return m.hexdigest()
+
+    def _values_to_use(self):
+        # store self.conformed so view knows whether to display caveat
+        values, self.conformed_count = self._conformed_values(self._raw_values)
+        return values
+
+    # This method is a classmethod to facilitate easy testing
+    @classmethod
+    def _conformed_values(cls, passed_in_values):
+        # Any values greater than twice the minimum value are reduces the the next
+        # loweste value
+        # Example:
+        # [10, 11, 21] => [10, 11, 11]
+
+        values = [float(value) for value in passed_in_values if value < Decimal('inf')]
+        values.sort()
+        minimum = min(values)
+        twice_the_minimum = 2 * minimum
+        last_allowable = minimum
+        conformed_count = 0
+
+        for index, value in enumerate(values):
+            if value <= twice_the_minimum:
+                last_allowable = value
+            else:
+                values[index] = last_allowable
+                conformed_count += 1
+
+        return (values, conformed_count)
+
 
 
 if __name__ == '__main__':

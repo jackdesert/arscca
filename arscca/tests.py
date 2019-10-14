@@ -6,6 +6,7 @@ import pdb
 from arscca.models.canon import Canon
 from arscca.models.driver import Driver
 from arscca.models.gossip import Gossip
+from arscca.models.histogram import Histogram
 from arscca.models.live_event_presenter import LiveEventPresenter
 from arscca.models.photo import Photo
 from arscca.models.short_queue import ShortQueue
@@ -184,3 +185,11 @@ class ShortQueueTests(unittest.TestCase):
         queue = ShortQueue()
         with pytest.raises(ValueError):
             self.assertEqual(queue.leave(), True)
+
+class HistogramTests(unittest.TestCase):
+    # Note these tests do not actually exercise the locking mechanisms in the class
+    def test__conformed_values(self):
+        values = [10, 11, 15, 20, 22, 25]
+        conformed = Histogram._conformed_values(values)
+        expected = [10.0, 11.0, 15.0, 20.0, 20.0, 20.0]
+        self.assertEqual(conformed, expected)

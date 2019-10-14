@@ -258,6 +258,7 @@ def fetch_event(date, url, live=False):
                  source_url=url,
                  live=live,
                  histogram_filename=histogram.filename,
+                 histogram_conformed_count=histogram.conformed_count,
                  runs_per_driver=runs_per_driver,
                  errors=errors)
     if live:

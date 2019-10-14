@@ -110,6 +110,12 @@
 
         {% set histogram_src_arg = histogram_filename.replace('/', ':', 1) %}
         <img src='{{ request.static_path(histogram_src_arg) }}' class='histogram'></img>
+        {% if histogram_conformed_count %}
+            <ul>
+                {% set plural = 'outlier' if histogram_conformed_count == 1 else 'outliers' %}
+                <li>({{ histogram_conformed_count }} {{plural}} grouped with next fastest driver)</li>
+            </ul>
+        {% endif %}
     {% endif %}
 
     <h3 class='h3'>Data Sources</h3>
