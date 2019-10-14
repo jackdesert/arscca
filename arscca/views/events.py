@@ -245,8 +245,13 @@ def fetch_event(date, url, live=False):
         if error:
             errors.append(error)
 
-    histogram = Histogram(parser.drivers)
-    histogram.plot()
+    histogram_filename = None
+    histogram_conformed_count = None
+    if not live:
+        histogram = Histogram(parser.drivers)
+        histogram.plot()
+        histogram_filename = histogram.filename
+        histogram_conformed_count = histogram.conformed_count
 
     drivers_as_dicts = [driver.properties() for driver in parser.drivers]
     drivers_json = json.dumps(drivers_as_dicts)
@@ -257,8 +262,8 @@ def fetch_event(date, url, live=False):
                  event_date=parser.event_date,
                  source_url=url,
                  live=live,
-                 histogram_filename=histogram.filename,
-                 histogram_conformed_count=histogram.conformed_count,
+                 histogram_filename=histogram_filename,
+                 histogram_conformed_count=histogram_conformed_count,
                  runs_per_driver=runs_per_driver,
                  errors=errors)
     if live:

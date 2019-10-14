@@ -113,7 +113,7 @@
         {% if histogram_conformed_count %}
             <ul>
                 {% set plural = 'outlier' if histogram_conformed_count == 1 else 'outliers' %}
-                <li>({{ histogram_conformed_count }} {{plural}} grouped with next fastest driver)</li>
+                <li>({{ histogram_conformed_count }} slowest {{plural}} grouped with next fastest driver)</li>
             </ul>
         {% endif %}
     {% endif %}
