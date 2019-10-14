@@ -41,7 +41,7 @@ Create a new article category.
   parent: <year> Results
   body: none
 Create an article
-  parent: the new category you created
+  Category: the new category you created
   title: <year> Solo II Event <event-number> <final/summary/etc>
   toggle the editor to html
   paste in the contents
