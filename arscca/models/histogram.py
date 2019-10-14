@@ -69,6 +69,11 @@ class Histogram:
         # [10, 11, 21] => [10, 11, 11]
 
         values = [float(value) for value in passed_in_values if value < Decimal('inf')]
+
+        if not values:
+            # Return early to avoid error when min([]) is called
+            return values, 0
+
         values.sort()
         minimum = min(values)
         twice_the_minimum = 2 * minimum
