@@ -8,12 +8,16 @@ from arscca.models.driver import Driver
 from arscca.models.gossip import Gossip
 from arscca.models.histogram import Histogram
 from arscca.models.live_event_presenter import LiveEventPresenter
+from arscca.models.parser import StandardParser
+from arscca.models.parser import BestTimeParser
+from arscca.models.pax import Pax
 from arscca.models.photo import Photo
 from arscca.models.short_queue import ShortQueue
 from arscca.models.util import Util
 
 from decimal import Decimal
 from pyramid import testing
+from unittest.mock import patch
 
 
 class ViewTests(unittest.TestCase):
@@ -165,6 +169,128 @@ class DriverTests(unittest.TestCase):
                }
         for inputs, best in data.items():
             self.assertEqual(best, driver._best_of_n(inputs))
+    def test__penalty_from_pylons(self):
+        data = {'1': 2,
+                '2': 4}
+        driver = Driver(1942)
+        for pylon_count, penalty_in_seconds in data.items():
+            self.assertEqual(driver._penalty_from_pylons(pylon_count), penalty_in_seconds)
+
+    def test_time_from_string(self):
+        data = {'36': Decimal('36'),
+                '42.334+2': Decimal('46.334'),
+                '90+': Decimal('90'),
+                '90+ ': Decimal('90'),
+                '30+dnf': Driver.INF,
+                '30+dns': Driver.INF}
+        driver = Driver(1942)
+
+        for string, time in data.items():
+            self.assertEqual(driver.time_from_string(string), time)
+
+    def test_best_am(self):
+        driver = Driver(1942)
+        driver.am_runs = ['10.2', '11', '9.335']
+        driver.pm_runs = ['1.2', '11', '9.335']
+        self.assertEqual(driver.best_am(), Decimal('9.335'))
+
+    def test_best_pm(self):
+        driver = Driver(1942)
+        driver.am_runs = ['2.5', '8.611', '9.335']
+        driver.pm_runs = ['10.2', '8.611', '9.335']
+        self.assertEqual(driver.best_pm(), Decimal('8.611'))
+
+    def test_am_runs_only(self):
+        driver = Driver(1942)
+        driver.second_half_started = False
+        self.assertEqual(driver.am_runs_only, True)
+
+        driver.second_half_started = True
+        self.assertEqual(driver.am_runs_only, False)
+
+    def test_best_combined_1(self):
+        driver = Driver(1942)
+        driver.second_half_started = False
+        driver.am_runs = ['10', '12', '9']
+        driver.pm_runs = []
+        self.assertEqual(driver.best_combined(), Decimal('9'))
+
+    def test_best_combined_2(self):
+        driver = Driver(1942)
+        driver.second_half_started = True
+        driver.am_runs = ['10', '12', '9']
+        driver.pm_runs = ['21', '22', '18+1']
+        self.assertEqual(driver.best_combined(), Decimal('29'))
+
+    def test_best_combined_3(self):
+        driver = Driver(1942)
+        driver.second_half_started = False
+        driver.am_runs = []
+        driver.pm_runs = []
+        self.assertEqual(driver.best_combined(), Driver.INF)
+
+    def test_best_combined_4(self):
+        driver = Driver(1942)
+        driver.second_half_started = True
+        driver.am_runs = []
+        driver.pm_runs = ['21', '22', '18+1']
+        self.assertEqual(driver.best_combined(), Driver.INF)
+
+    def test_best_combined_5(self):
+        driver = Driver(1942)
+        driver.second_half_started = True
+        driver.am_runs = ['21', '22', '18+1']
+        driver.pm_runs = []
+        self.assertEqual(driver.best_combined(), Driver.INF)
+
+    def test_error_in_best_combined(self):
+        driver = Driver(1942)
+        driver.name = 'Rodrigo'
+        driver.second_half_started = True
+        driver.am_runs = ['21', '22', '18+1']
+        driver.pm_runs = ['28']
+        driver.published_best_combined = '100'
+        error = driver.error_in_best_combined()
+        expected = {'driver_name': 'Rodrigo', 'calculated': 48.0, 'published': 100.0}
+        self.assertEqual(error, expected)
+
+    @patch('arscca.models.photo.Photo.slug_and_head_shot', return_value=dict(photo='p', head_shot='h'))
+    @patch('arscca.models.pax.Pax.factor', return_value=Decimal('0.95'))
+    def test_properties(self, slug_and_head_shot, factor):
+        driver = Driver(1942)
+        driver.name = 'Rodrigo'
+        driver.car_class = 'anything'
+        driver.second_half_started = True
+        driver.am_runs = ['21', '22', '18+1']
+        driver.pm_runs = ['28']
+        driver.published_best_combined = '100'
+
+        expected = {'year': 1942, 'name': 'Rodrigo', 'car_class': 'anything', 'second_half_started': True, 'am_runs': ['21', '22', '18+1'], 'pm_runs': ['28'], 'published_best_combined': '100', 'best_combined': '48', 'best_combined_pax': '45.600', 'pax_factor': '0.95', 'slug': '', 'headshot': 'h'}
+
+        self.assertEqual(driver.properties(), expected)
+
+
+
+
+    @patch('arscca.models.pax.Pax.factor', return_value=Decimal('0.88888882'))
+    def test_best_combined_pax_1(self, factor):
+        driver = Driver(1942)
+        driver.car_class = 'anything'
+        driver.second_half_started = False
+        driver.am_runs = ['21', '22', '']
+        driver.pm_runs = []
+        # Note the result is quantized, which limits decimal places and rounds
+        self.assertEqual(driver.best_combined_pax(), Decimal('18.667'))
+
+    @patch('arscca.models.pax.Pax.factor', return_value=Decimal('0.8'))
+    def test_best_combined_pax_1(self, factor):
+        driver = Driver(1942)
+        driver.car_class = 'anything'
+        driver.second_half_started = True
+        driver.am_runs = ['21', '22', '']
+        driver.pm_runs = []
+        self.assertEqual(driver.best_combined_pax(), Driver.INF)
+
 
 class ShortQueueTests(unittest.TestCase):
     # Note these tests do not actually exercise the locking mechanisms in the class
@@ -190,6 +316,80 @@ class HistogramTests(unittest.TestCase):
     # Note these tests do not actually exercise the locking mechanisms in the class
     def test__conformed_values(self):
         values = [10, 11, 15, 20, 22, 25]
-        conformed = Histogram._conformed_values(values)
+        conformed_values, num_conformed = Histogram._conformed_values(values)
         expected = [10.0, 11.0, 15.0, 20.0, 20.0, 20.0]
-        self.assertEqual(conformed, expected)
+        self.assertEqual(conformed_values, expected)
+        self.assertEqual(num_conformed, 2)
+
+
+# Helper Method
+def csv_to_list(string):
+    # To generate "csv",
+    # - copy table data
+    # - paste into gnumeric
+    # - export to csv
+    # - copy CSV
+    # remove blank rows
+    # Remove double quotes around fields
+    output = [row.split(',') for row in string.split('\n')]
+    return output
+
+
+
+class StandardParserTests(unittest.TestCase):
+
+    def test__parse_drivers_1(self):
+        csv = '''1T,ss,1,Aaron Houff,2007 Porsche,Black,D1,37.856+1,38.058,44.718+1,,,,,,,,74.975
+,,,,,,D2,36.917,36.987,37.153,,,,,,,,'''
+        data = csv_to_list(csv)
+        parser = StandardParser('2018-01-01', '', False)
+        drivers = parser._parse_drivers(data)
+        self.assertEqual(len(drivers), 1, 'Only one driver')
+        driver = drivers[0]
+        self.assertEqual(driver.name, 'Aaron Houff')
+        self.assertEqual(driver.car_class, 'ss')
+        self.assertEqual(driver.car_number, '1')
+        self.assertEqual(driver.car_model, '2007 Porsche')
+        self.assertEqual(driver.am_runs, ['37.856+1','38.058','44.718+1'])
+        self.assertEqual(driver.pm_runs, ['36.917','36.987','37.153'])
+        self.assertEqual(driver.published_best_combined, '74.975')
+
+    def test__parse_drivers_2(self):
+        csv = '''1T,ss,1,"Aaron Houff","2007 Porche 911",,D1,37.094+dnf,35.173,34.265,68.957
+,,,,,,D2,37.808+dnf,36.029+dnf,34.692,[-]2.384
+2,ss,6,"John Buczynski","2018 Alfa Romeo 4C",White,D1,38.166,35.968,35.555+1,71.341
+,,,,,,D2,35.879,35.528,35.373,2.384'''
+        data = csv_to_list(csv)
+        parser = StandardParser('2018-01-01', '', False)
+        drivers = parser._parse_drivers(data)
+        self.assertEqual(len(drivers), 2, 'Two drivers')
+
+
+
+class BestTimeParserTests(unittest.TestCase):
+
+
+    def test__parse_drivers_1(self):
+        csv = '''1T,cs,180,David Lousteau,1965 AC Shelby Cobra,Black,71.926,70.482,69.554,72.31,71.708,71.192,69.554,[-]1.256'''
+        data = csv_to_list(csv)
+        parser = BestTimeParser('2018-01-01', '', False)
+        drivers = parser._parse_drivers(data)
+        self.assertEqual(len(drivers), 1, 'Only one driver')
+        driver = drivers[0]
+        self.assertEqual(driver.name, 'David Lousteau')
+        self.assertEqual(driver.car_class, 'cs')
+        self.assertEqual(driver.car_number, '180')
+        self.assertEqual(driver.car_model, '1965 AC Shelby Cobra')
+        self.assertEqual(driver.am_runs, ['71.926','70.482','69.554', '72.31','71.708','71.192'])
+        self.assertEqual(driver.pm_runs, [])
+        self.assertEqual(driver.published_best_combined, '69.554')
+
+    def test__parse_drivers_2(self):
+        csv = '''1T,cs,180,"David Lousteau","1965 AC Shelby Cobra",Black,71.926,70.482,69.554,72.31,71.708,71.192,69.554,[-]1.256
+2,cs,80,"Michael Ford","2017 Mazda MX-5",Black,70.81,78.044,77.124,73.004,72.508,73.592,70.81,1.256
+1T,ds,76,"Nicholas Mellenthin","Subaru Wrx",White,68.76,67.965,67.617+1,69.994,70.539,,67.965,[-]0.852
+2,ds,176,"shawn mcallister","2013 Subaru WRX",WHITE,70.467,68.763+dnf,68.817,71.76,73.578,,68.817,0.852'''
+        data = csv_to_list(csv)
+        parser = BestTimeParser('2018-01-01', '', False)
+        drivers = parser._parse_drivers(data)
+        self.assertEqual(len(drivers), 4, 'Four drivers')

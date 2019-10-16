@@ -11,7 +11,12 @@
     </div>
 
 
-    <h1 class='event__name'>{{ event_name }}</h1>
+    <h1 class='event__name'>
+        {{ event_name }}
+        {% if num_courses == 1 %}
+            (Governor's Cup)</b></li>
+        {% endif %}
+    </h1>
     <div class='event__date'>{{ event_date }}</div>
 
     {% if errors %}
@@ -98,9 +103,13 @@
 
     <h3 class='h3'>* Scoring Details</h3>
     <ul>
-        <li>Score is computed by adding best morning run to the best afternoon run.</li>
+        {% if num_courses == 2 %}
+            <li>Score is computed by adding best morning run to the best afternoon run.</li>
+        {% else %}
+            <li><b>Governor's Cup score is best time of the day.</b></li>
+        {% endif %}
         <li>Two seconds are added for each pylon. That is, <b>29.723+1</b> is counted as 31.723 seconds.</li>
-        <li>PAX Score is Score x PAX Factor</li>
+        <li>PAX Score is Score * PAX Factor</li>
         <li>Position (Percentile) is the percentage of scoring drivers who were faster than you. See <a href='https://en.wikipedia.org/wiki/Percentile_rank'>Percentile Rank</a>.
     </ul>
 
@@ -130,10 +139,12 @@
         <li><a href='http://solotime.info/pax/rtp2019.html'>The official PAX page</a></li>
     </ul>
 
-    <h3 class='h3'>Run Groups</h3>
-    <ul>
-        <li>Click here to view the <a href='/run_groups'>Run Groups</a></li>
-    </ul>
+    {% if live %}
+        <h3 class='h3'>Run Groups</h3>
+        <ul>
+            <li>Click here to view the <a href='/run_groups'>Run Groups</a></li>
+        </ul>
+    {% endif %}
 
 
 </div>

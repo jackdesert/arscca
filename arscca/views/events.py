@@ -7,6 +7,7 @@ from arscca.models.histogram import Histogram
 from arscca.models.live_event_presenter import LiveEventPresenter
 from arscca.models.national_event_driver import NationalEventDriver
 from arscca.models.parser import Parser
+from arscca.models.parser import StandardParser
 from arscca.models.photo import Photo
 from arscca.models.shared import Shared
 from arscca.models.short_queue import ShortQueue
@@ -179,7 +180,7 @@ def live_event_view(request):
     return event
 
 @view_config(route_name='live_event_raw',
-             renderer=Parser.LIVE_FILENAME)
+             renderer=StandardParser.LIVE_FILENAME)
 def live_event_raw_view(request):
     return {}
 
@@ -187,7 +188,7 @@ def live_event_raw_view(request):
              renderer='templates/event.jinja2')
 def event_view(request):
     date = request.matchdict.get('date')
-    event_url = Parser.URLS.get(date)
+    event_url = StandardParser.URLS.get(date)
     if not event_url:
         request.response.status_code = 404
         request.override_renderer = 'static/404.jinja2'
@@ -235,7 +236,7 @@ def populate_redis_and_yield_event(date, url_aka_redis_key):
 
 # Fetch directly from other site; Do not read or write to Redis
 def fetch_event(date, url, live=False):
-    parser = Parser(date, url, live)
+    parser = Parser.instantiate_correct_type(date, url, live)
     parser.parse()
     parser.rank_drivers()
 
@@ -255,7 +256,8 @@ def fetch_event(date, url, live=False):
 
     drivers_as_dicts = [driver.properties() for driver in parser.drivers]
     drivers_json = json.dumps(drivers_as_dicts)
-    runs_per_driver = 2 * parser.runs_per_course
+    runs_per_driver = parser.NUM_COURSES * parser.runs_per_course
+    num_courses = parser.NUM_COURSES
 
     event = dict(drivers_json=drivers_json,
                  event_name=parser.event_name,
@@ -265,6 +267,7 @@ def fetch_event(date, url, live=False):
                  histogram_filename=histogram_filename,
                  histogram_conformed_count=histogram_conformed_count,
                  runs_per_driver=runs_per_driver,
+                 num_courses=num_courses,
                  errors=errors)
     if live:
         # Set revision but do not increment in REDIS

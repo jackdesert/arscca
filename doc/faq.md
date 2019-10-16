@@ -2,11 +2,12 @@ FAQ
 ===
 
 Q: What is a two-driver-car?
-A: Two drivers both signed up to drive the same car.
+A: A car that two different drivers are signed up in.
    Each driver still gets six runs, but the car will get double that.
 
 Q: What is Codriving?
-A: Say your friend has no car, but you want her to compete in the event.
+A: Two drivers competing in the same event using the same car.
+   Say your friend has no car, but you want her to compete in the event.
    Ask if she wants to codrive with you. That means you both sign up for the
    event as separate drivers, but you both do your six runs in the same car.
    (The lucky car gets 12 runs, in this case.)
@@ -17,24 +18,45 @@ A: Say your friend has no car, but you want her to compete in the event.
    One thing codriving is---it's the only way you'll ever really be able to
    compare your driving skills to another's.
 
-Q: Is Superman fast, or is it just his cape?
+Q: Is that driver fast, or is it just their car?
 A: In autocross, many factors are at play, each one accounting for some amount of
-   time from best to worst. Here are some guesses:
+   time from best to worst. Here are some guesses as to how much time can be
+   gained by each:
    Driver skill (5 seconds).
    Tire amazingness (4 seconds).
    Car amazingness, including how well it's dialed in (3 seconds).
    Driver familiarity with the car (2 seconds).
    Luck (1 second).
 
+Q: What is a class?
+A: A class is a grouping of similar cars, and each class allows certain
+   performance modifications.  It gives you a *suggestion* of which other cars
+   might perform as well as yours.  But the classing system is inherently imperfect.
+   That is, there are still large performance differences, even among cars
+   in the same class.
+
+
+Q: What is PAX?
+A: PAX is how much handicap your class is given.
+   That is, PAX is one way of comparing performance across disparate classes.
+   The PAX system is imperfect, and does NOT guarantee an even playing field.
+   But the PAX playing field is at least not so
+   steeply slanted as the raw scores would be.
+
+Q: Is it safe to assume that the top 10 PAX drivers are the
+   most skilled drivers?
+A: If the PAX system were perfect (and the classing system, for that matter),
+   then yes.
+
 Q: Should I esteem fast drivers more than slow ones?
-A: That's up to you. Here's a mind bender for you.
+A: That's up to you. Here's a mind bender for you:
    Instead of saying, "He beat me", try saying
    "His car beat mine." It has a different flavor.
 
 Q: How to have FUN
-A: Some folks might laugh that this is even in here, but I want to take a moment
-   to point out the things I think people get out of autocross. That may give
-   you some ideas of what you want to pursue within the club.
+A: Some folks might laugh that this is even in here, but here is a list of things
+   that may lure folks into the racing scene. That is, don't assume everyone
+   is here for the same reasons.
    A. Comraderie
    B. Adrenalin
    C. Competition

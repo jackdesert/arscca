@@ -11,6 +11,21 @@ import redis
 import requests
 
 class Parser:
+    BEST_TIME_PARSER_DATES = {'2018-09-23'}
+
+    @classmethod
+    def instantiate_correct_type(cls, date, url, live):
+        parser = StandardParser(date, url, live)
+        if date in cls.BEST_TIME_PARSER_DATES:
+            parser = BestTimeParser(date, url, live)
+        return parser
+
+
+class StandardParser:
+
+    # Standard event has an am course and a pm course
+    # Score is best am plus best pm run
+    NUM_COURSES = 2
 
     # Required params: ['com_content', 'view', 'id']
     # The only param that changes: 'id'
@@ -57,11 +72,12 @@ class Parser:
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     PAX = 'PAX'
     FIRST_RUN_COLUMN = 7
+    PUBLISHED_BEST_COMBINED_COLUMN = -1
 
     # Most events have 3 am_runs (morning course)
     # and 3 pm_runs (afternoon_course)
     DEFAULT_RUNS_PER_COURSE = 3
-    RUNS_PER_COURSE = defaultdict(lambda: Parser.DEFAULT_RUNS_PER_COURSE)
+    RUNS_PER_COURSE = defaultdict(lambda: StandardParser.DEFAULT_RUNS_PER_COURSE)
     RUNS_PER_COURSE['2018-06-10'] = 4
     RUNS_PER_COURSE['2019-07-14'] = 4
 
@@ -104,13 +120,21 @@ class Parser:
             row = [td.text for td in tr('td')]
             # Ensure that the seventh column has 'D1' or 'D2'.
             # Otherwise this is a (mostly) blank row
-            if row and self.D1_OR_D2_REGEX.match(row[6]):
+            if row and self._not_blank(row):
                 data.append(row)
+
+        self.drivers = self._parse_drivers(data)
+
+    def _not_blank(self, row):
+        return self.D1_OR_D2_REGEX.match(row[6])
+
+    def _parse_drivers(self, data):
 
         second_half_started = False
         drivers = []
-        # Two rows are used to represent a single driver
-        for row_idx in range(0, len(data), 2):
+        # StandardParser uses two rows to represent a single driver
+        # BestTimeParser uses one row  to represent a single driver
+        for row_idx in range(0, len(data), self.NUM_COURSES):
             driver = Driver(self._year())
 
             driver.id         = row_idx
@@ -119,16 +143,16 @@ class Parser:
             driver.name       = data[row_idx][3].title()
             driver.car_model  = data[row_idx][4]
             driver.am_runs = [data[row_idx][col_idx]     for col_idx in self._run_columns]
-            driver.pm_runs = [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
+            driver.pm_runs = self._pm_runs(row_idx, data)
             if driver.best_pm() and not Util.KART_KLASS_REGEX.match(driver.car_class):
                 # Second half is triggered when a non-kart-driver has afternoon score
                 second_half_started = True
-            driver.published_best_combined = data[row_idx][-1]
+            driver.published_best_combined = data[row_idx][self.PUBLISHED_BEST_COMBINED_COLUMN]
             drivers.append(driver)
 
         for driver in drivers:
             driver.second_half_started = second_half_started
-        self.drivers = drivers
+        return drivers
 
     def rank_drivers(self):
 
@@ -173,6 +197,9 @@ class Parser:
     def _run_columns(self):
         return range(self.FIRST_RUN_COLUMN,
                      self.FIRST_RUN_COLUMN + self.runs_per_course)
+    def _pm_runs(self, row_idx, data):
+        return [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
+
     def _year(self):
         return int(self.date[0:4])
 
@@ -211,10 +238,28 @@ class Parser:
 
 
 
+class BestTimeParser(StandardParser):
+
+    # BestTime (of the day) Event has the same course am and pm
+    # Score is best time of the entire day (not counting fun runs)
+    NUM_COURSES = 1
+    DEFAULT_RUNS_PER_COURSE = 6
+    FIRST_RUN_COLUMN = 6 # This is different because there is no "D1" or "D2" column
+    RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
+    PUBLISHED_BEST_COMBINED_COLUMN = -2
+
+    @property
+    def _run_columns(self):
+        return range(self.FIRST_RUN_COLUMN,
+                     self.FIRST_RUN_COLUMN + self.runs_per_course)
 
 
+    def _pm_runs(self, row_idx, data):
+        return []
 
-
+    def _not_blank(self, row):
+        # So far BestTimeParser does not add blank rows
+        return True
 
 
 
@@ -225,7 +270,7 @@ if __name__ == '__main__':
     date = '2019-07-14'
     url = 'http://arscca.org/index.php?option=com_content&view=article&id=464'
 
-    parser = Parser(date, url)
+    parser = StandardParser(date, url)
     parser.parse()
 
     parser.rank_drivers()
