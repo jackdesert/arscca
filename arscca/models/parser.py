@@ -11,7 +11,9 @@ import redis
 import requests
 
 class Parser:
-    BEST_TIME_PARSER_DATES = {'2018-09-23'}
+    BEST_TIME_PARSER_DATES = {'2018-09-23', # Governor's Cup 2018
+                              '2019-10-26', # Governor's Cup 2019
+}
 
     @classmethod
     def instantiate_correct_type(cls, date, url, live):
