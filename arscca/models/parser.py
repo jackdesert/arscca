@@ -139,10 +139,13 @@ class StandardParser:
         for row_idx in range(0, len(data), self.NUM_COURSES):
             driver = Driver(self._year())
 
-            driver.id         = row_idx
             driver.car_class  = data[row_idx][1]
             driver.car_number = data[row_idx][2]
             driver.name       = data[row_idx][3].title()
+
+            # Driver id must remain the same between runs for live results
+            # in order for highlighted rows to persist.
+            driver.id         = f'{driver.name}-{driver.car_class}-{driver.car_number}'
             driver.car_model  = data[row_idx][4]
             driver.am_runs = [data[row_idx][col_idx]     for col_idx in self._run_columns]
             driver.pm_runs = self._pm_runs(row_idx, data)
