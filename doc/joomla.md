@@ -38,7 +38,7 @@ Post Results
 
 Create a new article category.
   title: <year> Solo II Event <event-number>
-  parent: <year> Results
+  parent: <YEAR> Results
   body: none
 Create an article
   Category: the new category you created
