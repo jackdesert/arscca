@@ -1,5 +1,5 @@
-LIVE EVENT PREP
-===============
+LIVE EVENT PREP          Jack Desert  (971) 901-7899
+====================================================
 
 Before You Arrive (Jack)
 ------------------------
@@ -56,15 +56,7 @@ Terminal Not Uploading:
     If it does not show up when you press "Standings",
     first make sure you are clicking "Standings" (NOT "PAX Standings")
     Then go to AxWare and make sure Active Heat is set to "All".
-    (If you really want Active Heat set to something else,
-    you can click "Reports" -> "Final Results" instead
-    of clicking the Standings button.)
 
 Drivers Not Showing Up Correctly:
-  - Two day events may have up to 20 runs.
-  - If it's the governor's cup (single day event), make sure you have 10 runs or less.
-    (Otherwise results have an empty row between drivers)
+  - Two day events may have up to 20 runs. Governor's Cup may only have 10
 
-
-ANY QUESTIONS??
--- Jack Desert 971.901.7899
