@@ -110,6 +110,11 @@ var initializeDriversTable = function(liveBoolean){
             },
             highlightRow: function(driverId){
                 let index = this.selectedDriverIds.indexOf(driverId)
+
+                if (event.srcElement.href){
+                    // Do not highlight if the clicked element was a link
+                    return
+                }
                 if (this.solo){
                     return
                 }
