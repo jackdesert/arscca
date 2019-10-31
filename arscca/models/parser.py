@@ -146,7 +146,8 @@ class StandardParser:
 
             # Driver id must remain the same between runs for live results
             # in order for highlighted rows to persist.
-            driver.id         = f'{driver.name}-{driver.car_class}-{driver.car_number}'
+            driver_slug = Canon(driver.name).slug
+            driver.id         = f'{driver_slug}--{driver.car_class}_{driver.car_number}'
             driver.car_model  = data[row_idx][4]
             driver.am_runs = [data[row_idx][col_idx]     for col_idx in self._run_columns]
             driver.pm_runs = self._pm_runs(row_idx, data)
