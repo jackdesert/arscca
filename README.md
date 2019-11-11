@@ -99,21 +99,10 @@ to do things like ssh into the box, open documents in vim, etc.
 Backlog
 -------
 
-  * When I click a driver link, do not highlight row
-  * Create a test event with two drivers and make sure drivers are sorted both before and after lunch
-  * Verify that page reload does not show any errant errors with aforementioned test.
-  * only plot histogram for non-live events
-  * Use production vue.js
   * Show ties in standings when two people both have 5 points
   * Consistent sorting order in case of ties for easy compare dev vs production
-  * Aliases for driver names for Standings so Nick/Nicholas share credit
   * Adapt Feedback link to be noticeable on HUGE WIDE SCREENS
   * Footer that looks like a footer (instead of contact info for a driver)
-  * Throw error in development mode if totals do not add up
-  * Add error checking that compares my math to master time??
-  * Dynamicize links to "PAX SOURCE DATA" on each page to use the correct year
-  * Decide whether to skip event 3 or not (numbering convention)
-  * canonize name in season points report
   * Make heading text smaller on smaller devices (so page__title does not wrap)
   * Render also in html (at least basic version)
   * List with Yandex and Google
@@ -121,24 +110,6 @@ Backlog
   * robots.txt
   * advertise
   * Make it easy to see classes grouped together (stripe??)
-  * Allow highlight a single driver (This interaction design may need
-    me to observe several people using the site so I can see if they intuit
-    how it works)
-
-
-
-Genuine
--------
-
-Let me know if you would like to link arscca to this site, or somehow integrate the two
-
-Jack Desert
-Data Scientist
-Web Engineer
-*Race Engineer*
-
-
-
 
 
 
