@@ -26,8 +26,7 @@ class Driver:
     def _penalty_from_pylons(self, num_pylons):
         # Sometimes the official results have something like '25.625+ '
         # We count no penalty in this instance
-        num_pylons = num_pylons.strip()
-        if num_pylons:
+        if (num_pylons := num_pylons.strip()):
             return int(num_pylons) * self.PYLON_PENALTY_IN_SECONDS
         return 0
 
@@ -61,10 +60,10 @@ class Driver:
         return not self.second_half_started
 
     def best_combined(self):
-        if self.best_am() and self.best_pm():
-            return self.best_am() + self.best_pm()
-        elif self.best_am() and self.am_runs_only:
-            return self.best_am()
+        if (best_am := self.best_am()) and (best_pm := self.best_pm()):
+            return best_am + best_pm
+        elif best_am and self.am_runs_only:
+            return best_am
         else:
             return self.INF
 
