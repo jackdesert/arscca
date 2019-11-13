@@ -1,4 +1,5 @@
 from arscca.models.driver import Driver
+from arscca.models.driver import RallyDriver
 from arscca.models.canon import Canon
 from arscca.models.util import Util
 from bs4 import BeautifulSoup
@@ -35,9 +36,7 @@ class StandardParser:
     NUM_COURSES = 2
 
     RESULTS_TABLE_INDEX = 2
-
-    PRIMARY_SORT_KEY = Driver.best_combined
-    SECONDARY_SORT_KEY = Driver.best_combined_pax
+    DRIVER_INSTANTIATOR = Driver
 
     # Required params: ['com_content', 'view', 'id']
     # The only param that changes: 'id'
@@ -150,7 +149,7 @@ class StandardParser:
         # StandardParser uses two rows to represent a single driver
         # BestTimeParser uses one row  to represent a single driver
         for row_idx in range(0, len(data), self.NUM_COURSES):
-            driver = Driver(self._year())
+            driver = self.DRIVER_INSTANTIATOR(self._year())
 
             driver.car_class  = data[row_idx][1]
             driver.car_number = data[row_idx][2]
@@ -178,7 +177,7 @@ class StandardParser:
         scores = [driver.best_combined() for driver in self.drivers]
         num_drivers = len([score for score in scores if score < Driver.INF])
 
-        self.drivers.sort(key=self.SECONDARY_SORT_KEY)
+        self.drivers.sort(key=self._secondary_sort_key())
         for index, driver in enumerate(self.drivers):
             if driver.best_combined() < Driver.INF:
                 driver.secondary_rank = index + 1
@@ -186,7 +185,7 @@ class StandardParser:
         if not self.live:
             self._apply_points()
 
-        self.drivers.sort(key=self.PRIMARY_SORT_KEY)
+        self.drivers.sort(key=self._primary_sort_key())
         for index, driver in enumerate(self.drivers):
             if driver.best_combined() < Driver.INF:
                 driver.primary_rank = index + 1
@@ -256,6 +255,17 @@ class StandardParser:
         return points
 
 
+    # These two methods are here so that we can return a function
+    # to use as a sort key (as opposed to returning a bound method)
+    # because bound methods must be called ON something
+    @property
+    def _primary_sort_key(self):
+        return Driver.best_combined
+
+    @property
+    def _secondary_sort_key(self):
+        return Driver.best_combined_pax
+
 
 class BestTimeParser(StandardParser):
 
@@ -292,9 +302,7 @@ class RallyParser(StandardParser):
     RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
     PUBLISHED_BEST_COMBINED_COLUMN = -2 # Actually best cumulative
     RESULTS_TABLE_INDEX = 1 # Second table has results
-
-    PRIMARY_SORT_KEY = Driver.cumulative
-    SECONDARY_SORT_KEY = Driver.best_combined
+    DRIVER_INSTANTIATOR = RallyDriver
 
     @property
     def _run_columns(self):
@@ -312,6 +320,12 @@ class RallyParser(StandardParser):
     def _apply_points(self):
         # No point system for rallycross YET!
         pass
+
+    def _primary_sort_key(self):
+        return RallyDriver.cumulative
+
+    def _secondary_sort_key(self):
+        return Driver.best_combined
 
 
 

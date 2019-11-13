@@ -137,9 +137,12 @@ class RallyDriver(Driver):
 
     def cumulative(self):
         runs_to_score = [run for run in self.am_runs if run.strip()]
-        score = sum([time_from_string(run) for run in runs_to_score])
+        score = sum([self.time_from_string(run) for run in runs_to_score])
         return score
 
     def best_combined_pax(self):
+        return None
+
+    def pax_factor(self):
         return None
 
