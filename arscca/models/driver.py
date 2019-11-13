@@ -129,3 +129,17 @@ class Driver:
                      headshot = slug_and_head_shot.get('head_shot') or '')
         return props
 
+    def cumulative_score(self):
+        return None
+
+
+class RallyDriver(Driver):
+
+    def cumulative(self):
+        runs_to_score = [run for run in self.am_runs if run.strip()]
+        score = sum([time_from_string(run) for run in runs_to_score])
+        return score
+
+    def best_combined_pax(self):
+        return None
+

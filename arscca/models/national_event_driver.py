@@ -13,13 +13,13 @@ class NationalEventDriver:
 
     def _keys(self):
         return (
-                'position_overall',
-                'position_pax',
+                'primary_rank',
+                'secondary_rank',
                 'name',
                 'car_number',
                 'codriver_car_number',
                 'car_class',
-                'position_class',
+                'class_rank',
                 'car_year',
                 'car_model',
                 'best_combined',

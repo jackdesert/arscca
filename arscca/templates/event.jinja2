@@ -38,13 +38,13 @@
         <table>
             <thead>
                 <tr>
-                    <th id='position-overall' class='sortable-header'>Position (Overall)</th>
-                    <th id='position-pax' class='sortable-header'>Position (PAX)</th>
-                    <th id='position-percentile'>Position (Percentile)</th>
+                    <th id='primary-rank' class='sortable-header'>Position (Overall)</th>
+                    <th id='secondary-rank' class='sortable-header'>Position (PAX)</th>
+                    <th id='percentile-rank'>Position (Percentile)</th>
                     <th id='driver-name' class='sortable-header'>Driver Name</th>
                     <th id='car-number' class='sortable-header'>Driver Number</th>
                     <th id='car-class' class='sortable-header'>Class</th>
-                    <th id='position-class' class='sortable-header'>Position (Class)</th>
+                    <th id='class-rank' class='sortable-header'>Position (Class)</th>
                     <th id='car-model' class='sortable-header'>Model</th>
                     <th id='best-combined' class='sortable-header'>Score*</th>
                     <th id='pax-factor' class='sortable-header'>PAX Factor</th>
@@ -56,9 +56,9 @@
             </thead>
             <tbody id='drivers-tbody'>
                 <tr v-for='(driver, row_index) in drivers' v-if='visible(driver.id)' v-bind:id='driver.id' v-bind:class='rowKlass(driver.id, row_index)' v-on:click='highlightRow(driver.id)'>
-                    <td class='position-overall'>${ driver.position_overall }</td>
-                    <td class='position-pax'>${ driver.position_pax }</td>
-                    <td class='position-percentile'>${ driver.position_percentile }</td>
+                    <td class='primary-rank'>${ driver.primary_rank }</td>
+                    <td class='secondary-rank'>${ driver.secondary_rank }</td>
+                    <td class='percentile-rank'>${ driver.percentile_rank }</td>
 
                     <td class='driver-name'>
 
@@ -71,7 +71,7 @@
                     </td>
                     <td class='car-number'>${ driver.car_number }</td>
                     <td class='car-class'>${ driver.car_class }</td>
-                    <td class='position-class'>${ driver.position_class }</td>
+                    <td class='class-rank'>${ driver.class_rank }</td>
                     <td class='car-model'>${ driver.car_model }</td>
                     <td class='best-combined'>${ replaceInfinity(driver.best_combined) }</td>
                     <td class='pax-factor'>${ driver.pax_factor }</td>

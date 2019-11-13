@@ -13,13 +13,18 @@ import requests
 class Parser:
     BEST_TIME_PARSER_DATES = {'2018-09-23', # Governor's Cup 2018
                               '2019-10-26', # Governor's Cup 2019
-}
+                             }
+
+    RALLY_PARSER_DATES = {'2019-11-09'}
+
 
     @classmethod
     def instantiate_correct_type(cls, date, url, live):
         parser = StandardParser(date, url, live)
         if date in cls.BEST_TIME_PARSER_DATES:
             parser = BestTimeParser(date, url, live)
+        elif date in cls.RALLY_PARSER_DATES:
+            parser = RallyParser(date, url, live)
         return parser
 
 
@@ -28,6 +33,11 @@ class StandardParser:
     # Standard event has an am course and a pm course
     # Score is best am plus best pm run
     NUM_COURSES = 2
+
+    RESULTS_TABLE_INDEX = 2
+
+    PRIMARY_SORT_KEY = Driver.best_combined
+    SECONDARY_SORT_KEY = Driver.best_combined_pax
 
     # Required params: ['com_content', 'view', 'id']
     # The only param that changes: 'id'
@@ -68,6 +78,7 @@ class StandardParser:
             '2019-09-22' : 'http://arscca.org/index.php?option=com_content&view=article&id=481',
             '2019-10-13' : 'http://arscca.org/index.php?option=com_content&view=article&id=488',
             '2019-10-26' : 'http://arscca.org/index.php?option=com_content&view=article&id=492',
+            '2019-11-09' : 'http://arscca.org/index.php?option=com_content&view=article&id=496',
             }
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
@@ -117,7 +128,8 @@ class StandardParser:
         self.event_date = self.format_date(date_string)
 
         # Third table has driver results
-        table = soup('table')[2]
+        # Except Rally events, it's second table
+        table = soup('table')[self.RESULTS_TABLE_INDEX]
         data = []
         for tr in table('tr'):
             row = [td.text for td in tr('td')]
@@ -149,7 +161,7 @@ class StandardParser:
             driver_slug = Canon(driver.name).slug
             driver.id         = f'{driver_slug}--{driver.car_class}_{driver.car_number}'
             driver.car_model  = data[row_idx][4]
-            driver.am_runs = [data[row_idx][col_idx]     for col_idx in self._run_columns]
+            driver.am_runs = [data[row_idx][col_idx] for col_idx in self._run_columns]
             driver.pm_runs = self._pm_runs(row_idx, data)
             if driver.best_pm() and not Util.KART_KLASS_REGEX.match(driver.car_class):
                 # Second half is triggered when a non-kart-driver has afternoon score
@@ -166,19 +178,19 @@ class StandardParser:
         scores = [driver.best_combined() for driver in self.drivers]
         num_drivers = len([score for score in scores if score < Driver.INF])
 
-        self.drivers.sort(key=Driver.best_combined_pax)
+        self.drivers.sort(key=self.SECONDARY_SORT_KEY)
         for index, driver in enumerate(self.drivers):
             if driver.best_combined() < Driver.INF:
-                driver.position_pax = index + 1
+                driver.secondary_rank = index + 1
 
         if not self.live:
             self._apply_points()
 
-        self.drivers.sort(key=Driver.best_combined)
+        self.drivers.sort(key=self.PRIMARY_SORT_KEY)
         for index, driver in enumerate(self.drivers):
             if driver.best_combined() < Driver.INF:
-                driver.position_overall = index + 1
-                driver.position_percentile = round(100 * index / num_drivers)
+                driver.primary_rank = index + 1
+                driver.percentile_rank = round(100 * index / num_drivers)
 
         self.drivers.sort(key=Driver.car_class_sortable)
         rank = 1
@@ -186,7 +198,7 @@ class StandardParser:
         for driver in self.drivers:
             if driver.car_class != last_car_class:
                 rank = 1
-            driver.position_class = rank
+            driver.class_rank = rank
             rank += 1
             last_car_class = driver.car_class
 
@@ -268,6 +280,38 @@ class BestTimeParser(StandardParser):
         # So far BestTimeParser does not add blank rows
         return True
 
+
+class RallyParser(StandardParser):
+
+    # BestTime (of the day) Event has the same course am and pm
+    # Score is best time of the entire day (not counting fun runs)
+    NUM_COURSES = 2 # (only one course, but represented by two rows, so set to 2)
+    DEFAULT_RUNS_PER_COURSE = 10 # (only one course, but represented by two rows)
+    FIRST_RUN_COLUMN = 5
+    LAST_RUN_COLUMN = 14 # Rally events usually have 10x2 grid
+    RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
+    PUBLISHED_BEST_COMBINED_COLUMN = -2 # Actually best cumulative
+    RESULTS_TABLE_INDEX = 1 # Second table has results
+
+    PRIMARY_SORT_KEY = Driver.cumulative
+    SECONDARY_SORT_KEY = Driver.best_combined
+
+    @property
+    def _run_columns(self):
+        return range(self.FIRST_RUN_COLUMN,
+                     self.FIRST_RUN_COLUMN + self.runs_per_course)
+
+
+    def _pm_runs(self, row_idx, data):
+        return []
+
+    def _not_blank(self, row):
+        # So far BestTimeParser does not add blank rows
+        return True
+
+    def _apply_points(self):
+        # No point system for rallycross YET!
+        pass
 
 
 
