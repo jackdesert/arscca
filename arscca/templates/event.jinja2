@@ -38,27 +38,30 @@
         <table>
             <thead>
                 <tr>
-                    <th id='position-overall' class='sortable-header'>Position (Overall)</th>
-                    <th id='position-pax' class='sortable-header'>Position (PAX)</th>
-                    <th id='position-percentile'>Position (Percentile)</th>
+                    <th id='primary-rank' class='sortable-header'>{{ helper_props.get('primary_rank_label') }}</th>
+                    <th id='secondary-rank' class='sortable-header'>{{ helper_props.get('secondary_rank_label') | safe }}</th>
+                    <th id='percentile-rank'>Position (Percentile)</th>
                     <th id='driver-name' class='sortable-header'>Driver Name</th>
                     <th id='car-number' class='sortable-header'>Driver Number</th>
                     <th id='car-class' class='sortable-header'>Class</th>
-                    <th id='position-class' class='sortable-header'>Position (Class)</th>
+                    <th id='class-rank' class='sortable-header'>Position (Class)</th>
                     <th id='car-model' class='sortable-header'>Model</th>
-                    <th id='best-combined' class='sortable-header'>Score*</th>
-                    <th id='pax-factor' class='sortable-header'>PAX Factor</th>
-                    <th id='best-combined-pax' class='sortable-header'>PAX Score*</th>
+                    <th id='best-combined' class='sortable-header'>{{ helper_props.get('primary_score_label') }}</th>
+                    {% if helper_props.get('has_pax') %}
+                        <th id='pax-factor' class='sortable-header'>PAX Factor</th>
+                    {% endif %}
+                    <th id='best-combined-pax' class='sortable-header'>{{ helper_props.get('secondary_score_label') }}</th>
                     {% for i in range(runs_per_driver) %}
                         <th>Run {{ loop.index }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody id='drivers-tbody'>
+                {% set pm_run_klass = 'pm-run' if helper_props.get('segregate_runs') else '' %}
                 <tr v-for='(driver, row_index) in drivers' v-if='visible(driver.id)' v-bind:id='driver.id' v-bind:class='rowKlass(driver.id, row_index)' v-on:click='highlightRow(driver.id)'>
-                    <td class='position-overall'>${ driver.position_overall }</td>
-                    <td class='position-pax'>${ driver.position_pax }</td>
-                    <td class='position-percentile'>${ driver.position_percentile }</td>
+                    <td class='primary-rank'>${ driver.primary_rank }</td>
+                    <td class='secondary-rank'>${ driver.secondary_rank }</td>
+                    <td class='percentile-rank'>${ driver.percentile_rank }</td>
 
                     <td class='driver-name'>
 
@@ -71,13 +74,15 @@
                     </td>
                     <td class='car-number'>${ driver.car_number }</td>
                     <td class='car-class'>${ driver.car_class }</td>
-                    <td class='position-class'>${ driver.position_class }</td>
+                    <td class='class-rank'>${ driver.class_rank }</td>
                     <td class='car-model'>${ driver.car_model }</td>
-                    <td class='best-combined'>${ replaceInfinity(driver.best_combined) }</td>
-                    <td class='pax-factor'>${ driver.pax_factor }</td>
-                    <td class='best-combined-pax'>${ replaceInfinity(driver.best_combined_pax) }</td>
-                    <td v-for='run in driver.am_runs' class='am-run'>${ run }</td>
-                    <td v-for='run in driver.pm_runs' class='pm-run'>${ run }</td>
+                    <td class='best-combined'>${ replaceInfinity(driver.primary_score) }</td>
+                    {% if helper_props.get('has_pax') %}
+                        <td class='pax-factor'>${ driver.pax_factor }</td>
+                    {% endif %}
+                    <td class='best-combined-pax'>${ replaceInfinity(driver.secondary_score) }</td>
+                    <td v-for='run in driver.runs_upper' class='am-run'>${ run }</td>
+                    <td v-for='run in driver.runs_lower' class='{{ pm_run_klass }}'>${ run }</td>
                 </tr>
             </tbody>
         </table>
@@ -103,14 +108,9 @@
 
     <h3 class='h3'>* Scoring Details</h3>
     <ul>
-        {% if num_courses == 2 %}
-            <li>Score is computed by adding best morning run to the best afternoon run.</li>
-        {% else %}
-            <li><b>Governor's Cup score is best time of the day.</b></li>
-        {% endif %}
-        <li>Two seconds are added for each pylon. That is, <b>29.723+1</b> is counted as 31.723 seconds.</li>
-        <li>PAX Score is Score * PAX Factor</li>
-        <li>Position (Percentile) is the percentage of scoring drivers who were faster than you. See <a href='https://en.wikipedia.org/wiki/Percentile_rank'>Percentile Rank</a>.
+        {% for item in helper_props.get('scoring') %}
+            <li>{{ item | safe }}</li>
+        {% endfor %}
     </ul>
 
     {# No histogram for live data in order to reduce bandwidth for individual users #}

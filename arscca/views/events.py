@@ -240,16 +240,19 @@ def fetch_event(date, url, live=False):
     parser.parse()
     parser.rank_drivers()
 
+    helper = parser.EVENT_HELPER
+    helper_props = helper.properties()
+
     errors = []
     for driver in parser.drivers:
-        error = driver.error_in_best_combined()
+        error = driver.error_in_published()
         if error:
             errors.append(error)
 
     histogram_filename = None
     histogram_conformed_count = None
     if not live:
-        histogram = Histogram(parser.drivers)
+        histogram = Histogram(parser.drivers, dynamic_bin_width=helper.dynamic_bin_width())
         histogram.plot()
         histogram_filename = histogram.filename
         histogram_conformed_count = histogram.conformed_count
@@ -263,6 +266,7 @@ def fetch_event(date, url, live=False):
                  event_name=parser.event_name,
                  event_date=parser.event_date,
                  source_url=url,
+                 helper_props=helper_props,
                  live=live,
                  histogram_filename=histogram_filename,
                  histogram_conformed_count=histogram_conformed_count,

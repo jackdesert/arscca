@@ -22,9 +22,9 @@ class LiveEventPresenter:
             p_driver = pd_dict[name]
 
             # Note that if a driver is added or deleted,
-            # position_overall for many other drivers may
+            # primary_rank for many other drivers may
             # change, leading to their being updated
-            # IDEALLY: the javascript handles the numbering for position_overall,
+            # IDEALLY: the javascript handles the numbering for primary_rank,
             # and then less frequent updates required.
             # BUT: once the event starts, we expect few additions and subtractions
             if driver != p_driver:

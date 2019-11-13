@@ -51,19 +51,26 @@ class Driver:
             return min(times)
 
     def best_am(self):
-        return self._best_of_n(self.am_runs)
+        return self._best_of_n(self.runs_upper)
 
     def best_pm(self):
-        return self._best_of_n(self.pm_runs)
+        return self._best_of_n(self.runs_lower)
+
+    def runs(self):
+        return self.runs_upper + self.runs_lower
+
+    def best_run(self):
+        runs = self.runs()
+        return self._best_of_n(runs)
 
     @property
-    def am_runs_only(self):
+    def runs_upper_only(self):
         return not self.second_half_started
 
     def best_combined(self):
         if self.best_am() and self.best_pm():
             return self.best_am() + self.best_pm()
-        elif self.best_am() and self.am_runs_only:
+        elif self.best_am() and self.runs_upper_only:
             return self.best_am()
         else:
             return self.INF
@@ -76,25 +83,26 @@ class Driver:
             return fastest.quantize(Decimal('.001'))
 
 
-    def error_in_best_combined(self):
-        calculated = self.best_combined()
-        msg = f'{self.name} calculated: {calculated}, published: {self.published_best_combined}'
+    def error_in_published(self):
+        calculated = self.primary_score()
+        msg = f'{self.name} calculated: {calculated}, published: {self.published_primary_score}'
 
         try:
             if calculated == self.INF:
-                assert self.DNF_REGEX.match(self.published_best_combined)
+                assert self.DNF_REGEX.match(self.published_primary_score)
             elif self.second_half_started:
                 # AXWare shows "dns" for two day events if day two has
                 # not started. So ignore this
-                assert calculated == Decimal(self.published_best_combined)
+                assert calculated == Decimal(self.published_primary_score)
         except AssertionError:
             print(msg)
             return dict(driver_name=self.name,
                         calculated=float(calculated),
-                        published=float(self.published_best_combined))
+                        published=float(self.published_primary_score))
         except InvalidOperation as exc:
             # We end up here when attempting to parse Decimal('dns')
             print(msg)
+            pdb.set_trace()
             raise exc
 
     def print(self):
@@ -120,8 +128,8 @@ class Driver:
         slug_and_head_shot = Photo.slug_and_head_shot(self.name)
 
         props = self.__dict__.copy()
-        props.update(best_combined = str(self.best_combined()),
-                     best_combined_pax = str(self.best_combined_pax()),
+        props.update(primary_score = str(self.primary_score()),
+                     secondary_score = str(self.secondary_score()),
                      #fastest_time = str(self.fastest_time()),
                      #fastest_pax_time = str(self.fastest_pax_time()),
                      pax_factor = str(self.pax_factor()),
@@ -129,3 +137,35 @@ class Driver:
                      headshot = slug_and_head_shot.get('head_shot') or '')
         return props
 
+    def primary_score(self):
+        return self.best_combined()
+
+    def secondary_score(self):
+        return self.best_combined_pax()
+
+class OneCourseDriver(Driver):
+
+    def primary_score(self):
+        return self.best_run()
+
+    def secondary_score(self):
+        return self.best_run_pax()
+
+class RallyDriver(Driver):
+
+    def cumulative(self):
+        runs = [run for run in self.runs() if run.strip()]
+        score = sum([self.time_from_string(run) for run in runs])
+        return score
+
+    def best_combined_pax(self):
+        return None
+
+    def pax_factor(self):
+        return None
+
+    def primary_score(self):
+        return self.cumulative()
+
+    def secondary_score(self):
+        return self.best_run()

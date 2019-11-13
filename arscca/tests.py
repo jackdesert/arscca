@@ -190,67 +190,67 @@ class DriverTests(unittest.TestCase):
 
     def test_best_am(self):
         driver = Driver(1942)
-        driver.am_runs = ['10.2', '11', '9.335']
-        driver.pm_runs = ['1.2', '11', '9.335']
+        driver.runs_upper = ['10.2', '11', '9.335']
+        driver.runs_lower = ['1.2', '11', '9.335']
         self.assertEqual(driver.best_am(), Decimal('9.335'))
 
     def test_best_pm(self):
         driver = Driver(1942)
-        driver.am_runs = ['2.5', '8.611', '9.335']
-        driver.pm_runs = ['10.2', '8.611', '9.335']
+        driver.runs_upper = ['2.5', '8.611', '9.335']
+        driver.runs_lower = ['10.2', '8.611', '9.335']
         self.assertEqual(driver.best_pm(), Decimal('8.611'))
 
-    def test_am_runs_only(self):
+    def test_runs_upper_only(self):
         driver = Driver(1942)
         driver.second_half_started = False
-        self.assertEqual(driver.am_runs_only, True)
+        self.assertEqual(driver.runs_upper_only, True)
 
         driver.second_half_started = True
-        self.assertEqual(driver.am_runs_only, False)
+        self.assertEqual(driver.runs_upper_only, False)
 
     def test_best_combined_1(self):
         driver = Driver(1942)
         driver.second_half_started = False
-        driver.am_runs = ['10', '12', '9']
-        driver.pm_runs = []
+        driver.runs_upper = ['10', '12', '9']
+        driver.runs_lower = []
         self.assertEqual(driver.best_combined(), Decimal('9'))
 
     def test_best_combined_2(self):
         driver = Driver(1942)
         driver.second_half_started = True
-        driver.am_runs = ['10', '12', '9']
-        driver.pm_runs = ['21', '22', '18+1']
+        driver.runs_upper = ['10', '12', '9']
+        driver.runs_lower = ['21', '22', '18+1']
         self.assertEqual(driver.best_combined(), Decimal('29'))
 
     def test_best_combined_3(self):
         driver = Driver(1942)
         driver.second_half_started = False
-        driver.am_runs = []
-        driver.pm_runs = []
+        driver.runs_upper = []
+        driver.runs_lower = []
         self.assertEqual(driver.best_combined(), Driver.INF)
 
     def test_best_combined_4(self):
         driver = Driver(1942)
         driver.second_half_started = True
-        driver.am_runs = []
-        driver.pm_runs = ['21', '22', '18+1']
+        driver.runs_upper = []
+        driver.runs_lower = ['21', '22', '18+1']
         self.assertEqual(driver.best_combined(), Driver.INF)
 
     def test_best_combined_5(self):
         driver = Driver(1942)
         driver.second_half_started = True
-        driver.am_runs = ['21', '22', '18+1']
-        driver.pm_runs = []
+        driver.runs_upper = ['21', '22', '18+1']
+        driver.runs_lower = []
         self.assertEqual(driver.best_combined(), Driver.INF)
 
-    def test_error_in_best_combined(self):
+    def test_error_in_published(self):
         driver = Driver(1942)
         driver.name = 'Rodrigo'
         driver.second_half_started = True
-        driver.am_runs = ['21', '22', '18+1']
-        driver.pm_runs = ['28']
-        driver.published_best_combined = '100'
-        error = driver.error_in_best_combined()
+        driver.runs_upper = ['21', '22', '18+1']
+        driver.runs_lower = ['28']
+        driver.published_primary_score = '100'
+        error = driver.error_in_published()
         expected = {'driver_name': 'Rodrigo', 'calculated': 48.0, 'published': 100.0}
         self.assertEqual(error, expected)
 
@@ -261,11 +261,11 @@ class DriverTests(unittest.TestCase):
         driver.name = 'Rodrigo'
         driver.car_class = 'anything'
         driver.second_half_started = True
-        driver.am_runs = ['21', '22', '18+1']
-        driver.pm_runs = ['28']
-        driver.published_best_combined = '100'
+        driver.runs_upper = ['21', '22', '18+1']
+        driver.runs_lower = ['28']
+        driver.published_primary_score = '100'
 
-        expected = {'year': 1942, 'name': 'Rodrigo', 'car_class': 'anything', 'second_half_started': True, 'am_runs': ['21', '22', '18+1'], 'pm_runs': ['28'], 'published_best_combined': '100', 'best_combined': '48', 'best_combined_pax': '45.600', 'pax_factor': '0.95', 'slug': '', 'headshot': 'h'}
+        expected = {'year': 1942, 'name': 'Rodrigo', 'car_class': 'anything', 'second_half_started': True, 'runs_upper': ['21', '22', '18+1'], 'runs_lower': ['28'], 'published_primary_score': '100', 'best_combined': '48', 'best_combined_pax': '45.600', 'pax_factor': '0.95', 'slug': '', 'headshot': 'h'}
 
         self.assertEqual(driver.properties(), expected)
 
@@ -277,8 +277,8 @@ class DriverTests(unittest.TestCase):
         driver = Driver(1942)
         driver.car_class = 'anything'
         driver.second_half_started = False
-        driver.am_runs = ['21', '22', '']
-        driver.pm_runs = []
+        driver.runs_upper = ['21', '22', '']
+        driver.runs_lower = []
         # Note the result is quantized, which limits decimal places and rounds
         self.assertEqual(driver.best_combined_pax(), Decimal('18.667'))
 
@@ -287,8 +287,8 @@ class DriverTests(unittest.TestCase):
         driver = Driver(1942)
         driver.car_class = 'anything'
         driver.second_half_started = True
-        driver.am_runs = ['21', '22', '']
-        driver.pm_runs = []
+        driver.runs_upper = ['21', '22', '']
+        driver.runs_lower = []
         self.assertEqual(driver.best_combined_pax(), Driver.INF)
 
 
@@ -321,6 +321,39 @@ class HistogramTests(unittest.TestCase):
         self.assertEqual(conformed_values, expected)
         self.assertEqual(num_conformed, 2)
 
+    def test__bin_specification(self):
+        min_value = 98
+        max_value = 167
+        num_values = 16
+        width, quantity = Histogram._bin_specification(min_value, max_value, num_values)
+        self.assertEqual(width, 10)
+        self.assertEqual(quantity, 5)
+
+
+    def test__bins_1(self):
+        values = [99, 102, 112, 113, 110, 99, 101, 102, 102, 102, 102, 110]
+
+        # Using a default bin width
+        bins = Histogram._bins(values, 2)
+        self.assertEqual(bins.tolist(), [98, 100, 102, 104, 106, 108, 110, 112, 114])
+
+    def test__bins_2(self):
+        values = [98, 102, 112, 114, 110, 99, 101, 102, 102, 102, 102, 110]
+
+        # Using a default bin width
+        bins = Histogram._bins(values, 2)
+        self.assertEqual(bins.tolist(), [98, 100, 102, 104, 106, 108, 110, 112, 114, 116])
+
+
+    @patch('arscca.models.histogram.Histogram._bin_specification', return_value=(4, 0))
+    def test__bins_3(self, bin_spec):
+        values = [98, 102, 112, 114, 110, 99, 101, 102, 102, 102, 102, 110]
+
+        # Using a dynamic bin width, specified in the patch above
+        bins = Histogram._bins(values, 0)
+        self.assertEqual(bins.tolist(), [96, 100, 104, 108, 112, 116])
+
+
 
 # Helper Method
 def csv_to_list(string):
@@ -350,9 +383,9 @@ class StandardParserTests(unittest.TestCase):
         self.assertEqual(driver.car_class, 'ss')
         self.assertEqual(driver.car_number, '1')
         self.assertEqual(driver.car_model, '2007 Porsche')
-        self.assertEqual(driver.am_runs, ['37.856+1','38.058','44.718+1'])
-        self.assertEqual(driver.pm_runs, ['36.917','36.987','37.153'])
-        self.assertEqual(driver.published_best_combined, '74.975')
+        self.assertEqual(driver.runs_upper, ['37.856+1','38.058','44.718+1'])
+        self.assertEqual(driver.runs_lower, ['36.917','36.987','37.153'])
+        self.assertEqual(driver.published_primary_score, '74.975')
 
     def test__parse_drivers_2(self):
         csv = '''1T,ss,1,"Aaron Houff","2007 Porche 911",,D1,37.094+dnf,35.173,34.265,68.957
@@ -380,9 +413,9 @@ class BestTimeParserTests(unittest.TestCase):
         self.assertEqual(driver.car_class, 'cs')
         self.assertEqual(driver.car_number, '180')
         self.assertEqual(driver.car_model, '1965 AC Shelby Cobra')
-        self.assertEqual(driver.am_runs, ['71.926','70.482','69.554', '72.31','71.708','71.192'])
-        self.assertEqual(driver.pm_runs, [])
-        self.assertEqual(driver.published_best_combined, '69.554')
+        self.assertEqual(driver.runs_upper, ['71.926','70.482','69.554', '72.31','71.708','71.192'])
+        self.assertEqual(driver.runs_lower, [])
+        self.assertEqual(driver.published_primary_score, '69.554')
 
     def test__parse_drivers_2(self):
         csv = '''1T,cs,180,"David Lousteau","1965 AC Shelby Cobra",Black,71.926,70.482,69.554,72.31,71.708,71.192,69.554,[-]1.256

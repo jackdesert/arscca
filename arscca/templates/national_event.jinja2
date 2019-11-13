@@ -18,13 +18,13 @@
         <table>
             <thead>
                 <tr>
-                    <th id='position-overall' class='sortable-header'>Position (Overall)</th>
-                    <th id='position-pax' class='sortable-header'>Position (PAX)</th>
+                    <th id='primary-rank' class='sortable-header'>Position (Overall)</th>
+                    <th id='secondary-rank' class='sortable-header'>Position (PAX)</th>
                     <th id='driver-name' class='sortable-header'>Driver Name</th>
                     <th id='car-number' class='sortable-header'>Driver Number</th>
                     <th id='codriver-car-number' class='sortable-header'>CoDriver Number</th>
                     <th id='car-class' class='sortable-header'>Class</th>
-                    <th id='position-class' class='sortable-header'>Position (Class)</th>
+                    <th id='class-rank' class='sortable-header'>Position (Class)</th>
                     <th id='car-year' class='sortable-header'>Year</th>
                     <th id='car-model' class='sortable-header'>Model</th>
                     <th id='best-combined' class='sortable-header'>Time*</th>
@@ -43,13 +43,13 @@
 
             <tbody id='drivers-tbody'>
                 <tr v-for='(driver, index) in drivers' v-bind:id='driver.id' v-bind:class='index % 2 ? "" : "tr_stripe"'>
-                    <td class='position-overall'>${ driver.position_overall }</td>
-                    <td class='position-pax'>${ driver.position_pax }</td>
+                    <td class='primary-rank'>${ driver.primary_rank }</td>
+                    <td class='secondary-rank'>${ driver.secondary_rank }</td>
                     <td class='driver-name'>${ driver.name }</td>
                     <td class='car-number'>${ driver.car_number }</td>
                     <td class='codriver-car-number'>${ driver.codriver_car_number }</td>
                     <td class='car-class'>${ driver.car_class }</td>
-                    <td class='position-class'>${ driver.position_class }</td>
+                    <td class='class-rank'>${ driver.class_rank }</td>
                     <td class='car-year'>${ driver.car_year }</td>
                     <td class='car-model'>${ driver.car_model }</td>
                     <td class='best-combined'>${ driver.best_combined }</td>

@@ -159,10 +159,10 @@ var initializeDriversTable = function(liveBoolean){
             })
         },
         sortByPaxPosition = function(){
-            sortNumeric('position_pax')
+            sortNumeric('secondary_rank')
         },
         sortByOverallPosition = function(){
-            sortNumeric('position_overall')
+            sortNumeric('primary_rank')
         },
         sortNumeric = function(attribute){
             drivers.sort(function(a, b){
@@ -226,7 +226,7 @@ var initializeDriversTable = function(liveBoolean){
 
         sortByStringAttributeThenByOverallPosition = function(stringAttribute){
             drivers.sort(function(a, b){
-                var overallPositionAttribute = 'position_overall',
+                var overallPositionAttribute = 'primary_rank',
                     a1 = a[stringAttribute].toLowerCase(),
                     b1 = b[stringAttribute].toLowerCase(),
                     a2 = a[overallPositionAttribute],
@@ -258,8 +258,8 @@ var initializeDriversTable = function(liveBoolean){
 
         sortByClassPositionThenByOverallPosition = function(){
             drivers.sort(function(a, b){
-                var A = a.position_class * hugeNumber + a.position_overall,
-                    B = b.position_class * hugeNumber + b.position_overall
+                var A = a.class_rank * hugeNumber + a.primary_rank,
+                    B = b.class_rank * hugeNumber + b.primary_rank
                 return A - B
             })
         },
@@ -267,9 +267,9 @@ var initializeDriversTable = function(liveBoolean){
         bindHeaders = function(){
             var carClassHeader        = document.getElementById('car-class'),
                 bestCombinedHeader    = document.getElementById('best-combined'),
-                positionOverallHeader = document.getElementById('position-overall'),
-                positionPaxHeader     = document.getElementById('position-pax'),
-                positionClassHeader   = document.getElementById('position-class'),
+                positionOverallHeader = document.getElementById('primary-rank'),
+                positionPaxHeader     = document.getElementById('secondary-rank'),
+                positionClassHeader   = document.getElementById('class-rank'),
                 bestCombinedPaxHeader = document.getElementById('best-combined-pax'),
                 driverNameHeader      = document.getElementById('driver-name'),
                 carYearHeader         = document.getElementById('car-year'),
@@ -410,7 +410,7 @@ var initializeDriversTable = function(liveBoolean){
                 },
                 updateDriver = function(driverObject){
                     // Note that if a driver is removed,
-                    // "position_overall" will change for any
+                    // "primary_rank" will change for any
                     // slower drivers, and hence they will be updated
 
                     const index = driverIndexFromName(driverObject.name)
