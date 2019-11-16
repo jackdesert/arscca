@@ -82,6 +82,7 @@ class StandardParser:
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
     D1_OR_D2_REGEX = re.compile('D1|D2')
+    NOT_JUST_WHITESPACE_REGEX = re.compile('[^\s]')
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     PAX = 'PAX'
     FIRST_RUN_COLUMN = 7
@@ -300,7 +301,6 @@ class RallyParser(StandardParser):
     FIRST_RUN_COLUMN = 5
     LAST_RUN_COLUMN = 14 # Rally events usually have 10x2 grid
     RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
-    PUBLISHED_BEST_COMBINED_COLUMN = -2 # Actually best cumulative
     RESULTS_TABLE_INDEX = 1 # Second table has results
     DRIVER_INSTANTIATOR = RallyDriver
 
@@ -309,9 +309,6 @@ class RallyParser(StandardParser):
         return range(self.FIRST_RUN_COLUMN,
                      self.FIRST_RUN_COLUMN + self.runs_per_course)
 
-
-    def _pm_runs(self, row_idx, data):
-        return []
 
     def _not_blank(self, row):
         # So far BestTimeParser does not add blank rows
@@ -326,6 +323,11 @@ class RallyParser(StandardParser):
 
     def _secondary_sort_key(self):
         return Driver.best_combined
+
+    def _pm_runs(self, row_idx, data):
+        runs = super()._pm_runs(row_idx, data)
+        runs_to_use = [run for run in runs if self.NOT_JUST_WHITESPACE_REGEX.match(run)]
+        return runs_to_use
 
 
 

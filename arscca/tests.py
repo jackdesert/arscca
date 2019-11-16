@@ -243,14 +243,14 @@ class DriverTests(unittest.TestCase):
         driver.pm_runs = []
         self.assertEqual(driver.best_combined(), Driver.INF)
 
-    def test_error_in_best_combined(self):
+    def test_error_in_published(self):
         driver = Driver(1942)
         driver.name = 'Rodrigo'
         driver.second_half_started = True
         driver.am_runs = ['21', '22', '18+1']
         driver.pm_runs = ['28']
         driver.published_best_combined = '100'
-        error = driver.error_in_best_combined()
+        error = driver.error_in_published()
         expected = {'driver_name': 'Rodrigo', 'calculated': 48.0, 'published': 100.0}
         self.assertEqual(error, expected)
 

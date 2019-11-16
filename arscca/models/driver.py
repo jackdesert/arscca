@@ -76,7 +76,7 @@ class Driver:
             return fastest.quantize(Decimal('.001'))
 
 
-    def error_in_best_combined(self):
+    def error_in_published(self):
         calculated = self.best_combined()
         msg = f'{self.name} calculated: {calculated}, published: {self.published_best_combined}'
 
@@ -95,6 +95,7 @@ class Driver:
         except InvalidOperation as exc:
             # We end up here when attempting to parse Decimal('dns')
             print(msg)
+            pdb.set_trace()
             raise exc
 
     def print(self):

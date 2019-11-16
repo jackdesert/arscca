@@ -242,7 +242,7 @@ def fetch_event(date, url, live=False):
 
     errors = []
     for driver in parser.drivers:
-        error = driver.error_in_best_combined()
+        error = driver.error_in_published()
         if error:
             errors.append(error)
 
