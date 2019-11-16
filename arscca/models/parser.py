@@ -104,6 +104,8 @@ class StandardParser:
         self.live = live # Boolean
         self._point_storage = defaultdict(int)
         self.runs_per_course = self.RUNS_PER_COURSE[date]
+        # self.drivers will be an array
+        # self.table_width with be an integer
 
     def parse(self):
         if self.live:
@@ -138,6 +140,7 @@ class StandardParser:
             if row and self._not_blank(row):
                 data.append(row)
 
+        self.table_width = len(data[0])
         self.drivers = self._parse_drivers(data)
 
     def _not_blank(self, row):
@@ -306,9 +309,7 @@ class RallyParser(StandardParser):
 
     @property
     def _run_columns(self):
-        return range(self.FIRST_RUN_COLUMN,
-                     self.FIRST_RUN_COLUMN + self.runs_per_course)
-
+        return range(self.FIRST_RUN_COLUMN, self.table_width - 1)
 
     def _not_blank(self, row):
         # So far BestTimeParser does not add blank rows
@@ -328,7 +329,6 @@ class RallyParser(StandardParser):
         runs = super()._pm_runs(row_idx, data)
         runs_to_use = [run for run in runs if self.NOT_JUST_WHITESPACE_REGEX.match(run)]
         return runs_to_use
-
 
 
 
