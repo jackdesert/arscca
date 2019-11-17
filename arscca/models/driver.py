@@ -51,19 +51,23 @@ class Driver:
             return min(times)
 
     def best_am(self):
-        return self._best_of_n(self.am_runs)
+        return self._best_of_n(self.runs_upper)
 
     def best_pm(self):
-        return self._best_of_n(self.pm_runs)
+        return self._best_of_n(self.runs_lower)
+
+    def best_run(self):
+        runs = self.runs_upper + self.runs_lower
+        return self._best_of_n(runs)
 
     @property
-    def am_runs_only(self):
+    def runs_upper_only(self):
         return not self.second_half_started
 
     def best_combined(self):
         if self.best_am() and self.best_pm():
             return self.best_am() + self.best_pm()
-        elif self.best_am() and self.am_runs_only:
+        elif self.best_am() and self.runs_upper_only:
             return self.best_am()
         else:
             return self.INF
@@ -130,14 +134,24 @@ class Driver:
                      headshot = slug_and_head_shot.get('head_shot') or '')
         return props
 
-    def cumulative_score(self):
-        return None
+    def primary_score(self):
+        return self.best_combined()
 
+    def secondary_score(self):
+        return self.best_combined_pax()
+
+class OneCourseDriver(Driver):
+
+    def primary_score(self):
+        return self.best_run()
+
+    def secondary_score(self):
+        return self.best_run_pax()
 
 class RallyDriver(Driver):
 
     def cumulative(self):
-        runs_to_score = [run for run in self.am_runs if run.strip()]
+        runs_to_score = [run for run in self.runs_upper if run.strip()]
         score = sum([self.time_from_string(run) for run in runs_to_score])
         return score
 
@@ -147,3 +161,8 @@ class RallyDriver(Driver):
     def pax_factor(self):
         return None
 
+    def primary_score(self):
+        return self.cumulative()
+
+    def secondary_score(self):
+        return self.best_run()

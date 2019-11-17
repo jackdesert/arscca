@@ -1,4 +1,5 @@
 from arscca.models.driver import Driver
+from arscca.models.driver import OneCourseDriver
 from arscca.models.driver import RallyDriver
 from arscca.models.canon import Canon
 from arscca.models.util import Util
@@ -33,7 +34,8 @@ class StandardParser:
 
     # Standard event has an am course and a pm course
     # Score is best am plus best pm run
-    NUM_COURSES = 2
+    #NUM_COURSES = 2
+    ROWS_PER_DRIVER = 2
 
     RESULTS_TABLE_INDEX = 2
     DRIVER_INSTANTIATOR = Driver
@@ -88,8 +90,8 @@ class StandardParser:
     FIRST_RUN_COLUMN = 7
     PUBLISHED_BEST_COMBINED_COLUMN = -1
 
-    # Most events have 3 am_runs (morning course)
-    # and 3 pm_runs (afternoon_course)
+    # Most events have 3 runs_upper (morning course)
+    # and 3 runs_lower (afternoon_course)
     DEFAULT_RUNS_PER_COURSE = 3
     RUNS_PER_COURSE = defaultdict(lambda: StandardParser.DEFAULT_RUNS_PER_COURSE)
     RUNS_PER_COURSE['2018-06-10'] = 4
@@ -164,8 +166,8 @@ class StandardParser:
             driver_slug = Canon(driver.name).slug
             driver.id         = f'{driver_slug}--{driver.car_class}_{driver.car_number}'
             driver.car_model  = data[row_idx][4]
-            driver.am_runs = [data[row_idx][col_idx] for col_idx in self._run_columns]
-            driver.pm_runs = self._pm_runs(row_idx, data)
+            driver.runs_upper = [data[row_idx][col_idx] for col_idx in self._run_columns]
+            driver.runs_lower = self._runs_lower(row_idx, data)
             if driver.best_pm() and not Util.KART_KLASS_REGEX.match(driver.car_class):
                 # Second half is triggered when a non-kart-driver has afternoon score
                 second_half_started = True
@@ -178,10 +180,11 @@ class StandardParser:
 
     def rank_drivers(self):
 
-        scores = [driver.best_combined() for driver in self.drivers]
+        scores = [driver.primary_score() for driver in self.drivers]
         num_drivers = len([score for score in scores if score < Driver.INF])
 
-        self.drivers.sort(key=self._secondary_sort_key())
+        pdb.set_trace()
+        self.drivers.sort(key=self.DRIVER_INSTANTIATOR.secondary_score)
         for index, driver in enumerate(self.drivers):
             if driver.best_combined() < Driver.INF:
                 driver.secondary_rank = index + 1
@@ -189,7 +192,7 @@ class StandardParser:
         if not self.live:
             self._apply_points()
 
-        self.drivers.sort(key=self._primary_sort_key())
+        self.drivers.sort(key=self.DRIVER_INSTANTIATOR.primary_score)
         for index, driver in enumerate(self.drivers):
             if driver.best_combined() < Driver.INF:
                 driver.primary_rank = index + 1
@@ -219,7 +222,7 @@ class StandardParser:
     def _run_columns(self):
         return range(self.FIRST_RUN_COLUMN,
                      self.FIRST_RUN_COLUMN + self.runs_per_course)
-    def _pm_runs(self, row_idx, data):
+    def _runs_lower(self, row_idx, data):
         return [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
 
     def _year(self):
@@ -259,16 +262,7 @@ class StandardParser:
         return points
 
 
-    # These two methods are here so that we can return a function
-    # to use as a sort key (as opposed to returning a bound method)
-    # because bound methods must be called ON something
-    @property
-    def _primary_sort_key(self):
-        return Driver.best_combined
 
-    @property
-    def _secondary_sort_key(self):
-        return Driver.best_combined_pax
 
 
 class BestTimeParser(StandardParser):
@@ -280,6 +274,7 @@ class BestTimeParser(StandardParser):
     FIRST_RUN_COLUMN = 6 # This is different because there is no "D1" or "D2" column
     RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
     PUBLISHED_BEST_COMBINED_COLUMN = -2
+    DRIVER_INSTANTIATOR = OneCourseDriver
 
     @property
     def _run_columns(self):
@@ -287,7 +282,7 @@ class BestTimeParser(StandardParser):
                      self.FIRST_RUN_COLUMN + self.runs_per_course)
 
 
-    def _pm_runs(self, row_idx, data):
+    def _runs_lower(self, row_idx, data):
         return []
 
     def _not_blank(self, row):
@@ -319,14 +314,9 @@ class RallyParser(StandardParser):
         # No point system for rallycross YET!
         pass
 
-    def _primary_sort_key(self):
-        return RallyDriver.cumulative
 
-    def _secondary_sort_key(self):
-        return Driver.best_combined
-
-    def _pm_runs(self, row_idx, data):
-        runs = super()._pm_runs(row_idx, data)
+    def _runs_lower(self, row_idx, data):
+        runs = super()._runs_lower(row_idx, data)
         runs_to_use = [run for run in runs if self.NOT_JUST_WHITESPACE_REGEX.match(run)]
         return runs_to_use
 

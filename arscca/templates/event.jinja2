@@ -76,8 +76,8 @@
                     <td class='best-combined'>${ replaceInfinity(driver.best_combined) }</td>
                     <td class='pax-factor'>${ driver.pax_factor }</td>
                     <td class='best-combined-pax'>${ replaceInfinity(driver.best_combined_pax) }</td>
-                    <td v-for='run in driver.am_runs' class='am-run'>${ run }</td>
-                    <td v-for='run in driver.pm_runs' class='pm-run'>${ run }</td>
+                    <td v-for='run in driver.runs_upper' class='am-run'>${ run }</td>
+                    <td v-for='run in driver.runs_lower' class='pm-run'>${ run }</td>
                 </tr>
             </tbody>
         </table>
