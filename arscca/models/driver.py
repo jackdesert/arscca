@@ -56,8 +56,11 @@ class Driver:
     def best_pm(self):
         return self._best_of_n(self.runs_lower)
 
+    def runs(self):
+        return self.runs_upper + self.runs_lower
+
     def best_run(self):
-        runs = self.runs_upper + self.runs_lower
+        runs = self.runs()
         return self._best_of_n(runs)
 
     @property
@@ -81,21 +84,21 @@ class Driver:
 
 
     def error_in_published(self):
-        calculated = self.best_combined()
-        msg = f'{self.name} calculated: {calculated}, published: {self.published_best_combined}'
+        calculated = self.primary_score()
+        msg = f'{self.name} calculated: {calculated}, published: {self.published_primary_score}'
 
         try:
             if calculated == self.INF:
-                assert self.DNF_REGEX.match(self.published_best_combined)
+                assert self.DNF_REGEX.match(self.published_primary_score)
             elif self.second_half_started:
                 # AXWare shows "dns" for two day events if day two has
                 # not started. So ignore this
-                assert calculated == Decimal(self.published_best_combined)
+                assert calculated == Decimal(self.published_primary_score)
         except AssertionError:
             print(msg)
             return dict(driver_name=self.name,
                         calculated=float(calculated),
-                        published=float(self.published_best_combined))
+                        published=float(self.published_primary_score))
         except InvalidOperation as exc:
             # We end up here when attempting to parse Decimal('dns')
             print(msg)
@@ -151,8 +154,8 @@ class OneCourseDriver(Driver):
 class RallyDriver(Driver):
 
     def cumulative(self):
-        runs_to_score = [run for run in self.runs_upper if run.strip()]
-        score = sum([self.time_from_string(run) for run in runs_to_score])
+        runs = [run for run in self.runs() if run.strip()]
+        score = sum([self.time_from_string(run) for run in runs])
         return score
 
     def best_combined_pax(self):

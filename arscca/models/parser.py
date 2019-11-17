@@ -88,7 +88,7 @@ class StandardParser:
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     PAX = 'PAX'
     FIRST_RUN_COLUMN = 7
-    PUBLISHED_BEST_COMBINED_COLUMN = -1
+    PUBLISHED_PRIMARY_SCORE_COLUMN = -1
 
     # Most events have 3 runs_upper (morning course)
     # and 3 runs_lower (afternoon_course)
@@ -171,7 +171,7 @@ class StandardParser:
             if driver.best_pm() and not Util.KART_KLASS_REGEX.match(driver.car_class):
                 # Second half is triggered when a non-kart-driver has afternoon score
                 second_half_started = True
-            driver.published_best_combined = data[row_idx][self.PUBLISHED_BEST_COMBINED_COLUMN]
+            driver.published_primary_score = data[row_idx][self.PUBLISHED_PRIMARY_SCORE_COLUMN]
             drivers.append(driver)
 
         for driver in drivers:
@@ -183,7 +183,6 @@ class StandardParser:
         scores = [driver.primary_score() for driver in self.drivers]
         num_drivers = len([score for score in scores if score < Driver.INF])
 
-        pdb.set_trace()
         self.drivers.sort(key=self.DRIVER_INSTANTIATOR.secondary_score)
         for index, driver in enumerate(self.drivers):
             if driver.best_combined() < Driver.INF:
@@ -273,7 +272,7 @@ class BestTimeParser(StandardParser):
     DEFAULT_RUNS_PER_COURSE = 6
     FIRST_RUN_COLUMN = 6 # This is different because there is no "D1" or "D2" column
     RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
-    PUBLISHED_BEST_COMBINED_COLUMN = -2
+    PUBLISHED_PRIMARY_SCORE_COLUMN = -2
     DRIVER_INSTANTIATOR = OneCourseDriver
 
     @property

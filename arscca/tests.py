@@ -249,7 +249,7 @@ class DriverTests(unittest.TestCase):
         driver.second_half_started = True
         driver.runs_upper = ['21', '22', '18+1']
         driver.runs_lower = ['28']
-        driver.published_best_combined = '100'
+        driver.published_primary_score = '100'
         error = driver.error_in_published()
         expected = {'driver_name': 'Rodrigo', 'calculated': 48.0, 'published': 100.0}
         self.assertEqual(error, expected)
@@ -263,9 +263,9 @@ class DriverTests(unittest.TestCase):
         driver.second_half_started = True
         driver.runs_upper = ['21', '22', '18+1']
         driver.runs_lower = ['28']
-        driver.published_best_combined = '100'
+        driver.published_primary_score = '100'
 
-        expected = {'year': 1942, 'name': 'Rodrigo', 'car_class': 'anything', 'second_half_started': True, 'runs_upper': ['21', '22', '18+1'], 'runs_lower': ['28'], 'published_best_combined': '100', 'best_combined': '48', 'best_combined_pax': '45.600', 'pax_factor': '0.95', 'slug': '', 'headshot': 'h'}
+        expected = {'year': 1942, 'name': 'Rodrigo', 'car_class': 'anything', 'second_half_started': True, 'runs_upper': ['21', '22', '18+1'], 'runs_lower': ['28'], 'published_primary_score': '100', 'best_combined': '48', 'best_combined_pax': '45.600', 'pax_factor': '0.95', 'slug': '', 'headshot': 'h'}
 
         self.assertEqual(driver.properties(), expected)
 
@@ -352,7 +352,7 @@ class StandardParserTests(unittest.TestCase):
         self.assertEqual(driver.car_model, '2007 Porsche')
         self.assertEqual(driver.runs_upper, ['37.856+1','38.058','44.718+1'])
         self.assertEqual(driver.runs_lower, ['36.917','36.987','37.153'])
-        self.assertEqual(driver.published_best_combined, '74.975')
+        self.assertEqual(driver.published_primary_score, '74.975')
 
     def test__parse_drivers_2(self):
         csv = '''1T,ss,1,"Aaron Houff","2007 Porche 911",,D1,37.094+dnf,35.173,34.265,68.957
@@ -382,7 +382,7 @@ class BestTimeParserTests(unittest.TestCase):
         self.assertEqual(driver.car_model, '1965 AC Shelby Cobra')
         self.assertEqual(driver.runs_upper, ['71.926','70.482','69.554', '72.31','71.708','71.192'])
         self.assertEqual(driver.runs_lower, [])
-        self.assertEqual(driver.published_best_combined, '69.554')
+        self.assertEqual(driver.published_primary_score, '69.554')
 
     def test__parse_drivers_2(self):
         csv = '''1T,cs,180,"David Lousteau","1965 AC Shelby Cobra",Black,71.926,70.482,69.554,72.31,71.708,71.192,69.554,[-]1.256
