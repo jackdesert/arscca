@@ -128,8 +128,8 @@ class Driver:
         slug_and_head_shot = Photo.slug_and_head_shot(self.name)
 
         props = self.__dict__.copy()
-        props.update(best_combined = str(self.best_combined()),
-                     best_combined_pax = str(self.best_combined_pax()),
+        props.update(primary_score = str(self.primary_score()),
+                     secondary_score = str(self.secondary_score()),
                      #fastest_time = str(self.fastest_time()),
                      #fastest_pax_time = str(self.fastest_pax_time()),
                      pax_factor = str(self.pax_factor()),

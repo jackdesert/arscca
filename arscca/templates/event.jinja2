@@ -73,9 +73,9 @@
                     <td class='car-class'>${ driver.car_class }</td>
                     <td class='class-rank'>${ driver.class_rank }</td>
                     <td class='car-model'>${ driver.car_model }</td>
-                    <td class='best-combined'>${ replaceInfinity(driver.best_combined) }</td>
+                    <td class='best-combined'>${ replaceInfinity(driver.primary_score) }</td>
                     <td class='pax-factor'>${ driver.pax_factor }</td>
-                    <td class='best-combined-pax'>${ replaceInfinity(driver.best_combined_pax) }</td>
+                    <td class='best-combined-pax'>${ replaceInfinity(driver.secondary_score) }</td>
                     <td v-for='run in driver.runs_upper' class='am-run'>${ run }</td>
                     <td v-for='run in driver.runs_lower' class='pm-run'>${ run }</td>
                 </tr>
