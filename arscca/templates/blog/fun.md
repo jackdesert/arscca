@@ -20,40 +20,7 @@ into amazing, mediocre, and poor.
 
 But consider this: Not all drivers share the same goal or motivation.
 
-Here is a list of possible motivations:
-
-
-Recognition
-Skill Building
-Away from the Cops
-Demarcation
-Get away from the spouse
-Loves the sound of engines
-Loves to go sideways
-Wants
-Wants to prove
-Wants to improve
-Friend dragged me here
-Lover dragged me here
-Prove one's capability to self
-Prove one's capability to others
-Fit in
-Belong
-Student of friction
-Student of aesthetics
-Improve car controls
-Learnt to be a safer driver
-Win a trophy
-Drive with my friend
-Likes running things
-Enjoys spectating
-Wants to volunteer
-Wants community
-Wants comraderie
-Wants to WIN
-Wants to tinker with the car and see the results
-I can't explain why I keep coming
-
+Here is a list of possible motivations, grouped into categories:
 
 
 CONQUER
@@ -62,14 +29,16 @@ Recognition
 Wants to WIN
 Win a trophy
 
+
 BUILD
 Skill Building
 Wants to improve
-Prove one's capability to self
 Prove one's capability to others
+Prove one's capability to self
 Student of friction
 Likes running things
 Wants to tinker with the car and see the results
+
 
 ART
 Loves the sound of engines
@@ -77,10 +46,11 @@ Loves to go sideways
 Student of aesthetics
 
 
-
 TOGETHERNESS
 Friend dragged me here
+All my friends are here
 Lover dragged me here
+My family is here
 Wants to volunteer
 Wants community
 Wants comraderie
@@ -89,10 +59,18 @@ Belong
 Drive with my friend
 Enjoys spectating
 
+
 SAFETY
-Away from the Cops
-Get away from the spouse
-Improve car controls
+Away from the cops
+Away from the spouse
+Improve car control
 Learn to be a safer driver
 
+
 I can't explain why I keep coming
+
+
+
+Wants to coach
+Wants to help others improve
+Wants to prove others wrong
