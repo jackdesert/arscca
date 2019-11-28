@@ -23,20 +23,76 @@ But consider this: Not all drivers share the same goal or motivation.
 Here is a list of possible motivations:
 
 
-Q: How to have FUN
-A: Some folks might laugh that this is even in here, but here is a list of things
-   that may lure folks into the racing scene. That is, don't assume everyone
-   is here for the same reasons.
-   A. Comraderie
-   B. Adrenalin
-   C. Competition
-   D. A test bed for the tweaks on your car
-   E. An audience
-   F. A place to hear fun car sounds
-   G. Winning
-   H. Car control (useful on city streets)
-   I. Running things
-   J. Volunteering
-   K. Spectator Entertainment
+Recognition
+Skill Building
+Away from the Cops
+Demarcation
+Get away from the spouse
+Loves the sound of engines
+Loves to go sideways
+Wants
+Wants to prove
+Wants to improve
+Friend dragged me here
+Lover dragged me here
+Prove one's capability to self
+Prove one's capability to others
+Fit in
+Belong
+Student of friction
+Student of aesthetics
+Improve car controls
+Learnt to be a safer driver
+Win a trophy
+Drive with my friend
+Likes running things
+Enjoys spectating
+Wants to volunteer
+Wants community
+Wants comraderie
+Wants to WIN
+Wants to tinker with the car and see the results
+I can't explain why I keep coming
 
 
+
+CONQUER
+Wants to prove
+Recognition
+Wants to WIN
+Win a trophy
+
+BUILD
+Skill Building
+Wants to improve
+Prove one's capability to self
+Prove one's capability to others
+Student of friction
+Likes running things
+Wants to tinker with the car and see the results
+
+ART
+Loves the sound of engines
+Loves to go sideways
+Student of aesthetics
+
+
+
+TOGETHERNESS
+Friend dragged me here
+Lover dragged me here
+Wants to volunteer
+Wants community
+Wants comraderie
+Fit in
+Belong
+Drive with my friend
+Enjoys spectating
+
+SAFETY
+Away from the Cops
+Get away from the spouse
+Improve car controls
+Learn to be a safer driver
+
+I can't explain why I keep coming
