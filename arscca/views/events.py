@@ -240,6 +240,8 @@ def fetch_event(date, url, live=False):
     parser.parse()
     parser.rank_drivers()
 
+    helper_props = parser.EVENT_HELPER.properties()
+
     errors = []
     for driver in parser.drivers:
         error = driver.error_in_published()
@@ -263,6 +265,7 @@ def fetch_event(date, url, live=False):
                  event_name=parser.event_name,
                  event_date=parser.event_date,
                  source_url=url,
+                 helper_props=helper_props,
                  live=live,
                  histogram_filename=histogram_filename,
                  histogram_conformed_count=histogram_conformed_count,

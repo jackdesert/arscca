@@ -1,7 +1,10 @@
+from arscca.models.canon import Canon
 from arscca.models.driver import Driver
 from arscca.models.driver import OneCourseDriver
 from arscca.models.driver import RallyDriver
-from arscca.models.canon import Canon
+from arscca.models.event_helper import StandardEventHelper
+from arscca.models.event_helper import BestTimeEventHelper
+from arscca.models.event_helper import RallyEventHelper
 from arscca.models.util import Util
 from bs4 import BeautifulSoup
 from collections import defaultdict
@@ -39,6 +42,7 @@ class StandardParser:
 
     RESULTS_TABLE_INDEX = 2
     DRIVER_INSTANTIATOR = Driver
+    EVENT_HELPER = StandardEventHelper
 
     # Required params: ['com_content', 'view', 'id']
     # The only param that changes: 'id'
@@ -274,6 +278,7 @@ class BestTimeParser(StandardParser):
     RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
     PUBLISHED_PRIMARY_SCORE_COLUMN = -2
     DRIVER_INSTANTIATOR = OneCourseDriver
+    EVENT_HELPER = BestTimeEventHelper
 
     @property
     def _run_columns(self):
@@ -300,6 +305,7 @@ class RallyParser(StandardParser):
     RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
     RESULTS_TABLE_INDEX = 1 # Second table has results
     DRIVER_INSTANTIATOR = RallyDriver
+    EVENT_HELPER = RallyEventHelper
 
     @property
     def _run_columns(self):

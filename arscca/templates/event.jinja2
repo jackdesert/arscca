@@ -46,7 +46,7 @@
                     <th id='car-class' class='sortable-header'>Class</th>
                     <th id='class-rank' class='sortable-header'>Position (Class)</th>
                     <th id='car-model' class='sortable-header'>Model</th>
-                    <th id='best-combined' class='sortable-header'>Score*</th>
+                    <th id='best-combined' class='sortable-header'>{{ Score*</th>
                     <th id='pax-factor' class='sortable-header'>PAX Factor</th>
                     <th id='best-combined-pax' class='sortable-header'>PAX Score*</th>
                     {% for i in range(runs_per_driver) %}
@@ -103,14 +103,9 @@
 
     <h3 class='h3'>* Scoring Details</h3>
     <ul>
-        {% if num_courses == 2 %}
-            <li>Score is computed by adding best morning run to the best afternoon run.</li>
-        {% else %}
-            <li><b>Governor's Cup score is best time of the day.</b></li>
-        {% endif %}
-        <li>Two seconds are added for each pylon. That is, <b>29.723+1</b> is counted as 31.723 seconds.</li>
-        <li>PAX Score is Score * PAX Factor</li>
-        <li>Position (Percentile) is the percentage of scoring drivers who were faster than you. See <a href='https://en.wikipedia.org/wiki/Percentile_rank'>Percentile Rank</a>.
+        {% for item in helper_props.get('scoring') %}
+            <li>{{ item | safe }}</li>
+        {% endfor %}
     </ul>
 
     {# No histogram for live data in order to reduce bandwidth for individual users #}
