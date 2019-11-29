@@ -7,7 +7,7 @@ class StandardEventHelper:
 
     BEST_TIME_SCORING = "Governor's Cup score is best time of the day."
 
-    CUMULATIVE_SCORING = 'Score is the cumulative total of all runs'
+    CUMULATIVE_SCORING = 'Cumulative score is the cumulative total of all runs'
 
     PAX_SCORING = 'PAX Score is Score * PAX Factor'
 

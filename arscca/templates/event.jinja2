@@ -46,9 +46,9 @@
                     <th id='car-class' class='sortable-header'>Class</th>
                     <th id='class-rank' class='sortable-header'>Position (Class)</th>
                     <th id='car-model' class='sortable-header'>Model</th>
-                    <th id='best-combined' class='sortable-header'>{{ Score*</th>
+                    <th id='best-combined' class='sortable-header'>{{ helper_props.get('primary_score_label') }}</th>
                     <th id='pax-factor' class='sortable-header'>PAX Factor</th>
-                    <th id='best-combined-pax' class='sortable-header'>PAX Score*</th>
+                    <th id='best-combined-pax' class='sortable-header'>{{ helper_props.get('secondary_score_label') }}</th>
                     {% for i in range(runs_per_driver) %}
                         <th>Run {{ loop.index }}</th>
                     {% endfor %}
