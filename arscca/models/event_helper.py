@@ -20,6 +20,16 @@ class StandardEventHelper:
     PRIMARY_SCORE_LABEL = 'Score*'
     SECONDARY_SCORE_LABEL = 'PAX SCORE*'
 
+    PRIMARY_RANK_LABEL = 'Position (Overall)'
+    SECONDARY_RANK_LABEL = 'Position (PAX)'
+
+    # run segregation means a (red) line will be place between am and pm runs
+    SEGREGATE_RUNS = True
+
+    @classmethod
+    def segregate_runs(cls):
+        # Tells whether page should show a (red) line between am and pm runs
+        return True
 
     @classmethod
     def has_pax(cls):
@@ -37,10 +47,14 @@ class StandardEventHelper:
         return dict(scoring=cls.scoring(),
                     has_pax=cls.has_pax(),
                     primary_score_label=cls.PRIMARY_SCORE_LABEL,
-                    secondary_score_label=cls.SECONDARY_SCORE_LABEL)
+                    secondary_score_label=cls.SECONDARY_SCORE_LABEL,
+                    segregate_runs=cls.SEGREGATE_RUNS,
+                    primary_rank_label=cls.PRIMARY_RANK_LABEL,
+                    secondary_rank_label=cls.SECONDARY_RANK_LABEL)
 
 class BestTimeEventHelper(StandardEventHelper):
 
+    SEGREGATE_RUNS = False
 
     @classmethod
     def scoring(cls):
@@ -49,10 +63,17 @@ class BestTimeEventHelper(StandardEventHelper):
                 cls.PAX_SCORING,
                 cls.PERCENTILE_SCORING]
 
+    @classmethod
+    def segregate_runs(cls):
+        return False
+
 class RallyEventHelper(StandardEventHelper):
 
     PRIMARY_SCORE_LABEL = 'Cumulative Score'
     SECONDARY_SCORE_LABEL = 'Best Run*'
+    SEGREGATE_RUNS = False
+
+    SECONDARY_RANK_LABEL = 'Position (Best&nbsp;Run)'
 
     @classmethod
     def has_pax(cls):
@@ -64,6 +85,9 @@ class RallyEventHelper(StandardEventHelper):
                cls.PENALTY_SCORING,
                cls.PERCENTILE_SCORING]
 
+    @classmethod
+    def segregate_runs(cls):
+        return False
 
 
 if __name__ == '__main__':

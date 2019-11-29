@@ -16,7 +16,7 @@ class Histogram:
 
     def __init__(self, drivers):
         # WARNING: drivers is a mutable list; don't change it
-        self._raw_values = [driver.best_combined() for driver in drivers]
+        self._raw_values = [driver.primary_score() for driver in drivers]
         self._digest = self._construct_digest()
         self.conformed_count = 0
 

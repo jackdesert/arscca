@@ -96,9 +96,27 @@ Note that when you have no CPU burst credits available, it also takes longer
 to do things like ssh into the box, open documents in vim, etc.
 
 
+Things to Test
+--------------
+
+ - Histogram is smart about choosing bin width for rallyx events
+ - Red line displays between am and pm runs for standard event
+ - does Parser.rank_drivers do the right thing for all three event types.
+   (note it is still referencing best_combined)
+ - find all references to: and replace with appropriate primary_score / secondary_score
+        return self.best_combined()
+        return self.best_combined_pax()
+        return self.best_run()
+        return self.best_run_pax()
+
+
+
 Backlog
 -------
 
+  * On each driver profile, provide links to all the events that driver competed in
+  * Static events for rallyx
+    - update axware
   * Show ties in standings when two people both have 5 points
   * Consistent sorting order in case of ties for easy compare dev vs production
   * Adapt Feedback link to be noticeable on HUGE WIDE SCREENS
