@@ -28,6 +28,19 @@ A: In autocross, many factors are at play, each one accounting for some amount o
    Driver familiarity with the car (2 seconds).
    Luck (1 second).
 
+
+
+Q: Should I esteem fast drivers more than slow ones?
+A: That's up to you. Here's a mind bender for you:
+   Instead of saying, "He beat me", try saying
+   "His car beat mine." It has a different flavor, and
+   helps you to remember that both car and driver matter.
+   Also remember that drivers mature, and so do relationships with cars.
+
+
+Q: Should I esteem the owners of fast cars more than the owners of slow ones?
+Q: Should I esteem the tuners of fast cars more than the tuners of slow ones?
+
 Q: What is a class?
 A: A class is a grouping of similar cars, and each class allows certain
    performance modifications.  It gives you a *suggestion* of which other cars
@@ -48,12 +61,8 @@ Q: Is it safe to assume that the top 10 PAX drivers are the
 A: If the PAX system were perfect (and the classing system, for that matter),
    then yes.
 
-Q: Should I esteem fast drivers more than slow ones?
-A: That's up to you. Here's a mind bender for you:
-   Instead of saying, "He beat me", try saying
-   "His car beat mine." It has a different flavor.
 
-Q: How to have FUN
+Q: How to have FUN (also see templates/blog/fun.md)
 A: Some folks might laugh that this is even in here, but here is a list of things
    that may lure folks into the racing scene. That is, don't assume everyone
    is here for the same reasons.
