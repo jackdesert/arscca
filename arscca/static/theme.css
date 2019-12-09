@@ -240,6 +240,11 @@ tr.selected.tr_stripe
   font-size: 2rem;
 }
 
+.driver__photo
+{
+  margin: 0 2rem 2rem 0;
+}
+
 .trophy-table__car-class
 {
   font-size: 2rem;
