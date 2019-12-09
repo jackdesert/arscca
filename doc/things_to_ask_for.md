@@ -1,11 +1,27 @@
+Overarching Goals
+=================
+
+- Show off
+- Improve as a driver
+- Coach Daniel
+- Build Community
+- Make it easy for newbs to get involved
+- Make it easy for everyone to know who is on course at any given time
+
 Things to Ask For
 =================
 
-What is the RallX facebook home? Is it distinct from AutoX home?
-What is the best way to send unified messaging?
+
+- Start worker announces driver's name
+- Helmet bar codes
+
+
+
+
 
 How do I get the /schedule url to show up as the schedule
                  /results
+
 
 
 Brainstorming Regarding Unified Messaging
