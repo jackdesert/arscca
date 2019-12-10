@@ -15,6 +15,16 @@ Things to Ask For
 - Start worker announces driver's name
 - Helmet bar codes
 
+Jack 10:18 AM
+I'm hoping to get the barcode scanner working by next year, so that everybody has a sticker with their name and barcode on their helmet.
+The next step will be to encourage whoever's working start to announce the name of the driver over the radio at the beginning of the run
+And then we course workers will see real people zipping by, instead of nameless, faceless drivers :hugging_face:
+
+
+
+
+
+
 
 
 
