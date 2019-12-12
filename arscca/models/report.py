@@ -11,6 +11,8 @@ class Report:
     KEY_PREPEND = 'points-from-'
     NUM_EVENTS_TO_SCORE = 8
     SKIPPED_EVENT_NUMBERS = defaultdict(list)
+
+    # SKIPPED EVENTS means the event did not happen
     SKIPPED_EVENT_NUMBERS[2019] = [3, 7, 11]
 
     def __init__(self, year):

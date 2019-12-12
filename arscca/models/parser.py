@@ -84,6 +84,7 @@ class StandardParser:
             '2019-10-13' : 'http://arscca.org/index.php?option=com_content&view=article&id=488',
             '2019-10-26' : 'http://arscca.org/index.php?option=com_content&view=article&id=492',
             '2019-11-09' : 'http://arscca.org/index.php?option=com_content&view=article&id=496',
+            '2019-12-08' : 'http://arscca.org/index.php?option=com_content&view=article&id=508',
             }
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
@@ -100,6 +101,9 @@ class StandardParser:
     RUNS_PER_COURSE = defaultdict(lambda: StandardParser.DEFAULT_RUNS_PER_COURSE)
     RUNS_PER_COURSE['2018-06-10'] = 4
     RUNS_PER_COURSE['2019-07-14'] = 4
+
+    NON_POINTS_EVENT_DATES = ['2019-12-08']
+
 
     # This filename ends in jinja2 because it is used as a view template
     LIVE_FILENAME = '/home/arscca/arscca-live.jinja2'
@@ -232,6 +236,10 @@ class StandardParser:
         return int(self.date[0:4])
 
     def _apply_points(self):
+        if self.date in self.NON_POINTS_EVENT_DATES:
+            # Test & Tune, Hangover generally not pointed
+            return
+
         data = defaultdict(dict)
         for index, driver in enumerate(self.drivers):
             canonical_driver_name = Canon(driver.name).name
