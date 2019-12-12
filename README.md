@@ -23,7 +23,7 @@ Getting Started
     env/bin/pip install -r requirements.txt
 
     # Uses these packages:
-    # pip setuptools requests bs4 redis plim matplotlib
+    # pip setuptools requests bs4 redis plim matplotlib selenium
 
 - Install the project in editable mode with its testing requirements.
 
@@ -96,9 +96,19 @@ Note that when you have no CPU burst credits available, it also takes longer
 to do things like ssh into the box, open documents in vim, etc.
 
 
+AxWare Publisher
+----------------
+
+There is a utility for publishing AxWare results to our Joomla site:
+
+    env/bin/python bin/axware_publisher.py
+
+
+
 Backlog
 -------
 
+  * Update arscca.org to run /administrator over SSL
   * Show ties in standings when two people both have 5 points
   * Consistent sorting order in case of ties for easy compare dev vs production
   * Adapt Feedback link to be noticeable on HUGE WIDE SCREENS
