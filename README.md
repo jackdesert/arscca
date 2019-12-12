@@ -23,7 +23,7 @@ Getting Started
     env/bin/pip install -r requirements.txt
 
     # Uses these packages:
-    # pip setuptools requests bs4 redis plim matplotlib
+    # pip setuptools requests bs4 redis plim matplotlib selenium
 
 - Install the project in editable mode with its testing requirements.
 
@@ -111,9 +111,19 @@ Things to Test
 
 
 
+AxWare Publisher
+----------------
+
+There is a utility for publishing AxWare results to our Joomla site:
+
+    env/bin/python bin/axware_publisher.py
+
+
+
 Backlog
 -------
 
+  * Update arscca.org to run /administrator over SSL
   * On each driver profile, provide links to all the events that driver competed in
   * Static events for rallyx
     - update axware
