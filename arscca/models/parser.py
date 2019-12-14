@@ -5,6 +5,7 @@ from arscca.models.driver import RallyDriver
 from arscca.models.event_helper import StandardEventHelper
 from arscca.models.event_helper import BestTimeEventHelper
 from arscca.models.event_helper import RallyEventHelper
+from arscca.models.fond_memory import FondMemory
 from arscca.models.util import Util
 from bs4 import BeautifulSoup
 from collections import defaultdict
@@ -37,7 +38,7 @@ class StandardParser:
 
     # Standard event has an am course and a pm course
     # Score is best am plus best pm run
-    #NUM_COURSES = 2
+    NUM_COURSES = 2
     ROWS_PER_DRIVER = 2
 
     RESULTS_TABLE_INDEX = 2
@@ -167,7 +168,7 @@ class StandardParser:
 
             driver.car_class  = data[row_idx][1]
             driver.car_number = data[row_idx][2]
-            driver.name       = data[row_idx][3].title()
+            driver.name       = Canon(data[row_idx][3]).name
 
             # Driver id must remain the same between runs for live results
             # in order for highlighted rows to persist.
@@ -205,6 +206,9 @@ class StandardParser:
                 driver.primary_rank = index + 1
                 driver.percentile_rank = round(100 * index / num_drivers)
 
+        if not self.live:
+            self._create_fond_memories()
+
         self.drivers.sort(key=Driver.car_class_sortable)
         rank = 1
         last_car_class = self.drivers[0].car_class
@@ -235,6 +239,11 @@ class StandardParser:
 
     def _year(self):
         return int(self.date[0:4])
+
+    def _create_fond_memories(self):
+        for driver in self.drivers:
+            memory = FondMemory(driver, self.date)
+            memory.write()
 
     def _apply_points(self):
         if self.date in self.NON_POINTS_EVENT_DATES:

@@ -27,6 +27,40 @@
         </div>
     {% endif %}
 
+    {% if fond_memories %}
+        <div class='space-1rem'></div>
+        <h2>Fond Memories</h2>
+        <div class='space-1rem'></div>
+        <table>
+            {% for year, event_dates in event_dates_by_year | dictsort(reverse=True) %}
+                <tr class='{{ loop.cycle('', 'tr_stripe')}}'>
+                    <td class='fond-memory__year'>{{year}}</td>
+                    {% for event_date in event_dates %}
+                        <td class='fond-memory__info'>
+                        {% if event_date in fond_memories %}
+                            {% set memory = fond_memories[event_date] %}
+                            <div>
+                                <a href='/events/{{event_date}}'>
+                                    {{ memory['event_date_friendly'] | safe }}
+                                </a>
+                            </div>
+                            <div>{{memory['car_model']}}</div>
+                            {% set pr = memory['percentile_rank'] %}
+                            {% if pr %}
+                                <div>PR: {{pr}}</div>
+                            {% endif %}
+                        {% else %}
+                            {{ friendly_date_dictionary[event_date] | safe }}
+                        {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+        </table>
+    {% else %}
+        NO FOND MEMORIES
+    {% endif %}
+
 
 </div>
 {% endblock content %}

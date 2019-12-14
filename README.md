@@ -119,11 +119,30 @@ There is a utility for publishing AxWare results to our Joomla site:
     env/bin/python bin/axware_publisher.py
 
 
+Debugging Live
+--------------
+
+Only run a current-season event through the live parser,
+because it will choose today's date, and you want PAX classes to match
+actual PAX classes. (Some classes disappear from year to year)
+
+First verify that the event data you are testing is parseable.
+Do this by visiting the page.
+
+Then go to the arscca official results for that page,
+and copy that source into /home/arscca/
+
+If the event you are debugging requires anything other than the StandardParser,
+make sure you specify that today's date use either the SingleDayParser
+or the RallyParser.
+
+
 
 Backlog
 -------
 
   * Update arscca.org to run /administrator over SSL
+  * Blue background for rallyx events on driver profile
   * On each driver profile, provide links to all the events that driver competed in
   * Static events for rallyx
     - update axware
