@@ -5,6 +5,16 @@
 
     <div class='crumb'>Home</div>
 
+    {% for year, event_dates in event_dates_by_year | dictsort(reverse=True) %}
+        <h2 class='h2_banner'>{{ year }} (looped)</h2>
+            {% for event_date in event_dates %}
+                <div class='event__link'>
+                    {% set event_name = event_names[event_date] or event_date %}
+                    <a href='/events/{{ event_date }}'>{{ event_name }}</a>
+                </div>
+            {% endfor %}
+    {% endfor %}
+
 
     <h2 class='h2_banner'>2019 RallyX</h2>
     <div class='left'>

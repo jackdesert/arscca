@@ -33,6 +33,11 @@ Getting Started
 
     env/bin/pytest
 
+- Run selected tests:
+
+    env/bin/pytest -k 'SomeClass and not some_string'
+
+
 - Run your project.
 
     env/bin/pserve development.ini
@@ -122,12 +127,23 @@ There is a utility for publishing AxWare results to our Joomla site:
 Debugging Live
 --------------
 
+### Make sure Tests Pass
+
+    env/bin/pytest
+
+### Make sure event in question parses
+
+First verify that the event data you are testing is parseable.
+Do this by visiting the page.
+
+### Make sure event in question is from the current year
+
 Only run a current-season event through the live parser,
 because it will choose today's date, and you want PAX classes to match
 actual PAX classes. (Some classes disappear from year to year)
 
-First verify that the event data you are testing is parseable.
-Do this by visiting the page.
+
+### How to test
 
 Then go to the arscca official results for that page,
 and copy that source into /home/arscca/
@@ -142,6 +158,13 @@ Backlog
 -------
 
   * Update arscca.org to run /administrator over SSL
+  * kazy beck (alias) 03-24-2018
+  * Kim Fares (alias) http://localhost:6543/events/2018-11-02?cb=1
+  * This rallyx event has empty columns after the 8 real runs: http://localhost:6543/events/2019-10-05?cb=1
+  * Add events for 2012, 2013, 2014 AFTER 2015 passes
+  * All rallyx events for 2019 and 2018
+  * Dynamically choose parser type
+    - if "Day" column: 2-day-event
   * Blue background for rallyx events on driver profile
   * On each driver profile, provide links to all the events that driver competed in
   * Static events for rallyx

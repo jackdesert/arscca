@@ -10,6 +10,7 @@ class FondMemory:
     REDIS = Shared.REDIS
     REDIS_KEY_PREPEND = 'fond-memories'
     REDIS_KEY_EVENT_DATES = 'fond-memories-event-dates'
+    REDIS_KEY_EVENT_NAMES = 'fond-memories-event-names'
 
     def __init__(self, driver, event_date):
         self._driver = driver
@@ -110,6 +111,15 @@ class FondMemory:
 
 
 
+    # Event names are stored so they can be used on the front page
+    @classmethod
+    def store_event_name(cls, date, event_name):
+        event_name = event_name.strip()
+        cls.REDIS.hset(cls.REDIS_KEY_EVENT_NAMES, date, event_name)
+
+    @classmethod
+    def event_names(cls):
+        return cls.REDIS.hgetall(cls.REDIS_KEY_EVENT_NAMES)
 
 
 

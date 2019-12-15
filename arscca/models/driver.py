@@ -7,10 +7,11 @@ from .photo import Photo
 
 class Driver:
     DNF_REGEX     = re.compile('(dnf)|(dns)|(dsq)', re.IGNORECASE)
-    PENALTY_REGEX = re.compile('\+')
+    TIME_AND_PENALTY_REGEX = re.compile('([0-9.]+)(\+(\d)(/(\d))?)?')
     INF           = Decimal('inf')
 
     PYLON_PENALTY_IN_SECONDS = 2
+    MISSED_GATE_PENALTY_IN_SECONDS = 10
 
     def __init__(self, year):
         self.year = year
@@ -26,23 +27,35 @@ class Driver:
     def _penalty_from_pylons(self, num_pylons):
         # Sometimes the official results have something like '25.625+ '
         # We count no penalty in this instance
-        num_pylons = num_pylons.strip()
         if num_pylons:
             return int(num_pylons) * self.PYLON_PENALTY_IN_SECONDS
+        return 0
+
+    def _penalty_from_gates(self, num_gates):
+        if num_gates:
+            return int(num_gates) * self.MISSED_GATE_PENALTY_IN_SECONDS
         return 0
 
     def time_from_string(self, string):
         if self.DNF_REGEX.search(string) or (string == '\xa0'):
             return self.INF
-        if self.PENALTY_REGEX.search(string):
-            time, num_pylons = string.split('+')
-            penalty = self._penalty_from_pylons(num_pylons)
-            time = Decimal(time)
-        else:
-            time = Decimal(string)
-            penalty = 0
 
-        return time + penalty
+        search = self.TIME_AND_PENALTY_REGEX.search(string)
+        if search:
+            time = Decimal(search[1])
+            num_pylons = search[3] # Will be None or str
+            num_gates = search[5]  # Will be None or str
+
+            pylon_penalty = self._penalty_from_pylons(num_pylons)
+            gate_penalty  = self._penalty_from_gates(num_gates)
+        else:
+            # WHY ARE WE HERE?
+            pdb.set_trace()
+            1
+            #time = Decimal(string)
+            #penalty = 0
+
+        return time + pylon_penalty + gate_penalty
 
     def _best_of_n(self, runs):
         runs_to_use = [rr for rr in runs if rr.strip()]
@@ -95,9 +108,11 @@ class Driver:
         msg = f'{self.name} calculated: {calculated}, published: {self.published_primary_score}'
 
         try:
+            if isinstance(self, RallyDriver) and (calculated == 0):
+                assert self.DNF_REGEX.match(self.published_primary_score)
             if calculated == self.INF:
                 assert self.DNF_REGEX.match(self.published_primary_score)
-            elif self.second_half_started:
+            elif isinstance(self, TwoCourseDriver) and self.second_half_started:
                 # AXWare shows "dns" for two day events if day two has
                 # not started. So ignore this
                 assert calculated == Decimal(self.published_primary_score)
@@ -109,6 +124,7 @@ class Driver:
         except InvalidOperation as exc:
             # We end up here when attempting to parse Decimal('dns')
             print(msg)
+            print(f'ERROR parsing scores for {self.name}')
             pdb.set_trace()
             raise exc
 
@@ -150,6 +166,12 @@ class Driver:
     def secondary_score(self):
         return self.best_combined_pax()
 
+class TwoCourseDriver(Driver):
+    # The only reason this is here, as opposed to simply using Driver
+    # by itself, is so we can use `isinstance` and be specific about
+    # a particular subclass
+    pass
+
 class OneCourseDriver(Driver):
 
     def primary_score(self):
@@ -163,6 +185,8 @@ class RallyDriver(Driver):
     def cumulative(self):
         runs = [run for run in self.runs() if run.strip()]
         score = sum([self.time_from_string(run) for run in runs])
+        if not score:
+            return self.INF
         return score
 
     def best_combined_pax(self):

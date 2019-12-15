@@ -1,5 +1,6 @@
 from arscca.models.canon import Canon
 from arscca.models.driver import Driver
+from arscca.models.driver import TwoCourseDriver
 from arscca.models.driver import OneCourseDriver
 from arscca.models.driver import RallyDriver
 from arscca.models.event_helper import StandardEventHelper
@@ -17,11 +18,43 @@ import redis
 import requests
 
 class Parser:
-    BEST_TIME_PARSER_DATES = {'2018-09-23', # Governor's Cup 2018
-                              '2019-10-26', # Governor's Cup 2019
+    BEST_TIME_PARSER_DATES = { '2019-10-26', # Governor's Cup 2019
+                               '2018-09-23', # Governor's Cup 2018
+                               '2017-09-24', # Governor's Cup 2017
                              }
 
-    RALLY_PARSER_DATES = {'2019-11-09'}
+    RALLY_PARSER_DATES = {
+                          # 2019
+                          '2019-11-09',
+                          '2019-04-13',
+                          '2019-09-14',
+                          '2019-10-05',
+
+                          # 2018
+
+                          '2018-11-02',
+                          '2018-10-05',
+                          '2018-06-01',
+                          '2018-05-06',
+                          '2018-03-24',
+
+                          # 2017
+                          '2017-11-18',
+                          '2017-09-16',
+                          '2017-05-27',
+                          '2017-04-15',
+
+                          # 2016
+                          '2016-11-19',
+                          '2016-07-30',
+                          '2016-04-09',
+
+                          # 2015
+                          '2015-08-22',
+                          '2015-06-20',
+
+
+                         }
 
 
     @classmethod
@@ -41,8 +74,8 @@ class StandardParser:
     NUM_COURSES = 2
     ROWS_PER_DRIVER = 2
 
-    RESULTS_TABLE_INDEX = 2
-    DRIVER_INSTANTIATOR = Driver
+    RESULTS_TABLE_INDEX_DEFAULT = 2
+    DRIVER_INSTANTIATOR = TwoCourseDriver
     EVENT_HELPER = StandardEventHelper
 
     # Required params: ['com_content', 'view', 'id']
@@ -92,7 +125,7 @@ class StandardParser:
     NOT_JUST_WHITESPACE_REGEX = re.compile('[^\s]')
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     PAX = 'PAX'
-    FIRST_RUN_COLUMN = 7
+    FIRST_RUN_COLUMN_DEFAULT = 7
     PUBLISHED_PRIMARY_SCORE_COLUMN = -1
 
     # Most events have 3 runs_upper (morning course)
@@ -116,6 +149,7 @@ class StandardParser:
         self.runs_per_course = self.RUNS_PER_COURSE[date]
         # self.drivers will be an array
         # self.table_width with be an integer
+        # self.event_name will be a string
 
     def parse(self):
         if self.live:
@@ -141,10 +175,14 @@ class StandardParser:
 
         # Third table has driver results
         # Except Rally events, it's second table
-        table = soup('table')[self.RESULTS_TABLE_INDEX]
+        table = soup('table')[self._results_table_index]
         data = []
         for tr in table('tr'):
-            # Note this skips header row
+            if tr('a'):
+                # Results from 2016 and earlier have two rows of class links
+                # that we want to ignore.
+                continue
+            # Note this skips header row if header is th
             row = [td.text for td in tr('td')]
             if row and self._useful_row(row):
                 data.append(row)
@@ -153,6 +191,11 @@ class StandardParser:
         self.drivers = self._parse_drivers(data)
 
     def _useful_row(self, row):
+        if len(row) < 6:
+            # Events from 2016 and earlier include a summary at the
+            # bottom of the table. The summary is only five cols wide.
+            return False
+
         # A useful row as either Name, car, etc
         # OR it has D1|D2 in row[6]
         for item in row[0:7]:
@@ -235,8 +278,8 @@ class StandardParser:
 
     @property
     def _run_columns(self):
-        return range(self.FIRST_RUN_COLUMN,
-                     self.FIRST_RUN_COLUMN + self.runs_per_course)
+        return range(self._first_run_column,
+                     self._first_run_column + self.runs_per_course)
     def _runs_lower(self, row_idx, data):
         # Note each parser has a different implementation of this method
         return [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
@@ -245,6 +288,7 @@ class StandardParser:
         return int(self.date[0:4])
 
     def _create_fond_memories(self):
+        FondMemory.store_event_name(self.date, self.event_name)
         for driver in self.drivers:
             memory = FondMemory(driver, self.date)
             memory.write()
@@ -286,6 +330,28 @@ class StandardParser:
 
         return points
 
+    @property
+    def _first_run_column(self):
+        default = self.FIRST_RUN_COLUMN_DEFAULT
+
+        if self.date < '2017-01-01':
+            # Prior to 2017, there is one less column
+            return default - 1
+        else:
+            return default
+
+
+    @property
+    def _results_table_index(self):
+        default = self.RESULTS_TABLE_INDEX_DEFAULT
+
+        if self.date < '2017-01-01':
+            # Prior to 2017, there is one less column
+            return default - 1
+        else:
+            return default
+
+
 
 
 
@@ -296,7 +362,7 @@ class BestTimeParser(StandardParser):
     # Score is best time of the entire day (not counting fun runs)
     NUM_COURSES = 1
     DEFAULT_RUNS_PER_COURSE = 6
-    FIRST_RUN_COLUMN = 6 # This is different because there is no "D1" or "D2" column
+    FIRST_RUN_COLUMN_DEFAULT = 6 # This is different because there is no "D1" or "D2" column
     RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
     PUBLISHED_PRIMARY_SCORE_COLUMN = -2
     DRIVER_INSTANTIATOR = OneCourseDriver
@@ -304,8 +370,8 @@ class BestTimeParser(StandardParser):
 
     @property
     def _run_columns(self):
-        return range(self.FIRST_RUN_COLUMN,
-                     self.FIRST_RUN_COLUMN + self.runs_per_course)
+        return range(self._first_run_column,
+                     self._first_run_column + self.runs_per_course)
 
 
     def _runs_lower(self, row_idx, data):
@@ -322,16 +388,16 @@ class RallyParser(StandardParser):
     # Score is best time of the entire day (not counting fun runs)
     NUM_COURSES = 2 # (only one course, but represented by two rows, so set to 2)
     DEFAULT_RUNS_PER_COURSE = 10 # (only one course, but represented by two rows)
-    FIRST_RUN_COLUMN = 5
+    FIRST_RUN_COLUMN_DEFAULT = 5
     LAST_RUN_COLUMN = 14 # Rally events usually have 10x2 grid
     RUNS_PER_COURSE = defaultdict(lambda: BestTimeParser.DEFAULT_RUNS_PER_COURSE)
-    RESULTS_TABLE_INDEX = 1 # Second table has results
+    RESULTS_TABLE_INDEX_DEFAULT = 1 # Second table has results
     DRIVER_INSTANTIATOR = RallyDriver
     EVENT_HELPER = RallyEventHelper
 
     @property
     def _run_columns(self):
-        return range(self.FIRST_RUN_COLUMN, self.table_width - 1)
+        return range(self._first_run_column, self.table_width - 1)
 
     def _useful_row(self, row):
         # So far RallyParser does not add blank rows, so all are useful

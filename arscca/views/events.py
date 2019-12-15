@@ -3,12 +3,14 @@ import logging
 import pdb
 import redis
 
+from arscca.models.fond_memory import FondMemory
 from arscca.models.histogram import Histogram
 from arscca.models.live_event_presenter import LiveEventPresenter
 from arscca.models.national_event_driver import NationalEventDriver
 from arscca.models.parser import Parser
 from arscca.models.parser import StandardParser
 from arscca.models.photo import Photo
+from arscca.models.published_event import PublishedEvent
 from arscca.models.shared import Shared
 from arscca.models.short_queue import ShortQueue
 from arscca.models.report import Report
@@ -30,16 +32,24 @@ LOG = logging.getLogger(__name__)
              renderer='templates/index.jinja2')
 def home_view(request):
     photos = Photo.all()
-    return dict(photos=photos)
+
+    event_dates_by_year = PublishedEvent.dates_by_year()
+    event_names = FondMemory.event_names()
+
+    return dict(photos=photos,
+                event_dates_by_year=event_dates_by_year,
+                event_names=event_names)
 
 
 
 @view_config(route_name='events')
 def events_view(request):
+    # Redirect
     return HTTPFound(location='/')
 
 @view_config(route_name='events_with_slash')
 def events_with_slash_view(request):
+    # Redirect
     return HTTPFound(location='/')
 
 
@@ -188,7 +198,7 @@ def live_event_raw_view(request):
              renderer='templates/event.jinja2')
 def event_view(request):
     date = request.matchdict.get('date')
-    event_url = StandardParser.URLS.get(date)
+    event_url = PublishedEvent(date).url
     if not event_url:
         request.response.status_code = 404
         request.override_renderer = 'static/404.jinja2'
