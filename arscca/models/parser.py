@@ -88,7 +88,6 @@ class StandardParser:
             }
 
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
-    D1_OR_D2_REGEX = re.compile('D1|D2')
     NOT_JUST_WHITESPACE_REGEX = re.compile('[^\s]')
     REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     PAX = 'PAX'
@@ -144,17 +143,18 @@ class StandardParser:
         table = soup('table')[self.RESULTS_TABLE_INDEX]
         data = []
         for tr in table('tr'):
+            # Note this skips header row
             row = [td.text for td in tr('td')]
-            # Ensure that the seventh column has 'D1' or 'D2'.
-            # Otherwise this is a (mostly) blank row
-            if row and self._not_blank(row):
+            if row and self._useful_row(row):
                 data.append(row)
 
         self.table_width = len(data[0])
         self.drivers = self._parse_drivers(data)
 
-    def _not_blank(self, row):
-        return self.D1_OR_D2_REGEX.match(row[6])
+    def _useful_row(self, row):
+        # A useful row as either Name, car, etc
+        # OR it has D1|D2 in row[7]
+        return any(row[0:7])
 
     def _parse_drivers(self, data):
 
@@ -230,6 +230,7 @@ class StandardParser:
         return range(self.FIRST_RUN_COLUMN,
                      self.FIRST_RUN_COLUMN + self.runs_per_course)
     def _runs_lower(self, row_idx, data):
+        # Note each parser has a different implementation of this method
         return [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
 
     def _year(self):
@@ -297,8 +298,8 @@ class BestTimeParser(StandardParser):
     def _runs_lower(self, row_idx, data):
         return []
 
-    def _not_blank(self, row):
-        # So far BestTimeParser does not add blank rows
+    def _useful_row(self, row):
+        # So far BestTimeParser does not add blank rows, so all are useful
         return True
 
 
@@ -319,8 +320,8 @@ class RallyParser(StandardParser):
     def _run_columns(self):
         return range(self.FIRST_RUN_COLUMN, self.table_width - 1)
 
-    def _not_blank(self, row):
-        # So far BestTimeParser does not add blank rows
+    def _useful_row(self, row):
+        # So far RallyParser does not add blank rows, so all are useful
         return True
 
     def _apply_points(self):
