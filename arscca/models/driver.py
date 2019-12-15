@@ -61,7 +61,14 @@ class Driver:
 
     def best_run(self):
         runs = self.runs()
-        return self._best_of_n(runs)
+        return self._best_of_n(runs) or self.INF
+
+    def best_run_pax(self):
+        best = self.best_run() * self.pax_factor()
+        if best == self.INF:
+            return best
+        else:
+            return best.quantize(Decimal('.001'))
 
     @property
     def runs_upper_only(self):
