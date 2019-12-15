@@ -154,8 +154,12 @@ class StandardParser:
 
     def _useful_row(self, row):
         # A useful row as either Name, car, etc
-        # OR it has D1|D2 in row[7]
-        return any(row[0:7])
+        # OR it has D1|D2 in row[6]
+        for item in row[0:7]:
+            if self.NOT_JUST_WHITESPACE_REGEX.match(item):
+                return True
+
+        return False
 
     def _parse_drivers(self, data):
 
