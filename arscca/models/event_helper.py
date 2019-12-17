@@ -1,6 +1,6 @@
 import pdb
 
-class StandardEventHelper:
+class TwoCourseEventHelper:
 
 
     COMBINED_SCORING = 'Score is computed by adding best morning run to the best afternoon run.',
@@ -58,7 +58,7 @@ class StandardEventHelper:
                     primary_rank_label=cls.PRIMARY_RANK_LABEL,
                     secondary_rank_label=cls.SECONDARY_RANK_LABEL)
 
-class BestTimeEventHelper(StandardEventHelper):
+class OneCourseEventHelper(TwoCourseEventHelper):
 
     SEGREGATE_RUNS = False
     DYNAMIC_BIN_WIDTH = False
@@ -74,7 +74,7 @@ class BestTimeEventHelper(StandardEventHelper):
     def segregate_runs(cls):
         return False
 
-class RallyEventHelper(StandardEventHelper):
+class RallyEventHelper(TwoCourseEventHelper):
 
     PRIMARY_SCORE_LABEL = 'Cumulative Score'
     SECONDARY_SCORE_LABEL = 'Best Run*'

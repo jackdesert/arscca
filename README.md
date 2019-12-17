@@ -153,6 +153,42 @@ make sure you specify that today's date use either the SingleDayParser
 or the RallyParser.
 
 
+Event Types
+-----------
+Starting with year 2017, there is an extra column
+
+### Rally
+
+2016-: (ONE row per driver)
+    http://arscca.jackdesert.com/events/2016-11-19
+    http://arscca.org/index.php?option=com_content&view=article&id=294
+
+2016-: (TWO row per driver) (Had one extra column for car color...deleted)
+    http://arscca.jackdesert.com/events/2013-04-20
+    http://arscca.org/index.php?option=com_content&view=article&id=88
+
+
+2017+ (ONE row per driver)
+    http://arscca.jackdesert.com/events/2019-10-05
+    http://arscca.org/index.php?option=com_content&view=article&id=430
+
+2017+ (TWO rows per driver):
+    Rally #6 2019
+    http://arscca.jackdesert.com/events/2019-11-09
+    http://arscca.org/index.php?option=com_content&view=article&id=496
+
+
+### OneCourse
+2016:
+2017+:
+    Governor's Cup 2019
+    http://arscca.jackdesert.com/events/2019-10-26
+    http://arscca.org/index.php?option=com_content&view=article&id=492
+
+### TwoCourse
+2016:
+2017:
+
 
 Backlog
 -------

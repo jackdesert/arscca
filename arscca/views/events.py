@@ -7,8 +7,7 @@ from arscca.models.fond_memory import FondMemory
 from arscca.models.histogram import Histogram
 from arscca.models.live_event_presenter import LiveEventPresenter
 from arscca.models.national_event_driver import NationalEventDriver
-from arscca.models.parser import Parser
-from arscca.models.parser import StandardParser
+from arscca.models.dispatcher import Dispatcher
 from arscca.models.photo import Photo
 from arscca.models.published_event import PublishedEvent
 from arscca.models.shared import Shared
@@ -190,7 +189,7 @@ def live_event_view(request):
     return event
 
 @view_config(route_name='live_event_raw',
-             renderer=StandardParser.LIVE_FILENAME)
+             renderer=Dispatcher.LIVE_FILENAME)
 def live_event_raw_view(request):
     return {}
 
@@ -246,15 +245,14 @@ def populate_redis_and_yield_event(date, url_aka_redis_key):
 
 # Fetch directly from other site; Do not read or write to Redis
 def fetch_event(date, url, live=False):
-    parser = Parser.instantiate_correct_type(date, url, live)
-    parser.parse()
-    parser.rank_drivers()
+    dispatcher = Dispatcher(date, url, live)
+    dispatcher.compile()
 
-    helper = parser.EVENT_HELPER
+    helper = dispatcher.event_helper()
     helper_props = helper.properties()
 
     errors = []
-    for driver in parser.drivers:
+    for driver in dispatcher.drivers:
         error = driver.error_in_published()
         if error:
             errors.append(error)
@@ -262,26 +260,24 @@ def fetch_event(date, url, live=False):
     histogram_filename = None
     histogram_conformed_count = None
     if not live:
-        histogram = Histogram(parser.drivers, dynamic_bin_width=helper.dynamic_bin_width())
+        histogram = Histogram(dispatcher.drivers, dynamic_bin_width=helper.dynamic_bin_width())
         histogram.plot()
         histogram_filename = histogram.filename
         histogram_conformed_count = histogram.conformed_count
 
-    drivers_as_dicts = [driver.properties() for driver in parser.drivers]
+    drivers_as_dicts = [driver.properties() for driver in dispatcher.drivers]
     drivers_json = json.dumps(drivers_as_dicts)
-    runs_per_driver = parser.NUM_COURSES * parser.runs_per_course
-    num_courses = parser.NUM_COURSES
+    runs_per_driver = dispatcher.max_runs_per_driver()
 
     event = dict(drivers_json=drivers_json,
-                 event_name=parser.event_name,
-                 event_date=parser.event_date,
+                 event_name=dispatcher.event_name,
+                 event_date=dispatcher.date,
                  source_url=url,
                  helper_props=helper_props,
                  live=live,
                  histogram_filename=histogram_filename,
                  histogram_conformed_count=histogram_conformed_count,
                  runs_per_driver=runs_per_driver,
-                 num_courses=num_courses,
                  errors=errors)
     if live:
         # Set revision but do not increment in REDIS

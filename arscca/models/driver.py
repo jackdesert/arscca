@@ -1,11 +1,13 @@
 import pdb
 import re
+from arscca.models.canon import Canon
+from arscca.models.shared import Shared
 from decimal import Decimal
 from decimal import InvalidOperation
 from .pax import Pax
 from .photo import Photo
 
-class Driver:
+class GenericDriver:
     DNF_REGEX     = re.compile('(dnf)|(dns)|(dsq)', re.IGNORECASE)
     TIME_AND_PENALTY_REGEX = re.compile('([0-9.]+)(\+(\d)(/(\d))?)?')
     INF           = Decimal('inf')
@@ -13,9 +15,52 @@ class Driver:
     PYLON_PENALTY_IN_SECONDS = 2
     MISSED_GATE_PENALTY_IN_SECONDS = 10
 
-    def __init__(self, year):
+
+    def __init__(self, year, row_1, row_2, first_run_column):
         self.year = year
+        self._row_1 = row_1
+        self._row_2 = row_2
+        self._first_run_column = first_run_column
         # See Parser.parse() for a list of instance variables stored on Driver
+
+
+    @property
+    def car_class(self):
+        return self._row_1[1]
+
+    @property
+    def car_number(self):
+        return self._row_1[2]
+
+    @property
+    def name(self):
+        return Canon(self._row_1[3]).name
+
+    @property
+    def car_model(self):
+        return self._row_1[4]
+
+    @property
+    def id(self):
+        return f'{self.driver_slug}--{self.car_class}_{self.car_number}'
+
+    @property
+    def driver_slug(self):
+        return Canon(self.name).slug
+
+    @property
+    def published_primary_score(self):
+        return self._row_1[self._published_primary_score_column]
+
+    @property
+    def _published_primary_score_column(self):
+        # When one row per driver, _row_2 is None and primary score
+        # is in the second to last column
+        if self._row_2 == None:
+            return -2
+
+        # When two rows per driver, primary score is in the last column
+        return -1
 
     def pax_factor(self):
         return Pax.factor(self.year, self.car_class)
@@ -23,6 +68,7 @@ class Driver:
     def car_class_sortable(self):
         # This is defined as a method only so it can be used to sort a list of drivers
         return self.car_class
+
 
     def _penalty_from_pylons(self, num_pylons):
         # Sometimes the official results have something like '25.625+ '
@@ -49,11 +95,7 @@ class Driver:
             pylon_penalty = self._penalty_from_pylons(num_pylons)
             gate_penalty  = self._penalty_from_gates(num_gates)
         else:
-            # WHY ARE WE HERE?
-            pdb.set_trace()
-            1
-            #time = Decimal(string)
-            #penalty = 0
+            raise RuntimeError(f'Unable to parse time_from_string("{string}")')
 
         return time + pylon_penalty + gate_penalty
 
@@ -63,44 +105,30 @@ class Driver:
         if times:
             return min(times)
 
-    def best_am(self):
-        return self._best_of_n(self.runs_upper)
+    def _runs_upper(self):
+        return self._row_1[self._first_run_column : self._published_primary_score_column]
 
-    def best_pm(self):
-        return self._best_of_n(self.runs_lower)
+    def _runs_lower(self):
+        if not self._row_2:
+            return tuple()
+        return self._row_2[self._first_run_column : self._published_primary_score_column]
 
     def runs(self):
-        return self.runs_upper + self.runs_lower
+        return self._runs_upper() + self._runs_lower()
 
-    def best_run(self):
-        runs = self.runs()
-        return self._best_of_n(runs) or self.INF
+    def num_completed_runs(self):
+        count = 0
+        for run in self.runs():
+            if Shared.NOT_JUST_WHITESPACE_REGEX.search(run):
+                count += 1
+        return count
 
-    def best_run_pax(self):
-        best = self.best_run() * self.pax_factor()
-        if best == self.INF:
-            return best
-        else:
-            return best.quantize(Decimal('.001'))
 
-    @property
-    def runs_upper_only(self):
-        return not self.second_half_started
 
-    def best_combined(self):
-        if self.best_am() and self.best_pm():
-            return self.best_am() + self.best_pm()
-        elif self.best_am() and self.runs_upper_only:
-            return self.best_am()
-        else:
-            return self.INF
 
-    def best_combined_pax(self):
-        fastest = self.best_combined() * self.pax_factor()
-        if fastest == self.INF:
-            return fastest
-        else:
-            return fastest.quantize(Decimal('.001'))
+
+
+
 
 
     def error_in_published(self):
@@ -125,40 +153,66 @@ class Driver:
             # We end up here when attempting to parse Decimal('dns')
             print(msg)
             print(f'ERROR parsing scores for {self.name}')
-            pdb.set_trace()
             raise exc
 
+    def __repr__(self):
+        return f'{type(self)}: {self.name}'
+
+    # This is useful for development purposes
     def print(self):
         print('')
-        print(f'name          {self.name}')
-        print(f'car_number    {self.car_number}')
-        print(f'car_class     {self.car_class}')
-        print(f'car_model     {self.car_model}')
-        print(f'run_1         {self.run_1}')
-        print(f'run_2         {self.run_2}')
-        print(f'run_3         {self.run_3}')
-        print(f'run_4         {self.run_4}')
-        print(f'run_5         {self.run_5}')
-        print(f'run_6         {self.run_6}')
-        print(f'best_am       {self.best_am()}')
-        print(f'best_pm       {self.best_pm()}')
-        print(f'best_combined {self.best_combined()}')
-        print(f'best_combined_pax {self.best_combined_pax()}')
-        #print(f'fastest_time  {self.fastest_time()}')
-        #print(f'fastest_pax   {self.fastest_pax_time()}')
+        print(f'name            {self.name}')
+        print(f'car_number      {self.car_number}')
+        print(f'car_class       {self.car_class}')
+        print(f'car_model       {self.car_model}')
+        print(f'_upper_runs      {self._upper_runs()}')
+        print(f'_lower_runs      {self._lower_runs()}')
+        print(f'primary_score   {self.primary_score()}')
+        print(f'secondary_score {self.secondary_score()}')
 
     def properties(self):
         slug_and_head_shot = Photo.slug_and_head_shot(self.name)
 
         props = self.__dict__.copy()
-        props.update(primary_score = str(self.primary_score()),
+
+        # Delete these foundational rows since we break the important data
+        # out by separate keys
+        del props['_first_run_column']
+        del props['_row_1']
+        del props['_row_2']
+
+        props.update(name = self.name,
+                     car_class = self.car_class,
+                     primary_score = str(self.primary_score()),
                      secondary_score = str(self.secondary_score()),
+                     published_primary_score = str(self.published_primary_score),
                      #fastest_time = str(self.fastest_time()),
                      #fastest_pax_time = str(self.fastest_pax_time()),
+                     runs_upper = self._runs_upper(),
+                     runs_lower = self._runs_lower(),
                      pax_factor = str(self.pax_factor()),
                      slug = slug_and_head_shot.get('slug') or '',
                      headshot = slug_and_head_shot.get('head_shot') or '')
         return props
+
+    def primary_score(self):
+        raise NotImplementedError
+
+    def secondary_score(self):
+        raise NotImplementedError
+
+
+
+    def best_run(self):
+        # This method is only useful to OneCourseDrivers and RallyDrivers
+        if isinstance(self, TwoCourseDriver):
+            raise NotImplementedError
+
+        runs = self.runs()
+        return self._best_of_n(runs) or self.INF
+
+class TwoCourseDriver(GenericDriver):
+
 
     def primary_score(self):
         return self.best_combined()
@@ -166,13 +220,29 @@ class Driver:
     def secondary_score(self):
         return self.best_combined_pax()
 
-class TwoCourseDriver(Driver):
-    # The only reason this is here, as opposed to simply using Driver
-    # by itself, is so we can use `isinstance` and be specific about
-    # a particular subclass
-    pass
+    def best_am(self):
+        return self._best_of_n(self._runs_upper())
 
-class OneCourseDriver(Driver):
+    def best_pm(self):
+        return self._best_of_n(self._runs_lower())
+
+    def best_combined(self):
+        if self.best_am() and not self.second_half_started:
+            return self.best_am()
+        elif self.second_half_started and self.best_am() and self.best_pm():
+            return self.best_am() + self.best_pm()
+        else:
+            return self.INF
+
+    def best_combined_pax(self):
+        fastest = self.best_combined() * self.pax_factor()
+        if fastest == self.INF:
+            return fastest
+        else:
+            return fastest.quantize(Decimal('.001'))
+
+class OneCourseDriver(GenericDriver):
+    _published_primary_score_column = -2
 
     def primary_score(self):
         return self.best_run()
@@ -180,7 +250,16 @@ class OneCourseDriver(Driver):
     def secondary_score(self):
         return self.best_run_pax()
 
-class RallyDriver(Driver):
+
+    def best_run_pax(self):
+        best = self.best_run() * self.pax_factor()
+        if best == self.INF:
+            return best
+        else:
+            return best.quantize(Decimal('.001'))
+
+class RallyDriver(GenericDriver):
+
 
     def cumulative(self):
         runs = [run for run in self.runs() if run.strip()]
@@ -188,9 +267,6 @@ class RallyDriver(Driver):
         if not score:
             return self.INF
         return score
-
-    def best_combined_pax(self):
-        return None
 
     def pax_factor(self):
         return None

@@ -1,3 +1,4 @@
+import re
 import redis
 
 class Shared:
@@ -8,4 +9,6 @@ class Shared:
     REDIS_KEY_LIVE_EVENT_DRIVERS  = 'live-event-drivers'
     REDIS_KEY_LIVE_EVENT_REVISION = 'live-event-revision'
     REDIS_KEY_LIVE_EVENT_RUN_GROUPS = 'live-event-run-groups'
+
+    NOT_JUST_WHITESPACE_REGEX = re.compile('[^\s]')
 

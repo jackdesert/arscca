@@ -2,8 +2,6 @@ import unittest
 import pytest
 import pdb
 
-from arscca.models.parser import StandardParser
-from arscca.models.parser import BestTimeParser
 
 from pyramid import testing
 from unittest.mock import patch
@@ -23,7 +21,7 @@ def csv_to_list(string):
 
 
 
-class StandardParserTests(unittest.TestCase):
+class LogSplitterTest(unittest.TestCase):
 
     def test__parse_drivers_1(self):
         csv = '''1T,ss,1,Aaron Houff,2007 Porsche,Black,D1,37.856+1,38.058,44.718+1,,,,,,,,74.975
@@ -53,7 +51,6 @@ class StandardParserTests(unittest.TestCase):
 
 
 
-class BestTimeParserTests(unittest.TestCase):
 
 
     def test__parse_drivers_1(self):
