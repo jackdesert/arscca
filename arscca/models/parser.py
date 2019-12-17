@@ -17,6 +17,11 @@ import re
 import redis
 import requests
 
+
+class TableSplitter:
+    pass
+
+
 class Parser:
     BEST_TIME_PARSER_DATES = { '2019-10-26', # Governor's Cup 2019
                                '2018-09-23', # Governor's Cup 2018
@@ -150,8 +155,13 @@ class StandardParser:
         # self.drivers will be an array
         # self.table_width with be an integer
         # self.event_name will be a string
+        # self.data will be a list
 
     def parse(self):
+        self._compile_data()
+        self._instantiate_drivers()
+
+    def _compile_data(self):
         if self.live:
             with open(self.LIVE_FILENAME, 'r') as ff:
                 html = ff.read()
@@ -186,9 +196,25 @@ class StandardParser:
             row = [td.text for td in tr('td')]
             if row and self._useful_row(row):
                 data.append(row)
+        self._data = data
 
-        self.table_width = len(data[0])
-        self.drivers = self._parse_drivers(data)
+
+    @property
+    def table_width(self):
+        return len(self._data[0])
+
+    def _rows_per_driver(self):
+        if NOT_JUST_WHITESPACE_REGEX.match(self._data[1][0]):
+            return 1
+        else:
+            return 2
+
+    def _instantiate_drivers(self):
+        while index < len(self._data):
+            rows_for_one_driver = self._data[index : index + self._rows_per_driver]
+            driver = self._parse_driver(rows_for_one_driver)
+            self.drivers.append(driver)
+
 
     def _useful_row(self, row):
         if len(row) < 6:
@@ -282,7 +308,11 @@ class StandardParser:
                      self._first_run_column + self.runs_per_course)
     def _runs_lower(self, row_idx, data):
         # Note each parser has a different implementation of this method
-        return [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
+        try:
+            return [data[row_idx + 1][col_idx] for col_idx in self._run_columns]
+        except Exception as eee:
+            pdb.set_trace()
+            1
 
     def _year(self):
         return int(self.date[0:4])

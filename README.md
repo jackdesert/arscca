@@ -160,6 +160,7 @@ Backlog
   * Update arscca.org to run /administrator over SSL
   * kazy beck (alias) 03-24-2018
   * Kim Fares (alias) http://localhost:6543/events/2018-11-02?cb=1
+  * Get rally parser to give a numerical score to DNF (instead of no score)
   * This rallyx event has empty columns after the 8 real runs: http://localhost:6543/events/2019-10-05?cb=1
   * Add events for 2012, 2013, 2014 AFTER 2015 passes
   * All rallyx events for 2019 and 2018
