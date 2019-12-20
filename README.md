@@ -190,6 +190,13 @@ Starting with year 2017, there is an extra column
 2017:
 
 
+Event Archive
+-------------
+
+There is a module in bin/archive_event.py that pulls most events from joomla
+and stores them in this repository.
+
+
 Backlog
 -------
 
