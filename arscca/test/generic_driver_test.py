@@ -17,28 +17,32 @@ class GenericDriverTest(unittest.TestCase):
         driver = GenericDriver(1942,
                                ['a', 'b', 'c', 'dain', 'e'],
                                None,
-                               5)
+                               5,
+                               13)
         self.assertEqual(driver.name, 'Dain')
 
     def test__car_class(self):
         driver = GenericDriver(1942,
                                ['a', 'ss', 'c'],
                                None,
-                               5)
+                               5,
+                               13)
         self.assertEqual(driver.car_class, 'ss')
 
     def test__car_number(self):
         driver = GenericDriver(1942,
                                ['a', 'ss', '16'],
                                None,
-                               5)
+                               5,
+                               13)
         self.assertEqual(driver.car_number, '16')
 
     def test__car_model(self):
         driver = GenericDriver(1942,
                                ['a', 'ss', '16', 'Pam', 'BMW'],
                                None,
-                               5)
+                               5,
+                               13)
         self.assertEqual(driver.car_model, 'BMW')
 
     # TODO mock/patch GenericDriver.slug
@@ -46,7 +50,8 @@ class GenericDriverTest(unittest.TestCase):
         driver = GenericDriver(1942,
                                ['some_number', 'ss', '16', 'Georgia Brown'],
                                None,
-                               5)
+                               5,
+                               13)
         self.assertEqual(driver.id, 'georgia_brown--ss_16')
 
     # TODO mock/patch Canon.slug
@@ -54,7 +59,8 @@ class GenericDriverTest(unittest.TestCase):
         driver = GenericDriver(1942,
                                ['some_number', 'ss', '16', 'Georgia Brown'],
                                None,
-                               5)
+                               5,
+                               13)
         self.assertEqual(driver.driver_slug, 'georgia_brown')
 
     # WHY AM I TESTING PRIVATE METHODS?
@@ -77,7 +83,8 @@ class GenericDriverTest(unittest.TestCase):
         driver = GenericDriver(None,
                                ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
                                ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',  'k'),
-                               7)
+                               7,
+                               10)
         self.assertEqual(driver._runs_upper(), ('7', '8', '9'))
         self.assertEqual(driver._runs_lower(), ('h', 'i', 'j'))
 
@@ -88,13 +95,14 @@ class GenericDriverTest(unittest.TestCase):
         driver = GenericDriver(None,
                                ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
                                None,
-                               5)
+                               5,
+                               9)
         self.assertEqual(driver._runs_upper(), ('5', '6', '7', '8'))
         self.assertEqual(driver._runs_lower(), tuple())
 
 
     def test__best_of_n(self):
-        driver = GenericDriver(None, None, None, None)
+        driver = GenericDriver(None, None, None, None, None)
         data = {('1', '2', '3'): Decimal('1'),
                 ('', '1'): Decimal('1'),
                 (' ', '1'): Decimal('1'),
@@ -108,7 +116,7 @@ class GenericDriverTest(unittest.TestCase):
     def test__penalty_from_pylons(self):
         data = {'1': 2,
                 '2': 4}
-        driver = GenericDriver(None, None, None, None)
+        driver = GenericDriver(None, None, None, None, None)
         for pylon_count, penalty_in_seconds in data.items():
             self.assertEqual(driver._penalty_from_pylons(pylon_count), penalty_in_seconds)
 
@@ -121,13 +129,13 @@ class GenericDriverTest(unittest.TestCase):
                 '90+ ': Decimal('90'),
                 '30+dnf': GenericDriver.INF,
                 '30+dns': GenericDriver.INF}
-        driver = GenericDriver(None, None, None, None)
+        driver = GenericDriver(None, None, None, None, None)
 
         for string, time in data.items():
             self.assertEqual(driver.time_from_string(string), time)
 
     @patch('arscca.models.driver.GenericDriver.runs', return_value=('6', '5', 'DNF', ' '))
     def test_num_completed_runs(self, runs):
-        driver = GenericDriver(None, None, None, None)
+        driver = GenericDriver(None, None, None, None, None)
         self.assertEqual(driver.num_completed_runs(), 3)
 

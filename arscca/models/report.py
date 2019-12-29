@@ -102,6 +102,6 @@ if __name__ == '__main__':
     print(rep._redis_keys())
     events, totals = rep.events_and_totals()
     pdb.set_trace()
-    5
+    1
 
 

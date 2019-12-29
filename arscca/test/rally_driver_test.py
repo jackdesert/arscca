@@ -22,19 +22,19 @@ class RallyDriverTest(unittest.TestCase):
 
     @patch('arscca.models.driver.RallyDriver.runs', return_value=('3','5', '7'))
     def test_cumulative_1(self, runs):
-        driver = RallyDriver(None, None, None, None)
+        driver = RallyDriver(None, None, None, None, None)
         self.assertEqual(driver.cumulative(), Decimal('15'))
 
     # with a blank run
     @patch('arscca.models.driver.RallyDriver.runs', return_value=('3','5', '7', ''))
     def test_cumulative_2(self, runs):
-        driver = RallyDriver(None, None, None, None)
+        driver = RallyDriver(None, None, None, None, None)
         self.assertEqual(driver.cumulative(), Decimal('15'))
 
     # with a DNF
     @patch('arscca.models.driver.RallyDriver.runs', return_value=('3','5', 'DNF', ''))
     def test_cumulative_3(self, runs):
-        driver = RallyDriver(None, None, None, None)
+        driver = RallyDriver(None, None, None, None, None)
         self.assertEqual(driver.cumulative(), RallyDriver.INF)
 
 

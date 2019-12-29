@@ -34,14 +34,10 @@ class Canon:
     def __init__(self, name_or_slug):
         # Old Rallycross scores have name formatted as Last, First
         # So we remove the comma and reverse the names
-        try:
-            if ',' in name_or_slug:
-                name_as_list = name_or_slug.split(',')
-                name_as_list.reverse()
-                name_or_slug = ' '.join(name_as_list)
-        except Exception as eee:
-            pdb.set_trace()
-            1
+        if ',' in name_or_slug:
+            name_as_list = name_or_slug.split(',')
+            name_as_list.reverse()
+            name_or_slug = ' '.join(name_as_list)
 
         self._canonical_slug = self._build_canonical_slug(name_or_slug)
 

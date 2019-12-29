@@ -1,8 +1,133 @@
 import pdb
 from decimal import Decimal
+from arscca.models.shared import Shared
 
 class Pax:
 
+    FACTORS_2009 = dict( AM   = 1.000,
+                         AS   = 0.843,
+                         ASP  = 0.866,
+                         BM   = 0.944,
+                         BP   = 0.868,
+                         BS   = 0.835,
+                         BSP  = 0.859,
+                         CM   = 0.907,
+                         CP   = 0.864,
+                         CS   = 0.837,
+                         CSP  = 0.862,
+                         DM   = 0.900,
+                         DP   = 0.865,
+                         DS   = 0.819,
+                         DSP  = 0.845,
+                         EM   = 0.894,
+                         EP   = 0.861,
+                         ES   = 0.823,
+                         ESP  = 0.846,
+                         F125 = 0.957,
+                         FJA  = 0.860,
+                         FJB  = 0.832,
+                         FJC  = 0.778,
+                         FM   = 0.903,
+                         FP   = 0.872,
+                         FS   = 0.833,
+                         FSAE = 0.954,
+                         FSP  = 0.831,
+                         GP   = 0.841,
+                         GS   = 0.821,
+                         HS   = 0.802,
+                         SM   = 0.867,
+                         SS   = 0.856,
+                         SSM  = 0.876,
+                         ST   = 0.818,
+                         STS  = 0.820,
+                         STR  = 0.842, # STR added from 2010 because 2009-09-19 uses it
+                         STU  = 0.836,
+                         STX  = 0.822,
+                         XP   = 0.882,)
+
+    FACTORS_2010 = dict( AM   = 1.000,
+                         AS   = 0.854,
+                         ASP  = 0.871,
+                         BM   = 0.965,
+                         BP   = 0.875,
+                         BS   = 0.847,
+                         BSP  = 0.865,
+                         CM   = 0.915,
+                         CP   = 0.866,
+                         CS   = 0.840,
+                         CSP  = 0.863,
+                         DM   = 0.913,
+                         DP   = 0.874,
+                         DS   = 0.825,
+                         DSP  = 0.849,
+                         EM   = 0.907,
+                         EP   = 0.873,
+                         ES   = 0.829,
+                         ESP  = 0.852,
+                         F125 = 0.959,
+                         FJA  = 0.869,
+                         FJB  = 0.834,
+                         FJC  = 0.772,
+                         FM   = 0.908,
+                         FP   = 0.876,
+                         FS   = 0.837,
+                         FSAE = 0.960,
+                         FSP  = 0.838,
+                         GP   = 0.850,
+                         GS   = 0.812,
+                         HS   = 0.803,
+                         SM   = 0.877,
+                         SMF  = 0.870,
+                         SS   = 0.860,
+                         SSM  = 0.883,
+                         ST   = 0.824,
+                         STR  = 0.842,
+                         STS  = 0.826,
+                         STU  = 0.844,
+                         STX  = 0.830,
+                         XP   = 0.890,)
+
+    FACTORS_2011 = dict( AM   = 1.000,
+                         AS   = 0.841,
+                         ASP  = 0.862,
+                         BM   = 0.958,
+                         BP   = 0.870,
+                         BS   = 0.839,
+                         BSP  = 0.859,
+                         CM   = 0.906,
+                         CP   = 0.860,
+                         CS   = 0.833,
+                         CSP  = 0.858,
+                         DM   = 0.905,
+                         DP   = 0.867,
+                         DS   = 0.817,
+                         DSP  = 0.844,
+                         EM   = 0.910,
+                         EP   = 0.863,
+                         ES   = 0.825,
+                         ESP  = 0.846,
+                         F125 = 0.952,
+                         FJA  = 0.866,
+                         FJB  = 0.826,
+                         FJC  = 0.755,
+                         FM   = 0.904,
+                         FP   = 0.872,
+                         FS   = 0.827,
+                         FSAE = 0.981,
+                         FSP  = 0.835,
+                         GP   = 0.837,
+                         GS   = 0.809,
+                         HS   = 0.791,
+                         SM   = 0.869,
+                         SMF  = 0.855,
+                         SS   = 0.857,
+                         SSM  = 0.875,
+                         ST   = 0.820,
+                         STR  = 0.836,
+                         STS  = 0.823,
+                         STU  = 0.838,
+                         STX  = 0.824,
+                         XP   = 0.887,)
 
     FACTORS_2012 = dict( AM   = 1.000,
                          AS   = 0.844,
@@ -23,6 +148,8 @@ class Pax:
                          EP   = 0.870,
                          ES   = 0.828,
                          ESP  = 0.848,
+                         FJB  = 1.0, # FJB Added because archive/2012-03-04.html uses it
+                         FJC  = 1.0, # FJC Added because archive/2012-03-04.html uses it
                          FM   = 0.913,
                          FP   = 0.875,
                          FS   = 0.825,
@@ -40,6 +167,7 @@ class Pax:
                          SS   = 0.858,
                          SSM  = 0.879,
                          SSP  = 0.865,
+                         ST   = 1.0, # ST Added because archive/2012-03-04.html uses it
                          STC  = 0.820,
                          STF  = 0.794,
                          STR  = 0.835,
@@ -80,6 +208,13 @@ class Pax:
                          JB   = 0.842,
                          JC   = 0.743,
                          KM   = 0.955,
+                         RTF  = 0.975, # RTF Added because archive/2013-03-02.html uses it
+                         RTR  = 0.951, # RT1 Added because archive/2013-04-28.html uses it
+                         RTRCS = 0.813, # Added
+                         RTRDS = 0.807, # Added
+                         RTRES = 0.807, # Added
+                         RTRFS = 0.809, # Added
+                         RTRHS = 0.784, # Added
                          SM   = 0.867,
                          SMF  = 0.852,
                          SS   = 0.859,
@@ -404,16 +539,22 @@ class Pax:
 
     @classmethod
     def factor(cls, year, car_class):
+        if not Shared.NOT_JUST_WHITESPACE_REGEX.search(car_class):
+            print('WARNING: generating PAX of 1.0 because car class empty')
+            return Decimal('1.0')
+
         factors = getattr(cls, f'FACTORS_{year}')
 
-        car_class = car_class.upper()
+        car_class = car_class.upper().strip()
+
         # Remove Ladies designation
         if car_class.endswith('L'):
             car_class = car_class[0:-1]
-        try:
-            factor = factors[car_class]
-        except Exception as eee:
-            pdb.set_trace()
-            1
+
+        # Remove Novice Designation
+        if car_class.startswith('N'):
+            car_class = car_class[1:]
+
+        factor = factors[car_class]
         return Decimal(str(factor))
 

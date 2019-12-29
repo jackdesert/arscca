@@ -1,6 +1,7 @@
 from arscca.models.canon import Canon
 from arscca.models.fond_memory import FondMemory
 from arscca.models.driver import GenericDriver
+from arscca.models.driver import TwoCourseDriver
 from arscca.models.log_splitter import LogSplitter
 from arscca.models.shared import Shared
 from arscca.models.util import Util
@@ -41,6 +42,10 @@ class Dispatcher:
         self._apply_points()
 
     def _set_second_half_started_on_drivers(self):
+        # Penalties for no completed runs in second half
+        # only apply to TwoCourseDriver
+        if self._log_splitter.driver_type != TwoCourseDriver:
+            return
 
         second_half_started = False
         # StandardParser uses two rows to represent a single driver
@@ -63,7 +68,7 @@ class Dispatcher:
 
         self.drivers.sort(key=self._log_splitter.driver_type.secondary_score)
         for index, driver in enumerate(self.drivers):
-            if driver.best_combined() < GenericDriver.INF:
+            if driver.primary_score() < GenericDriver.INF:
                 driver.secondary_rank = index + 1
 
         if not self.live:
@@ -71,7 +76,7 @@ class Dispatcher:
 
         self.drivers.sort(key=self._log_splitter.driver_type.primary_score)
         for index, driver in enumerate(self.drivers):
-            if driver.best_combined() < GenericDriver.INF:
+            if driver.primary_score() < GenericDriver.INF:
                 driver.primary_rank = index + 1
                 driver.percentile_rank = round(100 * index / num_drivers)
 
@@ -104,7 +109,7 @@ class Dispatcher:
         for index, driver in enumerate(self.drivers):
             canonical_driver_name = Canon(driver.name).name
 
-            if driver.best_combined() == GenericDriver.INF:
+            if driver.primary_score() == GenericDriver.INF:
                 # No points unless you scored
                 print(f'{canonical_driver_name} did not score')
                 continue

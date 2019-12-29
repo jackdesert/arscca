@@ -16,11 +16,12 @@ class GenericDriver:
     MISSED_GATE_PENALTY_IN_SECONDS = 10
 
 
-    def __init__(self, year, row_1, row_2, first_run_column):
+    def __init__(self, year, row_1, row_2, first_run_column, published_primary_score_column):
         self.year = year
         self._row_1 = row_1
         self._row_2 = row_2
         self._first_run_column = first_run_column
+        self._published_primary_score_column = published_primary_score_column
         # See Parser.parse() for a list of instance variables stored on Driver
 
 
@@ -52,15 +53,6 @@ class GenericDriver:
     def published_primary_score(self):
         return self._row_1[self._published_primary_score_column]
 
-    @property
-    def _published_primary_score_column(self):
-        # When one row per driver, _row_2 is None and primary score
-        # is in the second to last column
-        if self._row_2 == None:
-            return -2
-
-        # When two rows per driver, primary score is in the last column
-        return -1
 
     def pax_factor(self):
         return Pax.factor(self.year, self.car_class)
@@ -148,17 +140,25 @@ class GenericDriver:
                 assert self.DNF_REGEX.match(self.published_primary_score)
             elif isinstance(self, TwoCourseDriver) and self.second_half_started:
                 # AXWare shows "dns" for two day events if day two has
-                # not started. So ignore this
-                assert calculated == Decimal(self.published_primary_score)
+                # not started. So we only make the following assertion
+                # if the second half has actually started
+                #
+                # In the case of 2012-11-04, there are DNS where they don't belong
+                # So test for DNS first before instantiating a Decimal()
+                assert str(calculated) == self.published_primary_score.strip()
         except AssertionError:
+            try: pub = float(self.published_primary_score)
+            except ValueError: pub = self.published_primary_score
+
             print(msg)
             return dict(driver_name=self.name,
                         calculated=float(calculated),
-                        published=float(self.published_primary_score))
+                        published=pub)
         except InvalidOperation as exc:
             # We end up here when attempting to parse Decimal('dns')
             print(msg)
             print(f'ERROR parsing scores for {self.name}')
+            pdb.set_trace()
             raise exc
 
     def __repr__(self):
@@ -187,11 +187,14 @@ class GenericDriver:
         # Delete these foundational rows since we break the important data
         # out by separate keys
         del props['_first_run_column']
+        del props['_published_primary_score_column']
         del props['_row_1']
         del props['_row_2']
 
         props.update(name = self.name,
                      car_class = self.car_class,
+                     car_model = self.car_model,
+                     car_number = self.car_number,
                      primary_score = str(self.primary_score()),
                      secondary_score = str(self.secondary_score()),
                      published_primary_score = str(self.published_primary_score),
@@ -250,7 +253,6 @@ class TwoCourseDriver(GenericDriver):
             return fastest.quantize(Decimal('.001'))
 
 class OneCourseDriver(GenericDriver):
-    _published_primary_score_column = -2
 
     def primary_score(self):
         return self.best_run()
