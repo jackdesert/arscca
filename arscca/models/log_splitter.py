@@ -37,12 +37,16 @@ class LogSplitter:
     DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
 
 
-    def __init__(self, date, url, live):
+    def __init__(self, date, url, live, local_html_file=None):
         self.date = date
         self.url = url
         self.live = live # Boolean
+
+        # pass in a local_html_file for testing
+        self._local_html_file = local_html_file
         self._point_storage = defaultdict(int)
         self.driver_type = None
+        self._results_table = None
         # self.drivers will be an array
         # self.table_width with be an integer
         # self.event_name will be a string
@@ -74,6 +78,10 @@ class LogSplitter:
         if self.live:
             with open(self.LIVE_FILENAME, 'r') as ff:
                 html = ff.read()
+        elif self._local_html_file:
+            # This path is used with the test suite
+            with open(self._local_html_file, 'r') as ff:
+                html = ff.read()
         else:
             rr = requests.get(self.url, allow_redirects=False, timeout=10)
             html = rr.text
@@ -97,7 +105,7 @@ class LogSplitter:
 
     def _load_results_table(self):
 
-        # First table has datethe event name and date
+        # First table has the event name and date
         date_table = self._soup('table')[0] # Failure here means file is empty; check twisted
         date_string = date_table('th')[0].text
         self.event_date = self.format_date(date_string)
@@ -105,7 +113,10 @@ class LogSplitter:
         for table in self._soup('table'):
             for tr in table('tr'):
                 for th in tr('th'):
-                    if th.text == 'Driver':
+                    # Two types of headers
+                    # Standard headers: archive/2015-07-19.html
+                    # Fancy headers: archive/2012-03-04.html
+                    if th.text == 'Times':
                         self._results_table = table
                         return
 
@@ -149,6 +160,8 @@ class LogSplitter:
             self.driver_type = OneCourseDriver
 
     def _infer_num_rows_per_driver(self):
+
+        assert self._data
 
         if self.driver_type == TwoCourseDriver:
             return 2

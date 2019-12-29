@@ -194,7 +194,7 @@ Event Archive
 -------------
 
 There is a module in bin/archive_event.py that pulls most events from joomla
-and stores them in this repository.
+and stores them in this repository in the archive/ directory.
 
 
 Backlog
