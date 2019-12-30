@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from bs4 import Comment
+from collections import defaultdict
 from datetime import datetime
 import pdb
 import re
@@ -97,6 +98,11 @@ class FinalFetcher:
     STANDARD_DATE_FORMAT = '%Y-%m-%d'
 
     JOOMLA_ID_REGEX = re.compile('(\?|&)id=(\d+)(:|&|$)')
+    CRLF = '\r\n'
+    LF = '\n'
+
+    # Keep a log of all events fetched
+    LOG = []
 
     def __init__(self, year, path):
         self._year = year
@@ -122,6 +128,7 @@ class FinalFetcher:
 
         with open(self._filename, 'w') as ff:
             ff.write(self._html)
+        self.LOG.append((self._date, self._joomla_id))
 
 
     @property
@@ -141,7 +148,7 @@ class FinalFetcher:
 
         req = loop_get(url)
 
-        self._html = req.text
+        self._html = req.text.replace(self.CRLF, self.LF)
 
         soup = BeautifulSoup(self._html, 'lxml')
         for th in soup('th'):
@@ -167,15 +174,29 @@ class FinalFetcher:
                 self._date = date_object.strftime(self.STANDARD_DATE_FORMAT)
                 return
 
-        pdb.set_trace()
-        #raise RuntimeError('Expected to find a date either in a th or in a comment')
+        raise RuntimeError('Expected to find a date either in a th or in a comment')
 
+    @classmethod
+    def stats(cls):
+        print(f'{len(cls.LOG)} events')
+        dates = defaultdict(int)
+        joomla_ids = defaultdict(int)
+        for date, joomla_id in cls.LOG:
+            dates[date] += 1
+            joomla_ids[joomla_id] += 1
+        duplicate_dates = [date for date, count in dates.items() if count > 1]
+        duplicate_joomla_ids = [jid for jid, count in joomla_ids.items() if count > 1]
+        print(f'duplicate dates: {duplicate_dates}')
+        print(f'duplicate joomla_ids: {duplicate_joomla_ids}')
 
 if __name__ == '__main__':
 
+
+    FinalFetcher.stats()
     top = TopLevelFetcher('http://arscca.org/index.php?option=com_content&view=category&id=8&Itemid=104')
     top.locate_years()
 
+    FinalFetcher.stats()
 
 
 
