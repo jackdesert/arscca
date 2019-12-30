@@ -96,6 +96,8 @@ class FinalFetcher:
     FRIENDLY_DATE_FORMAT = '%b %d %Y'
     STANDARD_DATE_FORMAT = '%Y-%m-%d'
 
+    JOOMLA_ID_REGEX = re.compile('(\?|&)id=(\d+)(:|&|$)')
+
     def __init__(self, year, path):
         self._year = year
         self._path = path
@@ -126,7 +128,13 @@ class FinalFetcher:
     def _filename(self):
         assert self._date
 
-        return f'{self.OUTPUT_DIR}/{self._date}.html'
+        return f'{self.OUTPUT_DIR}/{self._date}__{self._joomla_id}.html'
+
+    @property
+    def _joomla_id(self):
+        search = self.JOOMLA_ID_REGEX.search(self._path)
+        assert search
+        return search[2]
 
     def _store_html_and_date(self):
         url = f'{self.BASE_URL}/{self._path}'
