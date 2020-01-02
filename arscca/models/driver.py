@@ -116,9 +116,15 @@ class GenericDriver:
     def runs(self):
         return self._runs_upper() + self._runs_lower()
 
-    def num_completed_runs(self):
+    def num_completed_runs_upper(self):
+        return self._num_completed(self._runs_upper())
+
+    def num_completed_runs_lower(self):
+        return self._num_completed(self._runs_lower())
+
+    def _num_completed(self, runs):
         count = 0
-        for run in self.runs():
+        for run in runs:
             if Shared.NOT_JUST_WHITESPACE_REGEX.search(run):
                 count += 1
         return count
@@ -170,7 +176,10 @@ class GenericDriver:
         print(f'primary_score   {self.primary_score()}')
         print(f'secondary_score {self.secondary_score()}')
 
-    def properties(self):
+    # max_runs_upper and max_runs_lower are used
+    # to trim off blank runs so that it displays
+    # beautifully in HTML
+    def properties(self, max_runs_upper=None, max_runs_lower=None):
         slug_and_head_shot = Photo.slug_and_head_shot(self.name)
 
         props = self.__dict__.copy()
@@ -186,10 +195,9 @@ class GenericDriver:
                      primary_score = str(self.primary_score()),
                      secondary_score = str(self.secondary_score()),
                      published_primary_score = str(self.published_primary_score),
-                     #fastest_time = str(self.fastest_time()),
-                     #fastest_pax_time = str(self.fastest_pax_time()),
-                     runs_upper = self._runs_upper(),
-                     runs_lower = self._runs_lower(),
+                     # Note that [1,2][0:None] returns [1,2]
+                     runs_upper = self._runs_upper()[0:max_runs_upper],
+                     runs_lower = self._runs_lower()[0:max_runs_lower],
                      pax_factor = str(self.pax_factor()),
                      slug = slug_and_head_shot.get('slug') or '',
                      headshot = slug_and_head_shot.get('head_shot') or '')

@@ -265,9 +265,15 @@ def fetch_event(date, url, live=False):
         histogram_filename = histogram.filename
         histogram_conformed_count = histogram.conformed_count
 
-    drivers_as_dicts = [driver.properties() for driver in dispatcher.drivers]
+    runs_per_driver_upper = dispatcher.max_runs_per_driver_upper()
+    runs_per_driver_lower = dispatcher.max_runs_per_driver_lower()
+
+    drivers_as_dicts = []
+    for driver in dispatcher.drivers:
+        props = driver.properties(runs_per_driver_upper, runs_per_driver_lower)
+        drivers_as_dicts.append(props)
+
     drivers_json = json.dumps(drivers_as_dicts)
-    runs_per_driver = dispatcher.max_runs_per_driver()
 
     event = dict(drivers_json=drivers_json,
                  event_name=dispatcher.event_name,
@@ -277,7 +283,7 @@ def fetch_event(date, url, live=False):
                  live=live,
                  histogram_filename=histogram_filename,
                  histogram_conformed_count=histogram_conformed_count,
-                 runs_per_driver=runs_per_driver,
+                 runs_per_driver=runs_per_driver_upper + runs_per_driver_lower,
                  errors=errors)
     if live:
         # Set revision but do not increment in REDIS

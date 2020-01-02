@@ -132,9 +132,13 @@ class Dispatcher:
 
         return points
 
-    def max_runs_per_driver(self):
+    def max_runs_per_driver_upper(self):
         # This is used by the view
-        return max([driver.num_completed_runs() for driver in self.drivers])
+        return max([driver.num_completed_runs_upper() for driver in self.drivers])
+
+    def max_runs_per_driver_lower(self):
+        # This is used by the view
+        return max([driver.num_completed_runs_lower() for driver in self.drivers])
 
     @property
     def event_helper(self):
