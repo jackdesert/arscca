@@ -197,10 +197,10 @@ There is a module in bin/archive_event.py that pulls most events from joomla
 and stores them in this repository in the archive/ directory.
 
 
-Verify All Events Parse  // Load Event Names into Redis
+Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 -------------------------------------------------------
 
-    env/bin/python bin/load_event_names.py
+    env/bin/python bin/load_event_names_and_fond_memories.py
 
 
 Backlog
