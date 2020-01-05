@@ -354,6 +354,18 @@ span.spoof
   vertical-align: top;
 }
 
+.fond-memory__info_dirt, .event__link_dirt a
+{
+  background: #fda;
+}
+
+.fond-memory__link_subdued
+{
+  color: #a99;
+}
+
+.
+
 @media (max-width: 1199px) {
 }
 @media (max-width: 991px) {

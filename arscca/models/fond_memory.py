@@ -57,43 +57,9 @@ class FondMemory:
         for json_blob in json_blobs:
             blob = json.loads(json_blob)
             event_date = blob['event_date']
-            blob['event_date_friendly'] = cls._friendly_date(event_date)
             output[event_date] = blob
 
         return output
-
-    # This is called sparse because it leaves gaps where they did not compete
-    @classmethod
-    def event_dates_by_year(cls):
-        output = defaultdict(list)
-        dates = cls.REDIS.smembers(cls.REDIS_KEY_EVENT_DATES)
-        dates_by_year = defaultdict(list)
-        for date in sorted(dates):
-            year = date[0:4]
-            output[year].append(date)
-        return output
-
-    # Returns a dictionary mapping event dates to their friendly names
-    # (Jan 12) instead of 20xx-01-12
-    @classmethod
-    def friendly_date_dictionary(cls, event_dates_by_year):
-        output = {}
-        for _, dates in event_dates_by_year.items():
-            for date in dates:
-                output[date] = cls._friendly_date(date)
-        return output
-
-    @classmethod
-    def _friendly_date(cls, event_date):
-        # There is one event that ends in a letter, so we
-        # strip the letter off
-        event_date = event_date[0:10]
-        day = datetime.strptime(event_date, '%Y-%m-%d')
-        return day.strftime('%b&nbsp;%d')
-
-
-
-
 
     @classmethod
     def _all_keys_for_driver(cls, driver_slug):

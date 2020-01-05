@@ -206,6 +206,7 @@ Verify All Events Parse  // Load Event Names into Redis
 Backlog
 -------
 
+  * on /drivers/:slug provide links to events where they did not participate
   * Update arscca.org to run /administrator over SSL
   * kazy beck (alias) 03-24-2018
   * Kim Fares (alias) http://localhost:6543/events/2018-11-02?cb=1

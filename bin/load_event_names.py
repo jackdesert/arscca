@@ -8,7 +8,7 @@ HOST = 'http://localhost:6543'
 # HOST = 'http://arscca.jackdesert.com'
 
 for year, events in PublishedEvent.dates_by_year().items():
-    for date, joomla_id in events:
+    for date, joomla_id, _, __ in events:
         url = f'{HOST}/events/{date}?cb=1'
         print(f'Parsing {date}')
 

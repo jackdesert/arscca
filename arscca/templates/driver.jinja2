@@ -29,19 +29,19 @@
 
     {% if fond_memories %}
         <div class='space-1rem'></div>
-        <h2>Fond Memories</h2>
+        <h2>Career</h2>
         <div class='space-1rem'></div>
         <table>
             {% for year, event_dates in event_dates_by_year | dictsort(reverse=True) %}
                 <tr class='{{ loop.cycle('', 'tr_stripe')}}'>
                     <td class='fond-memory__year'>{{year}}</td>
-                    {% for event_date in event_dates %}
-                        <td class='fond-memory__info'>
+                    {% for event_date, _, surface, friendly_date in event_dates | sort %}
+                        <td class='fond-memory__info fond-memory__info_{{ surface }}'>
                         {% if event_date in fond_memories %}
                             {% set memory = fond_memories[event_date] %}
                             <div>
                                 <a href='/events/{{event_date}}'>
-                                    {{ memory['event_date_friendly'] | safe }}
+                                    {{ friendly_date | safe }}
                                 </a>
                             </div>
                             <div>{{memory['car_model']}}</div>
@@ -50,7 +50,11 @@
                                 <div>PR: {{pr}}</div>
                             {% endif %}
                         {% else %}
-                            {{ friendly_date_dictionary[event_date] | safe }}
+                            <div>
+                                <a class='fond-memory__link_subdued' href='/events/{{event_date}}'>
+                                    {{ friendly_date | safe }}
+                                </a>
+                            </div>
                         {% endif %}
                         </td>
                     {% endfor %}

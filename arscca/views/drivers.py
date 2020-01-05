@@ -1,4 +1,5 @@
 from arscca.models.fond_memory import FondMemory
+from arscca.models.published_event import PublishedEvent
 from arscca.models.gossip import Gossip
 from arscca.models.photo import Photo
 from datetime import date as Date
@@ -20,8 +21,7 @@ def driver_view(request):
     name = slug.replace('_', ' ').title()
     photos = Photo.all_for_driver(slug)
 
-    event_dates_by_year      = FondMemory.event_dates_by_year()
-    friendly_date_dictionary = FondMemory.friendly_date_dictionary(event_dates_by_year)
+    event_dates_by_year = PublishedEvent.dates_by_year()
 
     fond_memories = FondMemory.all_for_driver(slug)
 
@@ -29,6 +29,5 @@ def driver_view(request):
                 photos=photos,
                 gossip=gossip.html(),
                 event_dates_by_year=event_dates_by_year,
-                friendly_date_dictionary=friendly_date_dictionary,
                 fond_memories=fond_memories)
 

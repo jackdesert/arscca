@@ -5,74 +5,31 @@
 
     <div class='crumb'>Home</div>
 
+    <h2 class='h2_banner'>Live Results</h2>
+    <div class='event__link'><a href='/live'>Live Results</a></div>
+
     {% for year, event_dates in event_dates_by_year | dictsort(reverse=True) %}
         <h2 class='h2_banner'>{{ year }} (looped)</h2>
-            {% for event_date, joomla_id in event_dates %}
-                <div class='event__link'>
+        <div class='left'>
+            {% for event_date, joomla_id, surface, friendly_date in event_dates %}
+                <div class='event__link event__link_{{ surface }}'>
                     {% set event_name = event_names[event_date] or event_date %}
                     <a href='/events/{{ event_date }}'>{{ event_name }}</a>
                 </div>
             {% endfor %}
+        </div>
+
+        <!--<div class='left trophy__holder'>
+            <a href='/standings'>
+                <img class='trophy__image' src='{{ request.static_path('arscca:static/images/trophy.png') }}'></img>
+                <div class='trophy__link'>Standings</div>
+            </a>
+        </div>
+        -->
+        <div class='clear'></div>
+
     {% endfor %}
 
-
-    <h2 class='h2_banner'>2019 RallyX</h2>
-    <div class='left'>
-        <div class='event__link'><a href='/events/2019-11-09'>2019 RallyX Round 6</a></div>
-    </div>
-
-    <h2 class='h2_banner'>2019 Results (Sortable)</h2>
-
-    <div class='left'>
-        <div class='event__link'><a href='/live'>Live Results</a></div>
-        <div class='event__link'><a href='/events/2019-12-08'>2019 Solo II Event 14 (Hangover)</a></div>
-        <div class='event__link'><a href='/events/2019-10-26'>2019 Solo II Event 13 (Cup)</a></div>
-        <div class='event__link'><a href='/events/2019-10-13'>2019 Solo II Event 12</a></div>
-        <div class='event__link'><a href='/events/2019-09-22'>2019 Solo II Event 10</a></div>
-        <div class='event__link'><a href='/events/2019-09-21'>2019 Solo II Event 9</a></div>
-        <div class='event__link'><a href='/events/2019-08-11'>2019 Solo II Event 8</a></div>
-        <div class='event__link'><a href='/events/2019-07-14'>2019 Solo II Event 6</a></div>
-        <div class='event__link'><a href='/events/2019-06-16'>2019 Solo II Event 5</a></div>
-        <div class='event__link'><a href='/events/2019-05-19'>2019 Solo II Event 4</a></div>
-        <div class='event__link'><a href='/events/2019-04-28'>2019 Solo II Event 2</a></div>
-        <div class='event__link'><a href='/events/2019-03-24'>2019 Solo II Event 1</a></div>
-    </div>
-    <div class='left trophy__holder'>
-        <a href='/standings'>
-            <img class='trophy__image' src='{{ request.static_path('arscca:static/images/trophy.png') }}'></img>
-            <div class='trophy__link'>Standings</div>
-        </a>
-    </div>
-    <div class='clear'></div>
-
-    <h2 class='h2_banner'>2018 Results (Sortable)</h2>
-
-
-
-
-    <div class='event__link'><a href='/national_events/2018'>2018 Nationals (Lincoln Air Park)</a></div>
-    <div class='event__link'><a href='/events/2018-10-21'>2018 Solo II Event 13</a></div>
-
-    <!-- Governer's Cup (best time of the day) -->
-    <div class='event__link'><a href='/events/2018-09-23'>2018 Solo II Event 12 (Governor's Cup)</a></div>
-
-    <div class='event__link'><a href='/events/2018-09-22'>2018 Solo II Event 11</a></div>
-    <div class='event__link'><a href='/events/2018-08-11b'>2018 Solo II Event 10</a></div>
-    <div class='event__link'><a href='/events/2018-08-11a'>2018 Solo II Event 9</a></div>
-    <div class='event__link'><a href='/events/2018-07-22'>2018 Solo II Event 8</a></div>
-    <div class='event__link'><a href='/events/2018-07-21'>2018 Solo II Event 7</a></div>
-    <div class='event__link'><a href='/events/2018-06-24'>2018 Solo II Event 6</a></div>
-    <div class='event__link'><a href='/events/2018-06-10'>2018 Solo II Event 5</a></div>
-    <div class='event__link'><a href='/events/2018-06-09'>2018 Solo II Event 4</a></div>
-    <div class='event__link'><a href='/events/2018-05-26'>2018 Solo II Event 3</a></div>
-    <div class='event__link'><a href='/events/2018-04-15'>2018 Solo II Event 2</a></div>
-    <div class='event__link'><a href='/events/2018-03-18'>2018 Solo II Event 1</a></div>
-
-
-
-
-    <h2 class='h2_banner'>2017 Results (Sortable)</h2>
-    <div class='event__link'><a href='/national_events/2017'>2017 Nationals</a></div>
 
 
     {% include '_driver_photos.jinja2' %}
