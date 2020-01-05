@@ -119,7 +119,7 @@ class TwoCourseDriverTest(unittest.TestCase):
             10)
         driver.second_half_started = True
 
-        expected = {'year': 2017, 'name': 'Rodrigo', 'car_class': 'ss', 'second_half_started': True, 'runs_upper': ('7', '8', '9+1'), 'runs_lower': ('10', '11', '12'), 'published_primary_score': '100', 'primary_score': '37', 'secondary_score': '35.150', 'pax_factor': '0.95', 'slug': '', 'headshot': 'h'}
+        expected = {'year': 2017, 'name': 'Rodrigo', 'car_class': 'ss', 'car_model': '4', 'car_number': '2', 'second_half_started': True, 'runs_upper': ('7', '8', '9+1'), 'runs_lower': ('10', '11', '12'), 'published_primary_score': '100', 'primary_score': '37', 'secondary_score': '35.150', 'pax_factor': '0.95', 'slug': '', 'headshot': 'h'}
 
         self.assertEqual(driver.properties(), expected)
 

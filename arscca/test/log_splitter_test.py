@@ -62,8 +62,7 @@ class LogSplitterTest(unittest.TestCase):
     def test_build_and_return_drivers_2(self):
         # THIS IS AN INTEGRATION TEST
 
-        #for filename in sorted(glob('archive/*.html')):
-        for filename in ['archive/2019-10-13__488.html']:
+        for filename in sorted(glob('archive/*.html')):
             print(f'{filename} (render only)')
             date = DATE_REGEX.match(filename)[1]
             splitter = LogSplitter(date,
@@ -77,7 +76,6 @@ class LogSplitterTest(unittest.TestCase):
             # If there is no _data, it probably missed the table
             assert splitter._row_groups
 
-            pdb.set_trace()
             for driver in drivers:
                 assert isinstance(driver, GenericDriver)
 

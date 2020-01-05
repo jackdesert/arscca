@@ -134,8 +134,14 @@ class GenericDriverTest(unittest.TestCase):
         for string, time in data.items():
             self.assertEqual(driver.time_from_string(string), time)
 
-    @patch('arscca.models.driver.GenericDriver.runs', return_value=('6', '5', 'DNF', ' '))
-    def test_num_completed_runs(self, runs):
+    @patch('arscca.models.driver.GenericDriver._runs_upper', return_value=('6', '5', 'DNF', ' '))
+    def test_num_completed_runs_upper(self, runs):
         driver = GenericDriver(None, None, None, None, None)
-        self.assertEqual(driver.num_completed_runs(), 3)
+        self.assertEqual(driver.num_completed_runs_upper(), 3)
+
+    @patch('arscca.models.driver.GenericDriver._runs_lower', return_value=('6', '5', '', ' '))
+    def test_num_completed_runs_lower(self, runs):
+        driver = GenericDriver(None, None, None, None, None)
+        self.assertEqual(driver.num_completed_runs_lower(), 2)
+
 
