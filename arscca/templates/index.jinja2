@@ -9,7 +9,7 @@
     <div class='event__link'><a href='/live'>Live Results</a></div>
 
     {% for year, event_dates in event_dates_by_year | dictsort(reverse=True) %}
-        <h2 class='h2_banner'>{{ year }} (looped)</h2>
+        <h2 class='h2_banner'>{{ year }}</h2>
         <div class='left'>
             {% for event_date, joomla_id, surface, friendly_date in event_dates %}
                 <div class='event__link event__link_{{ surface }}'>
