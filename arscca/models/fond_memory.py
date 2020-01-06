@@ -75,6 +75,37 @@ class FondMemory:
                 break
         return keys
 
+    # This method is useful for finding drivers with misspelled names
+    # NOTE: Anything already in Canon has already been deduped
+    @classmethod
+    def all_driver_names(cls):
+        match = f'{cls.REDIS_KEY_PREPEND}--*'
+        names = defaultdict(int)
+        names_reversed = defaultdict(int)
+        cursor = 0
+        while True:
+            cursor, matching_keys = cls.REDIS.scan(cursor=cursor, match=match)
+            for key in matching_keys:
+                name = key.split('--')[1]
+                names[name] += 1
+                name_reversed = name.split('_')
+                name_reversed.reverse()
+                name_reversed = '_'.join(name_reversed)
+                names_reversed[name_reversed] += 1
+            if cursor == 0:
+                break
+
+        cls._write_dict_to_file(names, '/tmp/arscca-names')
+        cls._write_dict_to_file(names_reversed, '/tmp/arscca-names-reversed')
+
+    @classmethod
+    def _write_dict_to_file(cls, data, filename):
+        with open(filename, 'w', encoding='utf-8') as ff:
+            ff.write('')
+        with open(filename, 'a', encoding='utf-8') as ff:
+            for key, value in sorted(data.items()):
+                ff.write(f'{key.ljust(20)} {str(value).rjust(3)}\n')
+
 
 
     # Event names are stored so they can be used on the front page
@@ -90,6 +121,7 @@ class FondMemory:
 
 
 if __name__ == '__main__':
+    FondMemory.all_driver_names()
     keys = FondMemory._all_keys_for_driver('jack_desert')
     print(keys)
 

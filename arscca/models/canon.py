@@ -15,20 +15,148 @@ class Canon:
     # { erroneous_slug : correct_slug }
     # AKA
     # { associated_slug : canonical_slug }
-    ALIASES = {'joshua_mapili': 'josh_mapili',
-               'nicholas_mellenthin': 'nick_mellenthin',
-               'richard_davis': 'rick_davis',
-               'kenneth_hiegel': 'kenny_hiegel',
-               'james_express_lane': 'james_lane',
-               'philip_rucker': 'phil_rucker',
+    ALIASES = {
+               # NICKNAMES
+               'alexander_hood': 'alex_hood',
                'alexander_ross': 'alex_ross',
-               'jeff_gibson': 'jeff_gilson',
-               'robert_darin_laughard': 'darin_laughard',
-               'william_eldridge': 'william_eldredge',
-               'robin_steffon': 'steffon_robin',
-               'jeffrey_pierce': 'jeff_pierce',
                'charles_cartwright': 'jeff_cartwright',
-               'kimberly_hodges': 'kim_fares'}
+               'james_express_lane': 'james_lane', # TWO
+               'james_fast_lane': 'james_lane',    # TWO
+               'jeff_gibson': 'jeff_gilson',
+               'jeffrey_pierce': 'jeff_pierce',
+               'joshua_mapili': 'josh_mapili',
+               'joshua_spear': 'josh_spear',
+               'kenneth_hiegel': 'kenny_hiegel', # ONE NICK, TWO MISP
+               'kimberly_hodges': 'kim_fares',
+               'nicholas_mellenthin': 'nick_mellenthin',
+               'philip_rucker': 'phil_rucker',
+               'richard_davis': 'rick_davis',
+               'robert_darin_laughard': 'darin_laughard', # TWO NICKS
+               'robert_laughard': 'darin_laughard',       # TWO NICKS
+               'robin_steffon': 'steffon_robin',
+               'william_eldridge': 'william_eldredge',
+               'christopher_edens': 'chris_edens',
+               'jarf_hobbs': 'jeff_hobbs',
+               'kacy_beck_abunasrah': 'kacy_beck',# ONE NICK, ONE MISP
+               'lacie_barkley': 'lacie_edens',
+               'sparkles_barkley': 'david_barkley',
+               'tal_penfound': 'taliessin_penfound',
+               'vincent_parker': 'vince_parker',
+               'bokamper_danny': 'bokamper_daniel',
+               'bona_rebecca': 'bona_becca',
+               'david_lousteau': 'david_lousteau_jr', # ONE NICK, ONE MISP
+               'elsie_richard': 'elsie_rick',
+               'freed_christopher': 'freed_chris',
+               'stafford_stephen': 'stafford_steve',
+               'elizabeth_yarboro': 'liz_yarboro',
+
+               # MISSPELLINGS FOUND VIA FondMemory
+               'asher_wunderhal': 'asher_wunderl', # Is this the correct spelling?
+               'blake_alverado': 'blake_alvarado',
+               'brady_coretz':  'brady_loretz',  # TWO
+               'bradey_loretz': 'brady_loretz', # TWO
+               'brent_blankinship': 'brent_blankenship',
+               'adam_catorette': 'adam_cadorette',
+               'adam_nix': 'adam_hix', # spelling?
+               'kazy_beck': 'kacy_beck',          # MULTIPL
+               'andrew_lydecky': 'andrew_lydecker',
+               'bentley_brissom': 'bentley_grissom',       # TWO
+               'bentley_grissom_hatch': 'bentley_grissom', # TWO
+               'brandan_mellenthin': 'brandon_mellenthin',
+               'bruce_hulbut': 'bruce_hurlbut',
+               'cameron_haskins': 'cameron_hoskins', # spelling?
+               'chad_langly': 'chad_langley', # spelling?
+               'chase_nufen': 'chase_nufer',
+               'christopher_weigand': 'christopher_weiand',
+               'chris_weigand': 'christopher_weiand',
+               'cody_langly': 'cody_langley', # spelling?
+               'corey_pettet': 'corey_pettett', # THREE
+               'corey_pettit': 'corey_pettett', # THREE
+               'cory_pettit' : 'corey_pettett', # THREE
+               'curtis_perrott': 'curtis_parrott',
+               'dale_gseccman': 'dale_gsellman', # TWO. spelling?
+               'gseccman_d': 'dale_gsellman', # TWO. spelling?
+               'dale_hurle': 'dale_hurley',
+               'danah_meade': 'danah_mead',
+               'daniel_barshart': 'daniel_barghart', # spelling?
+               'david_louseau': 'david_lousteau', # which lousteau is this supposed to be
+               'dean_lyon': 'dean_lyons',
+               'edward_abihabib': 'edouard_abihabib',
+               'ellia_gildner': 'ellis_gildner', # TWO
+               'ellis_gilner': 'ellis_gildner',  # TWO
+               'gary_reynold': 'gary_reynolds',
+               'gordan_gibson': 'gordon_gibson', # THREE
+               'gorden_gibson': 'gordon_gibson', # THREE
+               'gordon': 'gordon_gibson', # THREE
+               'ian_ferrerll': 'ian_ferrell',
+               'isabel_santos': 'izabel_santos', # TWO
+               'isabella_santos': 'izabel_santos', # TWO
+               'james_powel': 'james_powell',
+               'john_seaton': 'jon_seaton', # TWO
+               'jon_seatoin': 'jon_seaton', # TWO
+               'jonathan_jacson': 'jonathan_jackson',
+               'josh_mapih': 'josh_mapili',   # THREE MISPELLINGS, one nick
+               'josh_mepin': 'josh_mapili',  # THREE MISPELLINGS, one nick
+               'joshua_mapiu': 'josh_mapili',  # THREE MISPELLINGS, one nick
+               'jp_kvetko': 'john_kvetko',
+               'kaylie_hall': 'kaylie_hall',
+               'kaylee_costello': 'kayleigh_costello', # TWO
+               'kayligh_costello': 'kayleigh_costello', # TWO
+               'kaylee_hall': 'kaylie_hall',
+               'kenny_hiegal': 'kenny_hiegel', # ONE NICK, TWO MISP
+               'kenny_kiegel': 'kenny_hiegel',# ONE NICK, TWO MISP
+               'kerry_emert': 'kerry_emmert',
+               'kevin_abbot': 'kevin_abbott',
+               'kevin_balte': 'kevin_baltz',
+               'kyle_gauthia': 'kyle_gauthier',
+               'lance_saveille': 'lance_saville',
+               'stephen_edmister': 'stephen_edmisten',
+               'stephen_gleeson': 'stephen_gleason',
+               'steven_elliot': 'steven_elliott',
+               'stuart_bennet': 'stuart_bennett', # TWO
+               'stuar_bennett': 'stuart_bennett',# TWO
+               'suart_leiby': 'stuart_leiby',
+               'william_eldrrdge': 'william_eldredge',
+               'xach_shaddox': 'zach_shaddox',
+               'robert_bennet': 'robert_bennett',
+               'phliip_clamon': 'philip_clamon',
+               'craiglow_berry': 'craiglow_barry',
+               'daily_jason': 'dailey_jason',
+               'davis_chelly': 'davis_chelle',
+               'lousteau_jr_davis': 'david_lousteau_jr',# ONE NICK, TWO MISP
+               'david_louseau': 'david_lousteau_jr',# ONE NICK, TWO MISP
+               'sidney_degrasse': 'sidney_degrass',
+               'robert_dorlague': 'robert_dorlaque',
+               'carl_dunn': 'karl_dunn',
+               'lawren_hardy': 'lauren_hardy',
+               'matt_lieblong': 'matthew_lieblong',
+               'sharon_lousteau': 'sher_lousteau',
+               'phillip_martinez': 'philip_martinez',
+               'jennifer_mathers': 'jennifer_mather',
+               'jenniffer_mccrory': 'jennifer_mccrory',
+               'milan_rakid': 'milan_rakich', # TWO
+               'milan_rakish': 'milan_rakich',# TWO
+               'saugeeth_sammul': 'sangeeth_samuel',
+               'lance_saveille': 'lance_saville',
+               'matt_setliff': 'matthew_setliff', # TWO
+               'matt_setiff': 'matthew_setliff',  # TWO
+               'scott_selfie': 'scott_silfies',
+               'jonathan_stanley': 'johnathan_stanley', # spelling?
+               'ryan_stempke': 'ryan_stampke',
+               'zaxh_tucker': 'zach_tucker',
+               '': '',
+               '': '',
+               '': '',
+               '': '',
+               '': '',
+               '': '',
+               '': '',
+
+
+               # QUESTIONS?
+               # bill_holt / bill_hoak
+               # 'gary_nufen': 'gary_newford', # spelling?
+               }
 
 
     def __init__(self, name_or_slug):
