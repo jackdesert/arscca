@@ -206,19 +206,22 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 Backlog
 -------
 
+  * Fix highlight (currently highlights all)
+  * Pass name through canon before choosing display name (fixes error below?)
+  * Privacy Requests --- also see Kim Fares link below
+  * Add events from http://arscca.org/201303oldsite/results.htm
+  * Jon Seaton is throwing error Uncaught TypeError: Illegal invocation when loading a driver profile
+  * Get /live functional again
+  * New AxWare software
+  * Find out why clicking link of Kim Fares on home page
+    takes me to /drivers/kimberly_hodges which has photos but no events,
+    and going to /drivers/kim_hodges has events but no photos
   * Find out why /drivers/gordo matches /gordon_gibson
   * on /drivers/:slug provide links to events where they did not participate
   * Update arscca.org to run /administrator over SSL
-  * kazy beck (alias) 03-24-2018
   * Kim Fares (alias) http://localhost:6543/events/2018-11-02?cb=1
   * Get rally parser to give a numerical score to DNF (instead of no score)
   * This rallyx event has empty columns after the 8 real runs: http://localhost:6543/events/2019-10-05?cb=1
-  * Add events for 2012, 2013, 2014 AFTER 2015 passes
-  * All rallyx events for 2019 and 2018
-  * Dynamically choose parser type
-    - if "Day" column: 2-day-event
-  * Blue background for rallyx events on driver profile
-  * On each driver profile, provide links to all the events that driver competed in
   * Static events for rallyx
     - update axware
   * Show ties in standings when two people both have 5 points

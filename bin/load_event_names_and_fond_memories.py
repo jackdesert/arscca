@@ -4,8 +4,8 @@
 from arscca.models.published_event import PublishedEvent
 
 import requests
-HOST = 'http://localhost:6543'
-# HOST = 'http://arscca.jackdesert.com'
+#HOST = 'http://localhost:6543'
+HOST = 'http://arscca.jackdesert.com'
 
 for year, events in PublishedEvent.dates_by_year().items():
     for date, joomla_id, _, __ in events:

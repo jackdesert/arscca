@@ -10,6 +10,8 @@ class Canon:
     NON_WORD_CHARS = re.compile(r'[^\w]+')
     WHITESPACE_CHARS = re.compile(r'\s+')
 
+    # Make sure the VALUE references the photo filename
+    #
     # { website_slug : photo_slug }
     # AKA
     # { erroneous_slug : correct_slug }
@@ -49,6 +51,10 @@ class Canon:
                'freed_christopher': 'freed_chris',
                'stafford_stephen': 'stafford_steve',
                'elizabeth_yarboro': 'liz_yarboro',
+
+               # PRIVACY REQUESTS
+               'griff_ferrell': 'glyph_ferrule',
+
 
                # MISSPELLINGS FOUND VIA FondMemory
                'asher_wunderhal': 'asher_wunderl', # Is this the correct spelling?

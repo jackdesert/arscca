@@ -3,6 +3,12 @@ ARSCCA Joomla Site
 
 login location: arscca.org/administrator
 
+RallyX Guide
+------------
+
+Note markdown stored in doc/joomla/rallx_guide.md
+
+
 Board
 -----
 
@@ -55,6 +61,24 @@ Search for the "2019 Results" menu item.
 Click "List Layouts"
 For "Category Order" choose which order you want.
 (I wanted Category Reverse, but that is not offered.)
+
+
+Add Link to Menu
+----------------
+
+Menus -> View All Menu Items.
+
+Now find one of the menu items and look at its "Main Menu" and "Parent Item" settings.
+
+Now click "+" to create a new menu item. Choose the item type carefully.
+
+If you want to link to a single article, create that single article first.
+
+
+Create a Featured Article
+-------------------------
+
+When creating an article, in the right column change Featured to Yes.
 
 
 Backlog

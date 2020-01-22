@@ -1,7 +1,8 @@
+from arscca.models.canon import Canon
 from arscca.models.fond_memory import FondMemory
-from arscca.models.published_event import PublishedEvent
 from arscca.models.gossip import Gossip
 from arscca.models.photo import Photo
+from arscca.models.published_event import PublishedEvent
 from datetime import date as Date
 from pyramid.view import view_config
 import pdb
@@ -15,10 +16,13 @@ def drivers_view(request):
 @view_config(route_name='driver',
              renderer='templates/driver.jinja2')
 def driver_view(request):
-    slug = request.matchdict.get('slug')
-    gossip = Gossip(slug)
+    slug_from_url = request.matchdict.get('slug')
+    canon = Canon(slug_from_url)
 
-    name = slug.replace('_', ' ').title()
+    slug = canon.slug
+    name = canon.name
+
+    gossip = Gossip(slug)
     photos = Photo.all_for_driver(slug)
 
     event_dates_by_year = PublishedEvent.dates_by_year()
