@@ -1,8 +1,60 @@
 #! /bin/bash
 
+# Stop on any error
+# This encourages you to fix your jshint errors
+set -e
+
+TEMP_FILE=/tmp/arscca_es5_with_semicolons.js
+FINAL_OUTPUT_FILE=arscca/static/transpiled/arscca_es5.js
+
+
+
+# Do not jshint vue because we don't maintain it
+# jshint arscca/static/vue-production.js
+echo Running jshint to make sure your code is clean
+jshint arscca/static/on_error.js
+jshint arscca/static/feedback.js
+jshint arscca/static/drivers.js
+
+echo SUCCESS!
+echo ''
+
+
+
+
+
+
+echo "Combining javascript files and"
+echo "transpiling to ES5 for old browsers' sake"
 npx babel \
   arscca/static/on_error.js \
   arscca/static/feedback.js \
   arscca/static/drivers.js \
   arscca/static/vue-production.js \
-  --out-file arscca/static/transpiled/arscca_es5.js
+  --out-file $TEMP_FILE
+
+echo SUCCESS!
+echo ''
+
+
+
+
+
+
+
+# babel adds semicolons the ends of most lines.
+# Jack doesn't like semicolons at the end of lines,
+# because he thinks they are beautiful and readable without.
+# Therefore removing trailing semicolons
+echo Removing Trailing Semicolons
+sed 's/;\s*$//i' $TEMP_FILE > $FINAL_OUTPUT_FILE
+echo SUCCESS!
+
+rm $TEMP_FILE
+
+echo ''
+echo ES5 file written to $FINAL_OUTPUT_FILE
+echo ''
+
+
+

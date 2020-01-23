@@ -61,15 +61,12 @@ var bindFeedbackLink = (linkId, extraData) => {
                     var resp = request.responseText;
                     displaySuccess()
                 } else {
-                    debugger
-                    // We reached our target server, but it returned an error
-
+                    console.log('We reached our target server, but it returned an error')
                 }
             }
 
             request.onerror = function() {
-                debugger
-                // There was a connection error of some sort
+                console.log('There was a connection error of some sort')
             }
 
             request.send(JSON.stringify(payload))
