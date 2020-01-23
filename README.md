@@ -75,6 +75,40 @@ Otherwise an arscca egg will be created, and you may end up serving stale code
 in production.
 
 
+Transpiling Javascript
+----------------------
+
+Run this bash script:
+
+    bin/transpile_javascript
+
+Some javascripts in this project are written to the ES5 spec, others
+are written to ES6. ES5 browsers would throw errors when encountering
+things like "let" and arrow functions. And then we got lots of notifications
+of these errors via slack.
+
+Now we (transpile)[https://www.stevefenton.co.uk/2012/11/compiling-vs-transpiling/]
+all our javascripts into a single ES5-compliant file.
+
+That is, edit the files in
+
+    arscca/static/*.js
+
+but the browser will load
+
+    arscca/static/transpiled/arscca_es5.js
+
+
+### Installing Babel & Friends
+
+    sudo apt install npm
+    npm install -D babel-cli
+    npm install -D babel-preset-env
+
+
+Also note the .babelrc file that specifies the "env" preset.
+
+
 
 Performance
 -----------

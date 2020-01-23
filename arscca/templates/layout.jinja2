@@ -31,7 +31,7 @@
             }
         </script>
 
-        <script src="{{request.static_path('arscca:static/on_error.js')}}"></script>
+        <script src="{{request.static_path('arscca:static/transpiled/arscca_es5.js')}}"></script>
 
         <div class="container">
             <div class='row'>
@@ -87,9 +87,6 @@
 
         <div class='feedback__link' id='feedback__link'>Feedback</div>
 
-        <script src="{{request.static_path('arscca:static/vue-production.js')}}"></script>
-        <script src="{{request.static_path('arscca:static/drivers.js')}}"></script>
-        <script src="{{request.static_path('arscca:static/feedback.js')}}"></script>
         <script>
             ready(function(){
                 bindFeedbackLink('feedback__link')

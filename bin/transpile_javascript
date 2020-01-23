@@ -1,0 +1,8 @@
+#! /bin/bash
+
+npx babel \
+  arscca/static/on_error.js \
+  arscca/static/feedback.js \
+  arscca/static/drivers.js \
+  arscca/static/vue-production.js \
+  --out-file arscca/static/transpiled/arscca_es5.js

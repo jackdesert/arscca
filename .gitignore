@@ -17,3 +17,5 @@ Data.fs*
 coverage
 /arscca/static/histograms/*.png
 /config/environment.txt
+/node_modules
+package-lock.json
