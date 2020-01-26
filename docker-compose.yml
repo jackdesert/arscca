@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  arscca-pyramid:
+    build: /home/jd/r/arscca/
+    image: arscca-pyramid
+    container_name: from-arscca-pyramid
+    volumes:
+      - type: bind
+        source: /home/jd/r/arscca/
+        target: /arscca-pyramid/
+    links:
+      - arscca-redis
+    ports:
+      - '6543:6543'
+
+  arscca-redis:
+    image: redis:5.0.7
+    container_name: from-arscca-redis
+    volumes:
+      - reddata:/data
+
+
+
+volumes:
+  reddata:
+    external:
+      name: arscca-redis-data
+
