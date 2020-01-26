@@ -20,7 +20,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from threading import Lock
 
-REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
+REDIS = Shared.REDIS
 REDIS_EXPIRATION_IN_SECONDS = 3600
 LOCK = Lock()
 LIVE_UPDATE_LOCK = Lock()

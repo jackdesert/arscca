@@ -6,9 +6,25 @@ Pulls the stats from the arscca.org website and displays them.
 
 Allows you to sort by whichever column you like.
 
+Getting Started (Docker)
+------------------------
 
-Getting Started
----------------
+These commands will start build the docker image and run it in a container.
+
+    cd /path/to/repo
+    sudo docker-compose build
+    sudo docker-compose up
+
+Note the docker-compose.yml in the root directory uses development.ini.
+For production use:
+
+    sudo docker-compose -f config/docker-compose-production.yml build
+    sudo docker-compose -f config/docker-compose-production.yml up
+
+
+
+Getting Started (Manually)
+--------------------------
 
 - Change directory into your newly created project.
 
@@ -235,6 +251,8 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 -------------------------------------------------------
 
     env/bin/python bin/load_event_names_and_fond_memories.py
+
+
 
 
 Backlog

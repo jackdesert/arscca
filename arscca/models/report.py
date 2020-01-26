@@ -1,4 +1,5 @@
 from arscca.models.canon import Canon
+from arscca.models.shared import Shared
 from arscca.models.util import Util
 from collections import defaultdict
 from copy import deepcopy
@@ -7,7 +8,6 @@ import pdb
 import redis
 
 class Report:
-    REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
     KEY_PREPEND = 'points-from-'
     NUM_EVENTS_TO_SCORE = 8
     SKIPPED_EVENT_NUMBERS = defaultdict(list)
@@ -58,7 +58,7 @@ class Report:
         keys = set()
         cursor = 0
         while True:
-            cursor, items = self.REDIS.scan(cursor=cursor, match=self._redis_key_prepend)
+            cursor, items = Shared.REDIS.scan(cursor=cursor, match=self._redis_key_prepend)
             for item in items:
                 keys.add(item)
             if cursor == 0:
@@ -76,7 +76,7 @@ class Report:
         totals = defaultdict(lambda: defaultdict(list))
 
         for key in self._redis_keys():
-            json_data = self.REDIS.get(key)
+            json_data = Shared.REDIS.get(key)
             data_for_one_event = json.loads(json_data)
             date = key.replace(self.KEY_PREPEND, '')
             events[date] = data_for_one_event
