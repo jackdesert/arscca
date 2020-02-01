@@ -535,6 +535,62 @@ class Pax:
                         STX   = 0.815,
                         XP    = 0.885,)
 
+    # Pax data from
+    # http://solotime.info/pax/rtp2020.html
+    # (Hyphens removed)
+    FACTORS_2020 = dict(
+                        STM   = 0.833, # STM IS CUSTOM TO ARKANSAS
+
+                        AM   = 1.000,
+                        AS   = 0.819,
+                        ASP  = 0.849,
+                        BM   = 0.962,
+                        BP   = 0.867,
+                        BS   = 0.814,
+                        BSP  = 0.852,
+                        CAMC = 0.818,
+                        CAMS = 0.833,
+                        CAMT = 0.817,
+                        CM   = 0.893,
+                        CP   = 0.851,
+                        CS   = 0.809,
+                        CSP  = 0.865,
+                        DM   = 0.895,
+                        DP   = 0.866,
+                        DS   = 0.806,
+                        DSP  = 0.842,
+                        EM   = 0.896,
+                        EP   = 0.850,
+                        ES   = 0.793,
+                        ESP  = 0.839,
+                        FM   = 0.911,
+                        FP   = 0.868,
+                        FS   = 0.804,
+                        FSAE = 0.963,
+                        FSP  = 0.823,
+                        GS   = 0.792,
+                        HCR  = 0.815,
+                        HCS  = 0.794,
+                        HS   = 0.780,
+                        JA   = 0.855,
+                        JB   = 0.820,
+                        JC   = 0.718,
+                        KM   = 0.930,
+                        SM   = 0.854,
+                        SMF  = 0.841,
+                        SS   = 0.822,
+                        SSC  = 0.798,
+                        SSM  = 0.875,
+                        SSP  = 0.853,
+                        SSR  = 0.843,
+                        STH  = 0.813,
+                        STR  = 0.827,
+                        STS  = 0.812,
+                        STU  = 0.828,
+                        STX  = 0.816,
+                        XP   = 0.880,)
+
+
 
 
     @classmethod

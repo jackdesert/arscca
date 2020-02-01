@@ -20,7 +20,13 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from threading import Lock
 
-REDIS = redis.StrictRedis(host='localhost', port=6379, db=1, decode_responses=True)
+class ErrorNoLiveEventInRedis(Exception):
+    '''If no live event is in redis, you must
+    place a file in the correct location
+    and then call
+    GET /live/update_redis'''
+
+REDIS = Shared.REDIS
 REDIS_EXPIRATION_IN_SECONDS = 3600
 LOCK = Lock()
 LIVE_UPDATE_LOCK = Lock()
@@ -177,6 +183,10 @@ def live_event_view(request):
     event_url = '/live/raw'
 
     event_json = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT)
+    if not event_json:
+        live_event_update_redis_view(request)
+        event_json = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT)
+
 
     #try:
     #    event_json = fetch_event(date, event_url, True)

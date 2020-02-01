@@ -1,4 +1,6 @@
 // var used here because some browsers throw error if "let" used outside of strict context
+console.log('Not seeing your changes? Make sure you transpile!')
+
 var initializeDriversTable = function(liveBoolean){
     'use strict'
 

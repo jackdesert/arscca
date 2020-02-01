@@ -191,7 +191,8 @@ class GenericDriver:
         del props['_row_1']
         del props['_row_2']
 
-        props.update(name = self.name,
+        props.update(id = self.id,
+                     name = self.name,
                      car_class = self.car_class,
                      car_model = self.car_model,
                      car_number = self.car_number,

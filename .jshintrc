@@ -13,6 +13,7 @@
   "nocomma"       : true,
   "nonbsp"        : true,
   "undef"         : true,
+  "debug"         : true,
   "esversion"     : 6,
 
   // Where is the option to enforce that no logic is used before all variables defined?
