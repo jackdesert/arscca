@@ -9,10 +9,29 @@ services:
       - type: bind
         source: /home/jd/r/arscca/
         target: /arscca-pyramid/
+      - type: bind
+        source: /home/arscca/
+        target: /home/arscca/
     links:
       - arscca-redis
     ports:
       - '6543:6543'
+
+  arscca-twisted:
+    build: /home/jd/r/arscca-twisted/
+    image: arscca-twisted
+    container_name: from-arscca-twisted
+    volumes:
+      - type: bind
+        source: /home/jd/r/arscca-twisted/
+        target: /arscca-twisted/
+      - type: bind
+        source: /home/arscca/
+        target: /home/arscca/
+    links:
+      - arscca-redis
+    ports:
+      - '6544:6544'
 
   arscca-redis:
     image: redis:5.0.7

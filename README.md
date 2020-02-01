@@ -21,6 +21,54 @@ For production use:
     sudo docker-compose -f config/docker-compose-production.yml build
     sudo docker-compose -f config/docker-compose-production.yml up
 
+Docker with Manual Containers
+-----------------------------
+
+    sudo docker network create arscca-network
+
+    cd /path/to/this/repo
+
+    # Build the image based on the Dockerfile
+    docker build -t arscca-pyramid .
+
+    # Run a new container with Redis
+    docker run  --rm \
+                --name arscca-redis \
+                --network arscca-network \
+                redis:5.0.7
+
+    # Run a new container with arscca-pyramid
+    # Note `bash` is specified as the command to run.
+    # From there you can run
+    #   pserve development.ini --reload
+    docker run  -it  \
+                --rm \
+                --name arscca-pyramid \
+                --network arscca-network \
+                --publish 6543:6543 \
+                --mount type=bind,source=/home/jd/r/arscca,target=/arscca-pyramid \
+                --mount type=bind,source=/home/arscca/arscca-live.jinja2,target=/home/arscca/arscca-live.jinja2 \
+                arscca-pyramid:latest \
+                bash
+
+    # Run a new container with arscca-twisted
+    # Note `bash` is specified as the command to run.
+    # From there you can run
+    #
+    # Note bindmount to directory instead of file, as binding to a single
+    # file, the bind is broken when the file is moved
+    # See https://github.com/moby/moby/issues/15793#issuecomment-135411504
+    docker run  -it  \
+                --rm \
+                --name arscca-twisted \
+                --network arscca-network \
+                --publish 6544:6544 \
+                --mount type=bind,source=/home/jd/r/arscca-twisted,target=/arscca-twisted \
+                --mount type=bind,source=/home/arscca,target=/home/arscca \
+                arscca-twisted:latest \
+                bash
+
+
 
 
 Getting Started (Manually)
