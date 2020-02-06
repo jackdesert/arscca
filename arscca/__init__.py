@@ -2,12 +2,19 @@ from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 import time
 
+from pyramid.session import SignedCookieSessionFactory
+
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = Configurator(settings=settings)
     config.include('pyramid_jinja2')
+
+    # Insecure Session
+    # https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html#sessions-chapter
+    my_session_factory = SignedCookieSessionFactory('insecure-but-digitally-signed-382746')
+    config.set_session_factory(my_session_factory)
 
     # Cache busting of static assets
     # See https://docs.pylonsproject.org/projects/pyramid/en/1.10-branch/narr/assets.html#cache-busting
@@ -32,6 +39,9 @@ def main(global_config, **settings):
     config.add_route('live_event_update_redis', '/live/update_redis')
     config.add_route('live_event_revision', '/live/revision')
     config.add_route('event', '/events/{date}')
+    config.add_route('photo_upload_new', '/photos/upload', request_method='GET')
+    config.add_route('photo_upload_create', '/photos/upload', request_method='POST')
+    config.add_route('photos', '/photos')
     config.add_route('national_event', '/national_events/{year}')
     config.add_route('javascript_errors', '/javascript_errors')
     config.scan()

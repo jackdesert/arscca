@@ -1,0 +1,27 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        Event Photos
+    </div>
+
+
+    <h2>Event Photos</h2>
+    <div class='space-1rem'></div>
+    <a href='/photos/upload' class='btn btn-danger'>Upload</a></h2>
+    <div class='space-1rem'></div>
+    {% for date, keys in keys_by_date.items() %}
+        <div class='space-1rem'></div>
+        <h2>{{date}}</h2>
+        {% for key in keys %}
+            <img class='uploaded-photo' src='//bip-car-photos-test.s3-us-west-2.amazonaws.com/{{key}}' />
+        {% endfor %}
+    {% endfor %}
+
+
+</div>
+{% endblock content %}
