@@ -1,0 +1,34 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        <a href='/photos' class='crumb__link'>Event Photos</a>
+        ->
+        Upload
+    </div>
+
+
+    {% for message in flash_messages %}
+        <div class='flash'>{{message}}</div>
+    {% endfor %}
+
+    <h2>Upload Event Photos</h2>
+    <p>Do you have photos from any ARSCCA events that you want to share? Please upload them here.</p>
+
+    <p>Select multiple images or <b>.zip files</b> to upload.</p>
+
+    <form action='/photos/upload' method='POST' enctype='multipart/form-data'>
+        <input type='file' name='images[]' multiple></input>
+        <div class='space-2rem'></div>
+        <input type='submit' value='Upload'></input>
+    </form>
+
+
+
+
+</div>
+{% endblock content %}

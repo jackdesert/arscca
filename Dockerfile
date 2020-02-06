@@ -3,6 +3,9 @@ FROM python:3.8.1
 
 ENV DIRECTORY /arscca-pyramid
 
+# Set timezone so python will correctly interpret datetime.datetime.now()
+ENV TZ 'America/Chicago'
+
 WORKDIR ${DIRECTORY}
 
 # Copy the files required in order to install dependencies
@@ -35,6 +38,10 @@ RUN pip install -e ".[testing]"
 # Remove directory since we don't need the files anymore
 # AND because we are going to mount the repository at temp dir since we don't actually need the files for anything else
 RUN rm -r ${DIRECTORY}
+
+# less is useful as a pager when debugging with pdb
+# htop is useful
+RUN apt update && apt install -y less htop
 
 # Note the WORKDIR is still the same place that
 # we will bind mount the repository from docker-compose

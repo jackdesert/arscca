@@ -9,6 +9,7 @@ class Shared:
     REDIS_KEY_LIVE_EVENT_DRIVERS  = 'live-event-drivers'
     REDIS_KEY_LIVE_EVENT_REVISION = 'live-event-revision'
     REDIS_KEY_LIVE_EVENT_RUN_GROUPS = 'live-event-run-groups'
+    REDIS_KEY_S3_PHOTOS = 's3-photos'
 
     NOT_JUST_WHITESPACE_REGEX = re.compile('[^\s]')
 
