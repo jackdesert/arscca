@@ -36,6 +36,10 @@ RUN pip install -e ".[testing]"
 # AND because we are going to mount the repository at temp dir since we don't actually need the files for anything else
 RUN rm -r ${DIRECTORY}
 
+# less is useful as a pager when debugging with pdb
+# htop is useful
+RUN apt update && apt install -y less htop
+
 # Note the WORKDIR is still the same place that
 # we will bind mount the repository from docker-compose
 CMD ["pserve", "development.ini", "--reload"]

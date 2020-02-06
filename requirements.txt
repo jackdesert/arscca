@@ -22,6 +22,7 @@ more-itertools==7.0.0
 numpy==1.16.4
 packaging==19.0
 PasteDeploy==2.0.1
+Pillow==7.0.0
 plaster==1.0
 plaster-pastedeploy==0.7
 Plim==0.9.12
