@@ -16,6 +16,7 @@ Data.fs*
 .DS_Store
 coverage
 /arscca/static/histograms/*.png
+/arscca/static/uploaded/*.png
 /config/environment.txt
 /node_modules
 package-lock.json

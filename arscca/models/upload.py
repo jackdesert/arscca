@@ -14,7 +14,7 @@ import zipfile
 class SingleImage:
 
     MEDIUM_SIZE = (600, 600)
-    TARGET_DIRECTORY_MEDIUM = '/arscca-pyramid/arscca/static/images/uploaded'
+    TARGET_DIRECTORY_MEDIUM = '/arscca-pyramid/arscca/static/uploaded'
 
     def __init__(self, filename):
         self._filename = filename
