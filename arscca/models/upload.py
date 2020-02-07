@@ -1,13 +1,64 @@
-import pdb
-import hashlib
-import pathlib
 from PIL import Image
+from PIL import UnidentifiedImageError
+from uuid import uuid4 # random uuid
+import hashlib
+import os
+import pathlib
+import pdb
+import zipfile
 
 
 #sudo apt install libpng-dev zlib1g-dev
 
+
+class SingleImage:
+
+    MEDIUM_SIZE = (600, 600)
+    TARGET_DIRECTORY_MEDIUM = '/arscca-pyramid/arscca/static/images/uploaded'
+
+    def __init__(self, filename):
+        self._filename = filename
+        self._md5 = None
+        self._medium_filename = None
+
+    def process(self):
+        self._compute_md5()
+        success = self._write_medium()
+        self._unlink()
+
+        if success:
+            return self._md5
+        else:
+            return None
+
+    def _write_medium(self):
+        pathlib.Path(self.TARGET_DIRECTORY_MEDIUM).mkdir(exist_ok=True)
+
+        try:
+            im = Image.open(self._filename)
+        except UnidentifiedImageError:
+            return False
+
+        im.thumbnail(self.MEDIUM_SIZE)
+        im.save(self._medium_filename, 'PNG')
+        im.close()
+        return True
+
+    def _compute_md5(self):
+        digest = hashlib.md5()
+        with open(self._filename, 'rb') as ff:
+            digest.update(ff.read())
+        md5 = digest.hexdigest()
+        self._md5 = md5
+        self._medium_filename = f'{self.TARGET_DIRECTORY_MEDIUM}/{md5}.png'
+
+    def _unlink(self):
+        pathlib.Path(self._filename).unlink()
+
+
+
 class Upload:
-    TEMP_DIR_BASE = '/tmp/arscca-pyramid-uploads'
+    UPLOADS_DIR = '/tmp/arscca-pyramid-uploads'
     MEDIUM_SIZE = (600, 600)
 
     # field_storage is a cgi.FieldStorage
@@ -15,44 +66,63 @@ class Upload:
         # A field_storage is passed instead of the actual data
         # Hoping to conserve memory
         self._field_storage = field_storage
-        self._tempdir = None
-        self._md5 = None
+        self._extract_dir = f'{self.UPLOADS_DIR}/{uuid4()}'
+
 
     def process(self):
-        self._write_to_temp_dir()
+        self._write_to_uploads_dir()
+        self._unzip()
+        md5s = self._process_images()
 
-        self._write_to_temp_dir()
-        self._write_medium_to_disk()
-        return [self._md5]
+        return md5s
 
-    def _write_to_temp_dir(self):
-        digest = hashlib.md5()
-        digest.update(self._field_storage.value)
-        self._md5 = digest.hexdigest()
-        self._create_temp_dir()
-        with open(self._original_path, 'wb') as writer:
+
+    @property
+    def _zip_filename(self):
+        return f'{self._extract_dir}.zip'
+
+
+    def _write_to_uploads_dir(self):
+        pathlib.Path(self.UPLOADS_DIR).mkdir(exist_ok=True)
+
+        with open(self._zip_filename, 'wb') as writer:
             writer.write(self._field_storage.value)
 
-    def _write_medium_to_disk(self):
-        with Image.open(self._original_path) as im:
-            im.thumbnail(self.MEDIUM_SIZE)
-            im.save(self._medium_path, 'PNG')
+
+    def _unzip(self):
+        try:
+            # If it's a zip file, extract to directory
+            with zipfile.ZipFile(self._zip_filename, 'r') as zip_handle:
+                zip_handle.extractall(self._extract_dir)
+        except zipfile.BadZipFile:
+            # Otherwise copy to directory
+            pathlib.Path(self._extract_dir).mkdir()
+            pathlib.Path(self._zip_filename).rename(f'{self._extract_dir}/image_file')
 
 
-    def _create_temp_dir(self):
-        pathlib.Path(self._temp_dir).mkdir(parents=True, exist_ok=True)
+    def _process_images(self):
+        filenames = []
 
-    @property
-    def _temp_dir(self):
-        if not self._md5:
-            raise '_md5 is falsy'
+        for path, dirs, files in os.walk(self._extract_dir):
+            for local_filename in files:
+                filenames.append(f'{path}/{local_filename}')
 
-        return f'{self.TEMP_DIR_BASE}/{self._md5}'
+        md5s = []
+        for filename in filenames:
+            image = SingleImage(filename)
+            md5 = image.process()
+            if md5:
+                # md5 will be None for non-image files
+                md5s.append(md5)
 
-    @property
-    def _original_path(self):
-        return f'{self._temp_dir}/original'
+        # Sort these to make tests repeatable
+        return sorted(md5s)
 
-    @property
-    def _medium_path(self):
-        return f'{self._temp_dir}/medium.png'
+
+    def _unlink(self):
+        pathlib.Path(self._zip_filename).unlink()
+        pathlib.Path(self._extract_dir).rmdir() # Must be empty first
+
+
+
+
