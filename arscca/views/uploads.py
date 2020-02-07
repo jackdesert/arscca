@@ -21,8 +21,8 @@ LOG = logging.getLogger(__name__)
 @view_config(route_name='photo_upload',
              renderer='json')
 def photo_upload_view(request):
-    pdb.set_trace()
-    upload = Upload(request)
+    storage = request.params.get('file')
+    upload = Upload(storage)
     md5s = upload.process()
     return dict(md5s=md5s)
 
