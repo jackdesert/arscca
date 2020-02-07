@@ -10,27 +10,28 @@ class Upload:
     TEMP_DIR_BASE = '/tmp/arscca-pyramid-uploads'
     MEDIUM_SIZE = (600, 600)
 
-    def __init__(self, request):
-        # A request is passed instead of a blob
-        # so we don't have to create a blob and still have the request
-        # (Hoping to save memory)
-        self._request = request
+    # field_storage is a cgi.FieldStorage
+    def __init__(self, field_storage):
+        # A field_storage is passed instead of the actual data
+        # Hoping to conserve memory
+        self._field_storage = field_storage
         self._tempdir = None
         self._md5 = None
 
     def process(self):
-        self._write_original_to_disk()
+        self._write_to_temp_dir()
+
+        self._write_to_temp_dir()
         self._write_medium_to_disk()
         return [self._md5]
 
-    def _write_original_to_disk(self):
-        cgi_fieldstorage = self._request.params.get('file')
+    def _write_to_temp_dir(self):
         digest = hashlib.md5()
-        digest.update(cgi_fieldstorage.value)
+        digest.update(self._field_storage.value)
         self._md5 = digest.hexdigest()
         self._create_temp_dir()
         with open(self._original_path, 'wb') as writer:
-            writer.write(cgi_fieldstorage.value)
+            writer.write(self._field_storage.value)
 
     def _write_medium_to_disk(self):
         with Image.open(self._original_path) as im:

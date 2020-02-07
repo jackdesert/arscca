@@ -15,9 +15,13 @@ from threading import Lock
 REDIS = Shared.REDIS
 LOG = logging.getLogger(__name__)
 
+# Test with
+#  curl -XPOST -F "file=@./xyl.jpg" http://localhost:6543/events/2019-12-10/upload
+
 @view_config(route_name='photo_upload',
              renderer='json')
 def photo_upload_view(request):
+    pdb.set_trace()
     upload = Upload(request)
     md5s = upload.process()
     return dict(md5s=md5s)
