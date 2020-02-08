@@ -21,8 +21,9 @@ LOG = logging.getLogger(__name__)
 @view_config(route_name='photo_upload',
              renderer='json')
 def photo_upload_view(request):
+    date = request.matchdict('date')
     storage = request.params.get('file')
-    upload = Upload(storage)
+    upload = Upload(date, storage)
     md5s = upload.process()
     return dict(md5s=md5s)
 

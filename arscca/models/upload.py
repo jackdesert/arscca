@@ -5,6 +5,8 @@ import hashlib
 import os
 import pathlib
 import pdb
+import re
+import shutil
 import zipfile
 
 
@@ -16,7 +18,8 @@ class SingleImage:
     MEDIUM_SIZE = (600, 600)
     TARGET_DIRECTORY_MEDIUM = '/arscca-pyramid/arscca/static/uploaded'
 
-    def __init__(self, filename):
+    def __init__(self, date, filename):
+        self._date = date
         self._filename = filename
         self._md5 = None
         self._medium_filename = None
@@ -24,7 +27,6 @@ class SingleImage:
     def process(self):
         self._compute_md5()
         success = self._write_medium()
-        self._unlink()
 
         if success:
             return self._md5
@@ -50,21 +52,22 @@ class SingleImage:
             digest.update(ff.read())
         md5 = digest.hexdigest()
         self._md5 = md5
-        self._medium_filename = f'{self.TARGET_DIRECTORY_MEDIUM}/{md5}.png'
+        self._medium_filename = f'{self.TARGET_DIRECTORY_MEDIUM}/{self._date}__{md5}.png'
 
-    def _unlink(self):
-        pathlib.Path(self._filename).unlink()
 
 
 
 class Upload:
     UPLOADS_DIR = '/tmp/arscca-pyramid-uploads'
     MEDIUM_SIZE = (600, 600)
+    DATE_REGEX = re.compile(r'\A\d{4}-\d{2}-\d{2}\Z')
 
     # field_storage is a cgi.FieldStorage
-    def __init__(self, field_storage):
+    def __init__(self, date, field_storage):
         # A field_storage is passed instead of the actual data
         # Hoping to conserve memory
+        assert self.DATE_REGEX.match(date)
+        self._date = date
         self._field_storage = field_storage
         self._extract_dir = f'{self.UPLOADS_DIR}/{uuid4()}'
 
@@ -109,20 +112,28 @@ class Upload:
 
         md5s = []
         for filename in filenames:
-            image = SingleImage(filename)
+            image = SingleImage(self._date, filename)
             md5 = image.process()
             if md5:
                 # md5 will be None for non-image files
                 md5s.append(md5)
+
+        self._unlink()
 
         # Sort these to make tests repeatable
         return sorted(md5s)
 
 
     def _unlink(self):
-        pathlib.Path(self._zip_filename).unlink()
-        pathlib.Path(self._extract_dir).rmdir() # Must be empty first
+        zipfile_path = pathlib.Path(self._zip_filename)
+        if zipfile_path.is_file():
+            # Only if the zipfile was actually a zip archive will it still be here
+            # (Because if it was a single image, it has already been renamed)
+            pathlib.Path(self._zip_filename).unlink()
 
+        # Using shutil.rmtree because we don't know how many levels
+        # deep a user will nest their files
+        shutil.rmtree(self._extract_dir)
 
 
 
