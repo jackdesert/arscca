@@ -27,3 +27,10 @@ def photo_upload_view(request):
     md5s = upload.process()
     return dict(md5s=md5s)
 
+
+@view_config(route_name='event_photos',
+             renderer='templates/event_photos.jinja2')
+def event_photos_view(request):
+    keys = REDIS.smembers(Shared.REDIS_KEY_S3_PHOTOS)
+    return dict(keys=keys)
+

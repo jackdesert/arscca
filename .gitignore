@@ -20,3 +20,4 @@ coverage
 /config/environment.txt
 /node_modules
 package-lock.json
+/config/aws_credentials.json

@@ -1,0 +1,22 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        <a href='/drivers' class='crumb__link'>Drivers</a>
+        ->
+        {{ name }}
+    </div>
+
+
+    <h2>Photos</h2>
+    {% for key in keys %}
+        <img src='//bip-car-photos-test.s3-us-west-2.amazonaws.com/{{key}}' />
+    {% endfor %}
+
+
+</div>
+{% endblock content %}

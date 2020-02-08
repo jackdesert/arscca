@@ -33,6 +33,7 @@ def main(global_config, **settings):
     config.add_route('live_event_revision', '/live/revision')
     config.add_route('event', '/events/{date}')
     config.add_route('photo_upload', '/events/{date}/upload')
+    config.add_route('event_photos', '/events/{date}/photos')
     config.add_route('national_event', '/national_events/{year}')
     config.add_route('javascript_errors', '/javascript_errors')
     config.scan()

@@ -1,7 +1,10 @@
 from PIL import Image
 from PIL import UnidentifiedImageError
+from arscca.models.shared import Shared
 from uuid import uuid4 # random uuid
+import boto3
 import hashlib
+import json
 import os
 import pathlib
 import pdb
@@ -10,19 +13,31 @@ import shutil
 import zipfile
 
 
+
 #sudo apt install libpng-dev zlib1g-dev
 
 
 class SingleImage:
 
+    EXTENSION_ORIGINAL = '.png'
+    EXTENSION_MEDIUM = '_medium.png'
+
     MEDIUM_SIZE = (600, 600)
-    TARGET_DIRECTORY_MEDIUM = '/arscca-pyramid/arscca/static/uploaded'
+
+    # ACL_PUBLIC_READ makes it so the uploaded file is readable by anyone
+    ACL_PUBLIC_READ = {'ACL':'public-read'}
+    with open('config/aws_credentials.json', 'r') as ff:
+        __CREDS = json.loads(ff.read())
+
+    S3 = boto3.client('s3',
+                      aws_access_key_id=__CREDS['access_key_id'],
+                      aws_secret_access_key=__CREDS['secret_access_key'])
+    S3_BUCKET = __CREDS['s3_bucket']
 
     def __init__(self, date, filename):
         self._date = date
         self._filename = filename
         self._md5 = None
-        self._medium_filename = None
 
     def process(self):
         self._compute_md5()
@@ -34,17 +49,38 @@ class SingleImage:
             return None
 
     def _write_medium(self):
-        pathlib.Path(self.TARGET_DIRECTORY_MEDIUM).mkdir(exist_ok=True)
-
         try:
             im = Image.open(self._filename)
         except UnidentifiedImageError:
             return False
 
         im.thumbnail(self.MEDIUM_SIZE)
-        im.save(self._medium_filename, 'PNG')
+        im.save(self._medium_temp_filename, 'PNG')
         im.close()
+
+        self.S3.upload_file(self._filename,
+                            self.S3_BUCKET,
+                            self._s3_key_medium,
+                            ExtraArgs=self.ACL_PUBLIC_READ)
+
+        self._write_key_to_redis(self._s3_key_medium)
+
+        self._unlink(self._medium_temp_filename)
+
         return True
+
+    @property
+    def _medium_temp_filename(self):
+        return self._filename.replace(self.EXTENSION_ORIGINAL,
+                                      self.EXTENSION_MEDIUM)
+
+    @property
+    def _s3_key_medium(self):
+        return f'{self._date}__{self._md5}{self.EXTENSION_MEDIUM}'
+
+    def _write_key_to_redis(self, key):
+        Shared.REDIS.sadd(Shared.REDIS_KEY_S3_PHOTOS, key)
+
 
     def _compute_md5(self):
         digest = hashlib.md5()
@@ -52,10 +88,10 @@ class SingleImage:
             digest.update(ff.read())
         md5 = digest.hexdigest()
         self._md5 = md5
-        self._medium_filename = f'{self.TARGET_DIRECTORY_MEDIUM}/{self._date}__{md5}.png'
 
 
-
+    def _unlink(self, filename):
+        pathlib.Path(filename).unlink()
 
 class Upload:
     UPLOADS_DIR = '/tmp/arscca-pyramid-uploads'
@@ -134,6 +170,5 @@ class Upload:
         # Using shutil.rmtree because we don't know how many levels
         # deep a user will nest their files
         shutil.rmtree(self._extract_dir)
-
 
 
