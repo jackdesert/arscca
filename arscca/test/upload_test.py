@@ -53,8 +53,11 @@ class UploadTests(unittest.TestCase):
         upload.process()
         assert os.listdir(Upload.UPLOADS_DIR) == []
 
-
-
+    # Verify Metadata Set
+    def test_initialization_6(self):
+        storage = FieldStorageDummy('arscca/test/upload_test_files/nested.zip')
+        upload = Upload(storage)
+        upload.process()
 
 
 

@@ -29,8 +29,9 @@ class SingleImage:
 
     EXIF_DATETIME_KEY = 306
 
-    # ACL_PUBLIC_READ makes it so the uploaded file is readable by anyone
-    ACL_PUBLIC_READ = {'ACL':'public-read'}
+    # PUBLIC_READ makes it so the uploaded file is readable by anyone
+    PUBLIC_READ = 'public-read'
+
     with open('config/aws_credentials.json', 'r') as ff:
         __CREDS = json.loads(ff.read())
 
@@ -63,14 +64,14 @@ class SingleImage:
         # Source: ??
         # exif = { ExifTags.TAGS[k]: v for k, v in im._getexif().items() if k in ExifTags.TAGS }   # taken_at = exif['DateTime']
         taken_at = im.getexif().get(self.EXIF_DATETIME_KEY)
-        extra_args = self.ACL_PUBLIC_READ
 
         # boto3 encodes all metadata values to ASCII
         # Therefore do not included metadata if it has None values in it
         # Because None.encode() raises an error
+        extra_args = dict(ACL=self.PUBLIC_READ)
         if taken_at:
-            metadata = dict(Metadata=dict(taken_at=taken_at))
-            extra_args.update(metadata)
+            metadata = dict(taken_at=taken_at)
+            extra_args.update(Metadata=metadata)
 
         im.thumbnail(self.MEDIUM_SIZE)
         im.save(self._medium_temp_filename, 'PNG')
