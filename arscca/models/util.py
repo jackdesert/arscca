@@ -1,11 +1,11 @@
+from collections import defaultdict
+from random import shuffle
+from threading import Lock
 import itertools
 import os
 import pdb
 import re
 import requests
-
-from collections import defaultdict
-from random import shuffle
 
 class Util:
 
@@ -14,6 +14,9 @@ class Util:
     DEFAULT_SLACK_USERNAME = 'arscca'
     KART_KLASS_REGEX = re.compile('\Aj')
     TRAILING_L_REGEX = re.compile('l\Z')
+    _IP_ADDRESSES = {}
+
+    _IP_LOCK = Lock()
 
 
     @classmethod
@@ -114,3 +117,45 @@ class Util:
         items = itertools.chain(*data.values())
         items_list = list(items)
         return len(items_list)
+
+    @classmethod
+    def from_arkansas(cls, request):
+        ip = request.headers.get('X-Real-Ip')
+        if not ip:
+            # There is no such header in development mode,
+            # so play nice and return True
+            return True
+        return cls._region_from_ip(ip) == 'Arkansas'
+
+    @classmethod
+    def _region_from_ip(cls, ip):
+        # Specify user agent to avoid 429 errors
+        # (I already sent an email to ipapi.com about this)
+        headers = {'User-Agent': 'curl'}
+        url = f'https://ipapi.co/{ip}/json'
+
+
+        # Wrap this in a lock so multiple concurrent requests
+        # from the same IP address (like a web scraper)
+        # will only require one API call
+        with cls._IP_LOCK:
+            if region := cls._IP_ADDRESSES.get(ip):
+                return region
+
+
+            # TODO handle timeout exceptions
+            data = requests.get(url, timeout=5, headers=headers).json()
+            region = data.get('region')
+            cls._IP_ADDRESSES[ip] = region
+
+        return region
+
+
+if __name__ == '__main__':
+    ip = '99.99.252.41'
+    url = f'https://ipapi.co/{ip}/json'
+
+    data = requests.get(url, timeout=5, headers=headers).json()
+    body.json().get('region')
+    pdb.set_trace()
+    1

@@ -3,6 +3,9 @@ FROM python:3.8.1
 
 ENV DIRECTORY /arscca-pyramid
 
+# Set timezone so python will correctly interpret datetime.datetime.now()
+ENV TZ 'America/Chicago'
+
 WORKDIR ${DIRECTORY}
 
 # Copy the files required in order to install dependencies

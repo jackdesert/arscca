@@ -1,6 +1,9 @@
 from PIL import Image
+from PIL import ExifTags
 from PIL import UnidentifiedImageError
 from arscca.models.shared import Shared
+from datetime import datetime
+from datetime import date
 from uuid import uuid4 # random uuid
 import boto3
 import hashlib
@@ -24,6 +27,8 @@ class SingleImage:
 
     MEDIUM_SIZE = (600, 600)
 
+    EXIF_DATETIME_KEY = 306
+
     # ACL_PUBLIC_READ makes it so the uploaded file is readable by anyone
     ACL_PUBLIC_READ = {'ACL':'public-read'}
     with open('config/aws_credentials.json', 'r') as ff:
@@ -34,8 +39,8 @@ class SingleImage:
                       aws_secret_access_key=__CREDS['secret_access_key'])
     S3_BUCKET = __CREDS['s3_bucket']
 
-    def __init__(self, date, filename):
-        self._date = date
+    def __init__(self, filename):
+        self._date = str(date.today())
         self._filename = filename
         self._md5 = None
 
@@ -55,6 +60,18 @@ class SingleImage:
             print(f'  ERROR {self._filename}')
             return False
 
+        # Source: ??
+        # exif = { ExifTags.TAGS[k]: v for k, v in im._getexif().items() if k in ExifTags.TAGS }   # taken_at = exif['DateTime']
+        taken_at = im.getexif().get(self.EXIF_DATETIME_KEY)
+        extra_args = self.ACL_PUBLIC_READ
+
+        # boto3 encodes all metadata values to ASCII
+        # Therefore do not included metadata if it has None values in it
+        # Because None.encode() raises an error
+        if taken_at:
+            metadata = dict(Metadata=dict(taken_at=taken_at))
+            extra_args.update(metadata)
+
         im.thumbnail(self.MEDIUM_SIZE)
         im.save(self._medium_temp_filename, 'PNG')
         im.close()
@@ -63,7 +80,7 @@ class SingleImage:
         self.S3.upload_file(self._filename,
                             self.S3_BUCKET,
                             self._s3_key_medium,
-                            ExtraArgs=self.ACL_PUBLIC_READ)
+                            ExtraArgs=extra_args)
 
         self._write_key_to_redis(self._s3_key_medium)
 
@@ -101,11 +118,9 @@ class Upload:
     DATE_REGEX = re.compile(r'\A\d{4}-\d{2}-\d{2}\Z')
 
     # field_storage is a cgi.FieldStorage
-    def __init__(self, date, field_storage):
+    def __init__(self, field_storage):
         # A field_storage is passed instead of the actual data
         # Hoping to conserve memory
-        assert self.DATE_REGEX.match(date)
-        self._date = date
         self._field_storage = field_storage
         self._extract_dir = f'{self.UPLOADS_DIR}/{uuid4()}'
 
@@ -150,7 +165,7 @@ class Upload:
 
         md5s = []
         for filename in filenames:
-            image = SingleImage(self._date, filename)
+            image = SingleImage(filename)
             md5 = image.process()
             if md5:
                 # md5 will be None for non-image files

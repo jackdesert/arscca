@@ -5,6 +5,7 @@ import redis
 
 from arscca.models.shared import Shared
 from arscca.models.upload import Upload
+from arscca.models.util import Util
 from datetime import date as Date
 from datetime import datetime
 from pyramid.httpexceptions import HTTPFound
@@ -20,21 +21,38 @@ LOG = logging.getLogger(__name__)
              renderer='templates/photo_upload.jinja2')
 def photo_upload_new_view(request):
     date = request.matchdict['date']
-    return dict(date=date)
+    flash_messages = request.session.pop_flash()
+    if not Util.from_arkansas(request):
+        flash_messages = ['Geolocation Error']
+    return dict(date=date, flash_messages=flash_messages)
 
 
 # Test with
-#  curl -XPOST -F "file=@./xyl.jpg" http://localhost:6543/events/2019-12-10/upload
+#  curl -XPOST -F "images[]=@./xyl.jpg" http://localhost:6543/events/2019-12-10/upload
 
 @view_config(route_name='photo_upload_create',
              renderer='json')
 def photo_upload_create_view(request):
-    date = request.matchdict['date']
-    storage = request.params.get('images')
+    if not Util.from_arkansas(request):
+        return dict(error='Geolocation Error')
 
-    upload = Upload(date, storage)
-    md5s = upload.process()
-    return dict(md5s=md5s)
+    date = request.matchdict['date']
+    storages = request.params.getall('images[]')
+
+    md5s = set()
+    for storage in storages:
+        upload = Upload(date, storage)
+        local_md5s = upload.process()
+        for md5 in local_md5s:
+            md5s.add(md5)
+
+    if 'curl' in request.user_agent:
+        return dict(md5s=list(md5s))
+    else:
+        # Web requests get redirected
+        request.session.flash(f'{len(md5s)} files successfully uploaded. Nice Work!')
+        return HTTPFound(location=request.path)
+
 
 
 @view_config(route_name='event_photos',
@@ -42,4 +60,6 @@ def photo_upload_create_view(request):
 def event_photos_view(request):
     keys = REDIS.smembers(Shared.REDIS_KEY_S3_PHOTOS)
     return dict(keys=keys)
+
+
 

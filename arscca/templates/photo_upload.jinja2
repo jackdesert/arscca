@@ -12,9 +12,16 @@
     </div>
 
 
+    {% for message in flash_messages %}
+        <div class='flash'>{{message}}</div>
+    {% endfor %}
+
     <h2>Photos</h2>
+    <p>
+        Upload any number of image files or zip archives containing image files.
+    </p>
     <form action='/events/{{date}}/upload' method='POST' enctype='multipart/form-data'>
-        <input type='file' name='images'></input>
+        <input type='file' name='images[]' multiple></input>
         <input type='submit' value='Full Send'></input>
     </form>
 
