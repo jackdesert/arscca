@@ -1,0 +1,24 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        <a href='/drivers' class='crumb__link'>Drivers</a>
+        ->
+        {{ name }}
+    </div>
+
+
+    <h2>Photos</h2>
+    <form action='/events/{{date}}/upload' method='POST' enctype='multipart/form-data'>
+        <input type='file' name='images'></input>
+        <input type='submit' value='Full Send'></input>
+    </form>
+
+
+
+</div>
+{% endblock content %}

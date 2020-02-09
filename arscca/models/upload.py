@@ -52,12 +52,14 @@ class SingleImage:
         try:
             im = Image.open(self._filename)
         except UnidentifiedImageError:
+            print(f'  ERROR {self._filename}')
             return False
 
         im.thumbnail(self.MEDIUM_SIZE)
         im.save(self._medium_temp_filename, 'PNG')
         im.close()
 
+        print(f'Uploading {self._filename} as {self._md5}')
         self.S3.upload_file(self._filename,
                             self.S3_BUCKET,
                             self._s3_key_medium,

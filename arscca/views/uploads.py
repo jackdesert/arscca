@@ -15,14 +15,23 @@ from threading import Lock
 REDIS = Shared.REDIS
 LOG = logging.getLogger(__name__)
 
+
+@view_config(route_name='photo_upload_new',
+             renderer='templates/photo_upload.jinja2')
+def photo_upload_new_view(request):
+    date = request.matchdict['date']
+    return dict(date=date)
+
+
 # Test with
 #  curl -XPOST -F "file=@./xyl.jpg" http://localhost:6543/events/2019-12-10/upload
 
-@view_config(route_name='photo_upload',
+@view_config(route_name='photo_upload_create',
              renderer='json')
-def photo_upload_view(request):
-    date = request.matchdict('date')
-    storage = request.params.get('file')
+def photo_upload_create_view(request):
+    date = request.matchdict['date']
+    storage = request.params.get('images')
+
     upload = Upload(date, storage)
     md5s = upload.process()
     return dict(md5s=md5s)
