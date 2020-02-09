@@ -5,7 +5,14 @@ import shutil
 import unittest
 
 from arscca.models.upload import Upload
+from arscca.models.upload import SingleImage
+from datetime import date
 
+def metadata_taken_at(md5):
+    today = date.today()
+    headers = SingleImage.S3.head_object(Bucket=SingleImage.S3_BUCKET,
+                                         Key=f'{today}__{md5}_medium.png')
+    return headers['Metadata'].get('taken_at')
 
 # This dummy only needs to respond to the "value" method
 # And that way we don't have to figure out how to populate an cgi.FieldStorage object
@@ -23,7 +30,7 @@ class UploadTests(unittest.TestCase):
 
     # Not Zipped
     def test_initialization_2(self):
-        storage = FieldStorageDummy('arscca/test/upload_test_files/00_xylophone.jpg')
+        storage = FieldStorageDummy('arscca/test/upload_test_files/00_xyl__with_meta.jpg')
         upload = Upload(storage)
         md5s = upload.process()
         assert md5s == ['17a04f5d26dc09caf72f2ca90e2a52fa']
@@ -55,9 +62,18 @@ class UploadTests(unittest.TestCase):
 
     # Verify Metadata Set
     def test_initialization_6(self):
-        storage = FieldStorageDummy('arscca/test/upload_test_files/nested.zip')
+        storage = FieldStorageDummy('arscca/test/upload_test_files/00_xyl__with_meta.jpg')
         upload = Upload(storage)
-        upload.process()
+        md5 = upload.process()[0]
 
+        assert metadata_taken_at(md5) == '2008:04:10 15:34:54'
+
+    # Verfity No Metadata Set
+    def test_initialization_7(self):
+        storage = FieldStorageDummy('arscca/test/upload_test_files/06_snow__no_meta.jpg')
+        upload = Upload(storage)
+        md5 = upload.process()[0]
+
+        assert metadata_taken_at(md5) == None
 
 
