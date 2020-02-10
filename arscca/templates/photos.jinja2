@@ -18,7 +18,7 @@
         <div class='space-1rem'></div>
         <h2>{{date}}</h2>
         {% for key in keys %}
-            <img class='uploaded-photo' src='//bip-car-photos-test.s3-us-west-2.amazonaws.com/{{key}}' />
+            <img class='uploaded-photo' src='//{{bucket}}.s3-us-west-2.amazonaws.com/{{key}}' />
         {% endfor %}
     {% endfor %}
 

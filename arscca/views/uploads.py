@@ -1,4 +1,5 @@
 from arscca.models.shared import Shared
+from arscca.models.upload import SingleImage
 from arscca.models.upload import Upload
 from arscca.models.util import Util
 from collections import defaultdict
@@ -66,7 +67,9 @@ def photos_view(request):
         date_formatted = datetime.strptime(date_string, '%Y-%m-%d').strftime('%B %e, %Y')
         keys_by_date[date_formatted].append(key)
 
-    return dict(keys_by_date=keys_by_date)
+    bucket = SingleImage.S3_BUCKET
+
+    return dict(keys_by_date=keys_by_date, bucket=bucket)
 
 
 
