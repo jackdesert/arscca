@@ -14,12 +14,24 @@ let bindEnlargePhotoOnClick = () => {
             body.classList.remove('no-scroll')
         }
 
+        overlayImage.setAttribute('src', clickedImageSrc)
         overlay.classList.add('active')
-        overlay.addEventListener('click', reducePhoto)
-
         // Remove scrollbar from body while modal is displayed
         body.classList.add('no-scroll')
-        overlayImage.setAttribute('src', clickedImageSrc)
+
+
+        // There are two ways to call reducePhoto
+        // 1. Click on the enlarged photo
+        // 2. Click the back button in the browser
+        //
+        // This sets up item #1
+        overlay.addEventListener('click', reducePhoto)
+        //
+        // This sets up item #2
+        history.pushState({}, 'Enlarged Image', '#i')
+        window.addEventListener('popstate', reducePhoto)
+
+
     }
 
     for (let photo of photos){

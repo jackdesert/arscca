@@ -394,7 +394,7 @@ span.spoof
   top: 0;
   left: 0;
   right: 0;
-  background-color: grey;
+  background-color: black;
   text-align: center;
   z-index: 2; /* Above the .feedback__link */
 }
