@@ -45,4 +45,4 @@ RUN apt update && apt install -y less htop
 
 # Note the WORKDIR is still the same place that
 # we will bind mount the repository from docker-compose
-CMD ["pserve", "development.ini", "--reload"]
+CMD ["pserve", "production.ini"]

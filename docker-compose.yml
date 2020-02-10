@@ -2,12 +2,12 @@ version: '3.7'
 
 services:
   arscca-pyramid:
-    build: /home/jd/r/arscca/
+    build: /home/ubuntu/arscca/
     image: arscca-pyramid
     container_name: from-arscca-pyramid
     volumes:
       - type: bind
-        source: /home/jd/r/arscca/
+        source: /home/ubuntu/arscca/
         target: /arscca-pyramid/
       - type: bind
         source: /home/arscca/
@@ -18,12 +18,12 @@ services:
       - '6543:6543'
 
   arscca-twisted:
-    build: /home/jd/r/arscca-twisted/
+    build: /home/ubuntu/arscca-twisted/
     image: arscca-twisted
     container_name: from-arscca-twisted
     volumes:
       - type: bind
-        source: /home/jd/r/arscca-twisted/
+        source: /home/ubuntu/arscca-twisted/
         target: /arscca-twisted/
       - type: bind
         source: /home/arscca/
