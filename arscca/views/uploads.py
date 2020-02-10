@@ -23,7 +23,6 @@ LOG = logging.getLogger(__name__)
 def photo_upload_new_view(request):
     flash_messages = request.session.pop_flash()
     password_required = not Util.from_arkansas(request)
-    password_required = True
     return dict(flash_messages=flash_messages,
                 password_required=password_required)
 
