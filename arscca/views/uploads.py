@@ -22,9 +22,10 @@ LOG = logging.getLogger(__name__)
              renderer='templates/photo_upload.jinja2')
 def photo_upload_new_view(request):
     flash_messages = request.session.pop_flash()
-    if not Util.from_arkansas(request):
-        flash_messages = ['Geolocation Error']
-    return dict(flash_messages=flash_messages)
+    password_required = not Util.from_arkansas(request)
+    password_required = True
+    return dict(flash_messages=flash_messages,
+                password_required=password_required)
 
 
 # Test with
@@ -33,14 +34,19 @@ def photo_upload_new_view(request):
 @view_config(route_name='photo_upload_create',
              renderer='json')
 def photo_upload_create_view(request):
-    if not Util.from_arkansas(request):
-        return dict(error='Geolocation Error')
+    password = request.params.get('password')
+    if not Util.user_password_auth(password) and not Util.from_arkansas(request):
+        request.session.flash('Password Error or Geolocation Error')
+        return HTTPFound(location=request.path)
 
     storages = request.params.getall('images[]')
 
     md5s = set()
     ip = request.headers.get('X-Real-Ip')
     for storage in storages:
+        if not storage:
+            # You will arrive here if you do not select a file
+            continue
         upload = Upload(storage, ip)
         local_md5s = upload.process()
         for md5 in local_md5s:

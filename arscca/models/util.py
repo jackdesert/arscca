@@ -2,6 +2,7 @@ from collections import defaultdict
 from random import shuffle
 from threading import Lock
 import itertools
+import json
 import os
 import pdb
 import re
@@ -17,6 +18,9 @@ class Util:
     _IP_ADDRESSES = {}
 
     _IP_LOCK = Lock()
+
+    with open('config/user_passwords.json', 'r') as ff:
+        __USER_PASSWORDS = json.loads(ff.read())
 
 
     @classmethod
@@ -117,6 +121,11 @@ class Util:
         items = itertools.chain(*data.values())
         items_list = list(items)
         return len(items_list)
+
+    @classmethod
+    def user_password_auth(cls, password):
+        return password in cls.__USER_PASSWORDS
+
 
     @classmethod
     def from_arkansas(cls, request):

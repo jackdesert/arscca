@@ -21,3 +21,4 @@ coverage
 /node_modules
 package-lock.json
 /config/aws_credentials.json
+/config/user_passwords.json
