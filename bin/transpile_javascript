@@ -15,6 +15,7 @@ echo Running jshint to make sure your code is clean
 jshint arscca/static/on_error.js
 jshint arscca/static/feedback.js
 jshint arscca/static/drivers.js
+jshint arscca/static/photos.js
 
 echo SUCCESS!
 echo ''
@@ -30,6 +31,7 @@ npx babel \
   arscca/static/on_error.js \
   arscca/static/feedback.js \
   arscca/static/drivers.js \
+  arscca/static/photos.js \
   arscca/static/vue-production.js \
   --out-file $TEMP_FILE
 

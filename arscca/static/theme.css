@@ -12,6 +12,14 @@ body.body_dimmed
   background: #bbb;
 }
 
+/* body.no-scroll is applied when an event photo is clicked
+ * so that the scroll bar will not display while a single photo is on display
+ */
+body.no-scroll
+{
+  overflow: hidden;
+}
+
 h1,
 h2,
 h3,
@@ -377,6 +385,38 @@ span.spoof
 {
   width: 45%;
 }
+
+.overlay
+{
+  display: none;
+  position: fixed;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: grey;
+  text-align: center;
+  z-index: 1;
+}
+
+.overlay.active
+{
+  display: block;
+}
+
+/* https://stackoverflow.com/questions/7273338/how-to-vertically-align-an-image-inside-a-div#answer-18869078 */
+.overlay__img
+{
+  max-width: 100%;
+  max-height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
 
 @media (max-width: 1199px) {
 }
