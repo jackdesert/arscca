@@ -396,7 +396,7 @@ span.spoof
   right: 0;
   background-color: grey;
   text-align: center;
-  z-index: 1;
+  z-index: 2; /* Above the .feedback__link */
 }
 
 .overlay.active
