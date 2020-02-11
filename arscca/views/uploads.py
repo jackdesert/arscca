@@ -43,7 +43,7 @@ def photo_upload_create_view(request):
     md5s = set()
     ip = request.headers.get('X-Real-Ip')
     for storage in storages:
-        if not storage:
+        if storage == b'':
             # You will arrive here if you do not select a file
             continue
         upload = Upload(storage, ip)
@@ -63,18 +63,14 @@ def photo_upload_create_view(request):
 @view_config(route_name='photos',
              renderer='templates/photos.jinja2')
 def photos_view(request):
-    keys = REDIS.smembers(Shared.REDIS_KEY_S3_PHOTOS)
-    keys = sorted(keys, reverse=True)
-    keys_by_date = defaultdict(list)
-
-    for key in keys:
-        date_string = key[0:10]
-        date_formatted = datetime.strptime(date_string, '%Y-%m-%d').strftime('%B %e, %Y')
-        keys_by_date[date_formatted].append(key)
+    by_upload_date = bool(request.params.get('g'))
+    grouped_keys = SingleImage.redis_keys_grouped_and_sorted(by_upload_date)
 
     bucket = SingleImage.S3_BUCKET
 
-    return dict(keys_by_date=keys_by_date, bucket=bucket)
+    return dict(grouped_keys=grouped_keys,
+                by_upload_date=by_upload_date,
+                bucket=bucket)
 
 
 

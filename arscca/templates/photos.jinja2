@@ -11,12 +11,53 @@
 
 
     <h2>Event Photos</h2>
+
     <div class='space-1rem'></div>
     <a href='/photos/upload' class='btn btn-danger'>Upload</a></h2>
     <div class='space-1rem'></div>
-    {% for date, keys in keys_by_date.items() %}
+    <div>Group Photos By</div>
+
+    <input type='radio'
+           id='group-by-snap-date'
+           class='radio'
+           name='group-by'
+           value='snap_date'
+           {% if not by_upload_date %}
+             checked
+           {% endif %}/>
+    <label for='group-by-snap-date'
+           class='radio {% if not by_upload_date %} radio_checked {% endif %}' >
+             Date Taken
+    </label>
+
+    <br>
+
+    <input type='radio'
+           id='group-by-upload-date'
+           class='radio'
+           name='group-by'
+           value='upload_date'
+           {% if by_upload_date %}
+             checked
+           {% endif %}/>
+    <label for='group-by-upload-date'
+           class='radio {% if by_upload_date %} radio_checked {% endif %}' >
+             Date Uploaded
+    </label>
+
+
+    <br>
+
+    {% for date, friendly_date, keys in grouped_keys %}
         <div class='space-1rem'></div>
-        <h2>{{date}}</h2>
+        <h2>
+            {% if by_upload_date %}
+                (Uploaded on)
+            {% else %}
+                (Taken on)
+            {% endif %}
+            {{friendly_date}}
+        </h2>
         {% for key in keys %}
             <img class='uploaded-photo' src='//{{bucket}}.s3-us-west-2.amazonaws.com/{{key}}' />
         {% endfor %}
@@ -29,5 +70,6 @@
 </div>
 <script>
     ready(bindEnlargePhotoOnClick)
+    ready(bindGroupPhotosByRadioButtons)
 </script>
 {% endblock content %}

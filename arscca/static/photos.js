@@ -39,3 +39,17 @@ let bindEnlargePhotoOnClick = () => {
     }
 
 }
+
+let bindGroupPhotosByRadioButtons = () => {
+    'use strict'
+    let byUploadDate = document.getElementById('group-by-upload-date')
+    let bySnapDate = document.getElementById('group-by-snap-date')
+
+    byUploadDate.addEventListener('click', () => {
+        window.location = '/photos?g=1'
+    })
+
+    bySnapDate.addEventListener('click', () => {
+        window.location = '/photos'
+    })
+}

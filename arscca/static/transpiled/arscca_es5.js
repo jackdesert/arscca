@@ -790,6 +790,21 @@ var bindEnlargePhotoOnClick = function bindEnlargePhotoOnClick() {
         }
     }
 }
+
+var bindGroupPhotosByRadioButtons = function bindGroupPhotosByRadioButtons() {
+    'use strict'
+
+    var byUploadDate = document.getElementById('group-by-upload-date')
+    var bySnapDate = document.getElementById('group-by-snap-date')
+
+    byUploadDate.addEventListener('click', function () {
+        window.location = '/photos?g=1'
+    })
+
+    bySnapDate.addEventListener('click', function () {
+        window.location = '/photos'
+    })
+}
 "use strict"
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }

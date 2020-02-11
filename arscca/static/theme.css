@@ -417,6 +417,27 @@ span.spoof
   margin: auto;
 }
 
+input.radio
+{
+  margin-left: 2rem;
+}
+
+label.radio
+{
+  margin-bottom: 0;
+}
+
+.radio_checked
+{
+  font-weight: bold;
+}
+
+.radio:hover
+{
+  cursor: pointer;
+  font-weight: bold;
+}
+
 
 @media (max-width: 1199px) {
 }
