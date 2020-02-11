@@ -2,6 +2,7 @@ from PIL import Image
 from PIL import ExifTags
 from PIL import UnidentifiedImageError
 from arscca.models.shared import Shared
+from collections import defaultdict
 from datetime import datetime
 from datetime import date
 from uuid import uuid4 # random uuid
@@ -29,6 +30,10 @@ class SingleImage:
 
     EXIF_DATETIME_KEY = 306
 
+    COLON = ':'
+    HYPHEN = '-'
+    SPLITTER = '__'
+
     # PUBLIC_READ makes it so the uploaded file is readable by anyone
     PUBLIC_READ = 'public-read'
 
@@ -43,7 +48,6 @@ class SingleImage:
     def __init__(self, filename, ip):
         self._filename = filename
         self._ip = ip
-        self._date = str(date.today())
         self._md5 = None
 
     def process(self):
@@ -64,20 +68,22 @@ class SingleImage:
 
         # Source: ??
         # exif = { ExifTags.TAGS[k]: v for k, v in im._getexif().items() if k in ExifTags.TAGS }   # taken_at = exif['DateTime']
-        taken_at = im.getexif().get(self.EXIF_DATETIME_KEY)
+        if snap_timestamp := im.getexif().get(self.EXIF_DATETIME_KEY):
+            snap_date = snap_timestamp[0:10].replace(self.COLON, self.HYPHEN)
+        else:
+            snap_date = date.today()
+
 
         # boto3 encodes all metadata values to ASCII
         # Therefore do not included metadata if it has None values in it
         # Because None.encode() raises an error
         extra_args = dict(ACL=self.PUBLIC_READ)
-        metadata = {}
+
+        uploaded_at = str(datetime.now())
+        metadata = dict(uploaded_at=uploaded_at)
 
         if ip := self._ip:
             metadata.update(ip=ip)
-
-        if taken_at:
-            metadata.update(taken_at=taken_at)
-
 
         extra_args.update(Metadata=metadata)
 
@@ -88,27 +94,21 @@ class SingleImage:
         print(f'Uploading {self._filename} as {self._md5}')
         self.S3.upload_file(self._filename,
                             self.S3_BUCKET,
-                            self._s3_key_medium,
+                            self._s3_key_medium(snap_date),
                             ExtraArgs=extra_args)
 
-        self._write_key_to_redis(self._s3_key_medium)
+        self._write_key_to_redis(self._s3_key_medium(snap_date), uploaded_at)
 
         self._unlink(self._medium_temp_filename)
 
         return True
 
-    @property
-    def _medium_temp_filename(self):
-        return self._filename.replace(self.EXTENSION_ORIGINAL,
-                                      self.EXTENSION_MEDIUM)
 
-    @property
-    def _s3_key_medium(self):
-        return f'{self._date}__{self._md5}{self.EXTENSION_MEDIUM}'
+    def _s3_key_medium(self, snap_date):
+        return f'snapped-{snap_date}{self.SPLITTER}{self._md5}{self.EXTENSION_MEDIUM}'
 
-    def _write_key_to_redis(self, key):
-        Shared.REDIS.sadd(Shared.REDIS_KEY_S3_PHOTOS, key)
-
+    def _write_key_to_redis(self, key, uploaded_at):
+        Shared.REDIS.hset(Shared.REDIS_KEY_S3_PHOTOS, key, uploaded_at)
 
     def _compute_md5(self):
         digest = hashlib.md5()
@@ -120,6 +120,56 @@ class SingleImage:
 
     def _unlink(self, filename):
         pathlib.Path(filename).unlink()
+
+    @property
+    def _medium_temp_filename(self):
+        return self._filename.replace(self.EXTENSION_ORIGINAL,
+                                      self.EXTENSION_MEDIUM)
+
+    @classmethod
+    def redis_keys_grouped_and_sorted(cls, group_and_sort_by_upload_date=False):
+        cursor = 0
+        data = []
+        while True:
+            cursor, items = Shared.REDIS.hscan(Shared.REDIS_KEY_S3_PHOTOS,
+                                               cursor)
+            for key_with_snap_date_and_md5, upload_timestamp in items.items():
+                if group_and_sort_by_upload_date:
+                    sort_string = upload_timestamp
+                    date_to_group_by = sort_string[0:10]
+                else:
+                    #
+                    a = key_with_snap_date_and_md5.split(cls.SPLITTER)[0]
+                    sort_string = f'{a} {upload_timestamp}'
+                    date_to_group_by = a[8:18]
+                data.append((sort_string, date_to_group_by, key_with_snap_date_and_md5))
+
+            if cursor == 0:
+                break
+
+
+
+        output_dict = defaultdict(list)
+
+        # Data will be sorted by first item (sort string),
+        # which will set how things are ordered within a group
+        for ss, date, key in sorted(data, reverse=True):
+            output_dict[date].append(key)
+
+        output_list = sorted(output_dict.items(), reverse=True)
+
+
+
+        output = []
+
+        for date, keys in output_list:
+            friendly_date = datetime.strptime(date, '%Y-%m-%d').strftime('%B %e, %Y')
+            output.append((date, friendly_date, keys))
+
+
+        return output
+
+
 
 class Upload:
     UPLOADS_DIR = '/tmp/arscca-pyramid-uploads'
@@ -199,3 +249,6 @@ class Upload:
         shutil.rmtree(self._extract_dir)
 
 
+
+if __name__ == '__main__':
+    print(SingleImage.redis_keys_sorted())

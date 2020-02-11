@@ -1,12 +1,12 @@
+from arscca.models.shared import Shared
+from arscca.models.upload import SingleImage
+from arscca.models.upload import Upload
+from datetime import date
 import os
 import pdb
 import pytest
 import shutil
 import unittest
-
-from arscca.models.upload import Upload
-from arscca.models.upload import SingleImage
-from datetime import date
 
 def metadata(md5):
     today = date.today()
@@ -79,3 +79,80 @@ class UploadTests(unittest.TestCase):
         assert not 'ip' in metadata(md5)
 
 
+    # Default grouping/sorting
+    def test_redis_keys_grouped_and_sorted_1(self):
+        # Specify alternate REDIS database
+        import redis
+        Shared.REDIS = redis.StrictRedis(host='arscca-redis', port=6379, db=14, decode_responses=True)
+        Shared.REDIS.flushdb()
+
+        # This data is ordered by snap_date, then by uploaded_at
+        data = [('snapped-2010-01-01__blah6', '2012-03-01 12:00:00'),
+                ('snapped-2010-01-01__blah5', '2012-03-01 12:01:00'),
+                ('snapped-2010-01-02__blah4', '2012-02-02 12:00:00'),
+                ('snapped-2010-01-02__blah3', '2012-02-02 12:03:00'),
+                ('snapped-2010-01-03__blah2', '2012-01-02 12:02:00'),
+                ('snapped-2010-01-03__blah1', '2012-01-02 12:05:00')]
+
+        single = SingleImage(None, None)
+        for key, uploaded_at in data:
+            single._write_key_to_redis(key, uploaded_at)
+
+
+        # THIS LINE IS DIFFERENT
+        # default group/sort
+        groups = SingleImage.redis_keys_grouped_and_sorted()
+        expected = [
+                    ('2010-01-03',
+                     'January  3, 2010',
+                     ['snapped-2010-01-03__blah1', 'snapped-2010-01-03__blah2']),
+                    ('2010-01-02',
+                     'January  2, 2010',
+                     ['snapped-2010-01-02__blah3', 'snapped-2010-01-02__blah4']),
+                    ('2010-01-01',
+                     'January  1, 2010',
+                     ['snapped-2010-01-01__blah5', 'snapped-2010-01-01__blah6']),
+                   ]
+
+        assert groups == expected
+
+    # Group/sort by uploaded_at
+    def test_redis_keys_grouped_and_sorted_2(self):
+        # Specify alternate REDIS database
+        import redis
+        Shared.REDIS = redis.StrictRedis(host='arscca-redis', port=6379, db=14, decode_responses=True)
+        Shared.REDIS.flushdb()
+
+        # This data is ordered by uploaded_at
+        data = [ # snap_date         # md5   # uploaded_at
+                ('snapped-2010-01-03__blah2', '2012-01-01 12:00:00'),
+                ('snapped-2010-01-02__blah4', '2012-01-01 12:01:00'),
+
+                ('snapped-2010-01-02__blah3', '2012-02-01 12:00:00'),
+                ('snapped-2010-01-03__blah1', '2012-02-01 12:01:00'),
+
+                ('snapped-2010-01-01__blah6', '2012-03-01 12:00:00'),
+                ('snapped-2010-01-01__blah5', '2012-03-01 12:01:00'),
+               ]
+
+        single = SingleImage(None, None)
+        for key, uploaded_at in data:
+            single._write_key_to_redis(key, uploaded_at)
+
+
+        # THIS LINE IS DIFFERENT
+        # group/sort by uploaded_at (note True argument to method)
+        groups = SingleImage.redis_keys_grouped_and_sorted(True)
+        expected = [
+                    ('2012-03-01',
+                     'March  1, 2012',
+                     ['snapped-2010-01-01__blah5', 'snapped-2010-01-01__blah6']),
+                    ('2012-02-01',
+                     'February  1, 2012',
+                     ['snapped-2010-01-03__blah1', 'snapped-2010-01-02__blah3']),
+                    ('2012-01-01',
+                     'January  1, 2012',
+                     ['snapped-2010-01-02__blah4', 'snapped-2010-01-03__blah2']),
+                   ]
+
+        assert groups == expected

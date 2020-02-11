@@ -306,7 +306,8 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 Backlog
 -------
 
-  * Fix highlight (currently highlights all)
+  * Find a sane way to manage redis data when running pytest
+    so it does not clobber development data
   * Pass name through canon before choosing display name (fixes error below?)
   * Privacy Requests --- also see Kim Fares link below
   * Add events from http://arscca.org/201303oldsite/results.htm
