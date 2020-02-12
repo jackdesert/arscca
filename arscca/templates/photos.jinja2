@@ -13,7 +13,7 @@
     <h2>Event Photos</h2>
 
     <div class='space-1rem'></div>
-    <a href='/photos/upload' class='btn btn-danger'>Upload</a></h2>
+    <h2><a href='/photos/upload' class='btn btn-danger'>Upload</a></h2>
     <div class='space-1rem'></div>
     <div>Group Photos By</div>
 
@@ -50,14 +50,14 @@
 
     {% for date, friendly_date, keys in grouped_keys %}
         <div class='space-1rem'></div>
-        <h2>
+        <h3 class='photo-page__date'>
             {% if by_upload_date %}
                 (Uploaded on)
             {% else %}
                 (Taken on)
             {% endif %}
             {{friendly_date}}
-        </h2>
+        </h3>
         {% for key in keys %}
             <img class='uploaded-photo' src='//{{bucket}}.s3-us-west-2.amazonaws.com/{{key}}' />
         {% endfor %}

@@ -381,9 +381,16 @@ span.spoof
   margin: 0.5rem 0;
 }
 
+.photo-page__date
+{
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
 .uploaded-photo
 {
   width: 45%;
+  margin-bottom: 0.2rem;
 }
 
 .overlay
@@ -439,9 +446,26 @@ label.radio
 }
 
 
-@media (max-width: 1199px) {
+/* Order Matters */
+@media (min-width: 767px) {
 }
-@media (max-width: 991px) {
+
+@media (min-width: 991px) {
+
+  .uploaded-photo
+  {
+    width: 33%;
+  }
+
+  .photo-page__date
+  {
+    font-size: 1.3rem;
+  }
 }
-@media (max-width: 767px) {
+
+@media (min-width: 1199px) {
+  .uploaded-photo
+  {
+    width: 24%;
+  }
 }
