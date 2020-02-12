@@ -40,22 +40,31 @@ def photo_upload_create_view(request):
 
     storages = request.params.getall('images[]')
 
-    md5s = set()
+    keys = set()
     ip = request.headers.get('X-Real-Ip')
     for storage in storages:
         if storage == b'':
             # You will arrive here if you do not select a file
             continue
         upload = Upload(storage, ip)
-        local_md5s = upload.process()
-        for md5 in local_md5s:
-            md5s.add(md5)
+        local_keys = upload.process()
+        for key in local_keys:
+            keys.add(key)
+
+    msg = f'{len(keys)} files successfully uploaded. '
+    guessed_keys = [key for key in keys if 'guessed' in key]
+
+    if guessed_count := len(guessed_keys):
+        msg += f'However, for {guessed_count} of them we could not determine when the photo was taken. Please upload originals (with metadata) whenever possible so that we can assign the photo to the correct day/event.'
+    else:
+        msg += 'Nice Work!'
+
 
     if 'curl' in request.user_agent:
-        return dict(md5s=list(md5s))
+        return dict(keys=list(keys))
     else:
         # Web requests get redirected
-        request.session.flash(f'{len(md5s)} files successfully uploaded. Nice Work!')
+        request.session.flash(msg)
         return HTTPFound(location=request.path)
 
 

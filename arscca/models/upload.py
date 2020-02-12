@@ -71,10 +71,12 @@ class SingleImage:
         # exif = { ExifTags.TAGS[k]: v for k, v in im._getexif().items() if k in ExifTags.TAGS }   # taken_at = exif['DateTime']
         if snap_timestamp := im.getexif().get(self.EXIF_DATETIME_KEY):
             snap_date = snap_timestamp[0:10].replace(self.COLON, self.HYPHEN)
+            snapped = True
         else:
             snap_date = date.today()
+            snapped = False
 
-        self._compute_s3_key_medium(snap_date)
+        self._compute_s3_key_medium(snap_date, snapped)
 
         # boto3 encodes all metadata values to ASCII
         # Therefore do not included metadata if it has None values in it
@@ -106,8 +108,11 @@ class SingleImage:
         return True
 
 
-    def _compute_s3_key_medium(self, snap_date):
-        self._s3_key_medium = f'snapped-{snap_date}{self.SPLITTER}{self._md5}{self.EXTENSION_MEDIUM}'
+    def _compute_s3_key_medium(self, snap_date, snapped):
+        # Ideally we have the snap date from exif metadata (snapped)
+        # Otherwise, we used the prepend "guessed" to differentiate
+        prepend = 'snapped' if snapped else 'guessed'
+        self._s3_key_medium = f'{prepend}-{snap_date}{self.SPLITTER}{self._md5}{self.EXTENSION_MEDIUM}'
 
     # test_key is only passed in during automated tests
     def _write_key_to_redis(self, uploaded_at, test_key=None):
