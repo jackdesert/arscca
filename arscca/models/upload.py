@@ -49,13 +49,14 @@ class SingleImage:
         self._filename = filename
         self._ip = ip
         self._md5 = None
+        self._s3_key_medium = None
 
     def process(self):
         self._compute_md5()
         success = self._write_medium()
 
         if success:
-            return self._md5
+            return self._s3_key_medium
         else:
             return None
 
@@ -73,6 +74,7 @@ class SingleImage:
         else:
             snap_date = date.today()
 
+        self._compute_s3_key_medium(snap_date)
 
         # boto3 encodes all metadata values to ASCII
         # Therefore do not included metadata if it has None values in it
@@ -94,20 +96,22 @@ class SingleImage:
         print(f'Uploading {self._filename} as {self._md5}')
         self.S3.upload_file(self._filename,
                             self.S3_BUCKET,
-                            self._s3_key_medium(snap_date),
+                            self._s3_key_medium,
                             ExtraArgs=extra_args)
 
-        self._write_key_to_redis(self._s3_key_medium(snap_date), uploaded_at)
+        self._write_key_to_redis(uploaded_at)
 
         self._unlink(self._medium_temp_filename)
 
         return True
 
 
-    def _s3_key_medium(self, snap_date):
-        return f'snapped-{snap_date}{self.SPLITTER}{self._md5}{self.EXTENSION_MEDIUM}'
+    def _compute_s3_key_medium(self, snap_date):
+        self._s3_key_medium = f'snapped-{snap_date}{self.SPLITTER}{self._md5}{self.EXTENSION_MEDIUM}'
 
-    def _write_key_to_redis(self, key, uploaded_at):
+    # test_key is only passed in during automated tests
+    def _write_key_to_redis(self, uploaded_at, test_key=None):
+        key = test_key or self._s3_key_medium
         Shared.REDIS.hset(Shared.REDIS_KEY_S3_PHOTOS, key, uploaded_at)
 
     def _compute_md5(self):

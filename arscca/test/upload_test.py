@@ -1,6 +1,7 @@
 from arscca.models.shared import Shared
 from arscca.models.upload import SingleImage
 from arscca.models.upload import Upload
+from datetime import datetime
 from datetime import date
 import os
 import pdb
@@ -8,10 +9,9 @@ import pytest
 import shutil
 import unittest
 
-def metadata(md5):
+def metadata(key):
     today = date.today()
-    headers = SingleImage.S3.head_object(Bucket=SingleImage.S3_BUCKET,
-                                         Key=f'{today}__{md5}_medium.png')
+    headers = SingleImage.S3.head_object(Bucket=SingleImage.S3_BUCKET, Key=key)
     return headers['Metadata']
 
 # This dummy only needs to respond to the "value" method
@@ -32,24 +32,25 @@ class UploadTests(unittest.TestCase):
     def test_initialization_2(self):
         storage = FieldStorageDummy('arscca/test/upload_test_files/00_xyl__with_meta.jpg')
         upload = Upload(storage)
-        md5s = upload.process()
-        assert md5s == ['17a04f5d26dc09caf72f2ca90e2a52fa']
+        keys = upload.process()
+        assert keys == ['snapped-2008-04-10__17a04f5d26dc09caf72f2ca90e2a52fa_medium.png']
 
     # Zipped, plain
     def test_initialization_3(self):
         storage = FieldStorageDummy('arscca/test/upload_test_files/plain.zip')
         upload = Upload(storage)
-        md5s = upload.process()
-        assert md5s == ['10338522ee0d6ddd72e55efa9d385493',
-                        'acd92497072fac99dc82b4748693109a']
+        keys = upload.process()
+        assert keys == ['snapped-2020-02-11__10338522ee0d6ddd72e55efa9d385493_medium.png',
+                        'snapped-2020-02-11__acd92497072fac99dc82b4748693109a_medium.png']
 
     # Zipped, nested
     def test_initialization_4(self):
         storage = FieldStorageDummy('arscca/test/upload_test_files/nested.zip')
         upload = Upload(storage)
-        md5s = upload.process()
-        assert md5s == ['7809413ce19fd04710e8dbdc53798cbd',
-                        'e45714b7d004e4dccbb26f6c8626ad5a']
+        keys = upload.process()
+        assert keys == ['snapped-2020-02-11__7809413ce19fd04710e8dbdc53798cbd_medium.png',
+                        'snapped-2020-02-11__e45714b7d004e4dccbb26f6c8626ad5a_medium.png']
+
 
     # Verify No Temp Files Remain
     def test_initialization_5(self):
@@ -64,19 +65,23 @@ class UploadTests(unittest.TestCase):
     def test_initialization_6(self):
         storage = FieldStorageDummy('arscca/test/upload_test_files/00_xyl__with_meta.jpg')
         upload = Upload(storage, '192.168.1.1')
-        md5 = upload.process()[0]
+        key = upload.process()[0]
 
-        assert metadata(md5)['taken_at'] == '2008:04:10 15:34:54'
-        assert metadata(md5)['ip'] == '192.168.1.1'
+        now_truncated = datetime.now().strftime('%Y-%m-%d %H')
+        uploaded_at = metadata(key)['uploaded_at']
+
+        # Check enough of the digits that we are confident it is dynamically generated
+        assert now_truncated == uploaded_at[0:13]
+        assert metadata(key)['ip'] == '192.168.1.1'
 
     # Verfity No Metadata Set
     def test_initialization_7(self):
         storage = FieldStorageDummy('arscca/test/upload_test_files/06_snow__no_meta.jpg')
         upload = Upload(storage)
-        md5 = upload.process()[0]
+        key = upload.process()[0]
 
-        assert not 'taken_at' in metadata(md5)
-        assert not 'ip' in metadata(md5)
+        assert not 'taken_at' in metadata(key)
+        assert not 'ip' in metadata(key)
 
 
     # Default grouping/sorting
@@ -96,7 +101,7 @@ class UploadTests(unittest.TestCase):
 
         single = SingleImage(None, None)
         for key, uploaded_at in data:
-            single._write_key_to_redis(key, uploaded_at)
+            single._write_key_to_redis(uploaded_at, key)
 
 
         # THIS LINE IS DIFFERENT
@@ -137,7 +142,7 @@ class UploadTests(unittest.TestCase):
 
         single = SingleImage(None, None)
         for key, uploaded_at in data:
-            single._write_key_to_redis(key, uploaded_at)
+            single._write_key_to_redis(uploaded_at, key)
 
 
         # THIS LINE IS DIFFERENT
