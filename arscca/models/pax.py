@@ -1,10 +1,12 @@
 import pdb
 from decimal import Decimal
 from arscca.models.shared import Shared
+from types import MappingProxyType
 
 class Pax:
 
-    FACTORS_2009 = dict( AM   = 1.000,
+    FACTORS_2009 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.843,
                          ASP  = 0.866,
                          BM   = 0.944,
@@ -43,9 +45,10 @@ class Pax:
                          STR  = 0.842, # STR added from 2010 because 2009-09-19 uses it
                          STU  = 0.836,
                          STX  = 0.822,
-                         XP   = 0.882,)
+                         XP   = 0.882,))
 
-    FACTORS_2010 = dict( AM   = 1.000,
+    FACTORS_2010 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.854,
                          ASP  = 0.871,
                          BM   = 0.965,
@@ -85,9 +88,10 @@ class Pax:
                          STS  = 0.826,
                          STU  = 0.844,
                          STX  = 0.830,
-                         XP   = 0.890,)
+                         XP   = 0.890,))
 
-    FACTORS_2011 = dict( AM   = 1.000,
+    FACTORS_2011 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.841,
                          ASP  = 0.862,
                          BM   = 0.958,
@@ -127,9 +131,10 @@ class Pax:
                          STS  = 0.823,
                          STU  = 0.838,
                          STX  = 0.824,
-                         XP   = 0.887,)
+                         XP   = 0.887,))
 
-    FACTORS_2012 = dict( AM   = 1.000,
+    FACTORS_2012 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.844,
                          ASP  = 0.863,
                          BM   = 0.960,
@@ -174,10 +179,11 @@ class Pax:
                          STS  = 0.827,
                          STU  = 0.841,
                          STX  = 0.822,
-                         XP   = 0.898,)
+                         XP   = 0.898,))
 
 
-    FACTORS_2013 = dict( AM   = 1.000,
+    FACTORS_2013 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.847,
                          ASP  = 0.866,
                          BM   = 0.962,
@@ -226,10 +232,11 @@ class Pax:
                          STS  = 0.829,
                          STU  = 0.846,
                          STX  = 0.827,
-                         XP   = 0.901,)
+                         XP   = 0.901,))
 
 
-    FACTORS_2014 = dict( AM   = 1.000,
+    FACTORS_2014 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.833,
                          ASP  = 0.866,
                          ASR  = 0.848,
@@ -280,10 +287,11 @@ class Pax:
                          STS  = 0.829,
                          STU  = 0.846,
                          STX  = 0.827,
-                         XP   = 0.906,)
+                         XP   = 0.906,))
 
 
-    FACTORS_2015 = dict( AM   = 1.000,
+    FACTORS_2015 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.829,
                          ASP  = 0.865,
                          BM   = 0.964,
@@ -327,10 +335,11 @@ class Pax:
                          STS  = 0.828,
                          STU  = 0.844,
                          STX  = 0.831,
-                         XP   = 0.905,)
+                         XP   = 0.905,))
 
 
-    FACTORS_2016 = dict( AM   = 1.000,
+    FACTORS_2016 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.833,
                          ASP  = 0.865,
                          BM   = 0.966,
@@ -377,9 +386,10 @@ class Pax:
                          STS  = 0.832,
                          STU  = 0.845,
                          STX  = 0.836,
-                         XP   = 0.907,)
+                         XP   = 0.907,))
 
-    FACTORS_2017 = dict( AM   = 1.000,
+    FACTORS_2017 = MappingProxyType(dict(
+                         AM   = 1.000,
                          AS   = 0.819,
                          ASP  = 0.856,
                          BM   = 0.956,
@@ -426,11 +436,12 @@ class Pax:
                          STS  = 0.818,
                          STU  = 0.831,
                          STX  = 0.822,
-                         XP   = 0.892,)
+                         XP   = 0.892,))
     # Pax data from
     # http://solotime.info/pax/rtp2018.html
     # (Hyphens removed)
-    FACTORS_2018 = dict( AM    = 1.000,
+    FACTORS_2018 = MappingProxyType(dict(
+                         AM    = 1.000,
                          AS    = 0.814,
                          ASP   = 0.848,
                          BM    = 0.956,
@@ -478,12 +489,12 @@ class Pax:
                          STS   = 0.810,
                          STU   = 0.824,
                          STX   = 0.813,
-                         XP    = 0.884,)
+                         XP    = 0.884,))
 
     # Pax data from
     # http://solotime.info/pax/rtp2019.html
     # (Hyphens removed)
-    FACTORS_2019 = dict(
+    FACTORS_2019 = MappingProxyType(dict(
                         STM   = 0.833, # STM IS CUSTOM TO ARKANSAS
 
                         AM    = 1.000,
@@ -533,12 +544,12 @@ class Pax:
                         STS   = 0.811,
                         STU   = 0.828,
                         STX   = 0.815,
-                        XP    = 0.885,)
+                        XP    = 0.885,))
 
     # Pax data from
     # http://solotime.info/pax/rtp2020.html
     # (Hyphens removed)
-    FACTORS_2020 = dict(
+    FACTORS_2020 = MappingProxyType(dict(
                         STM   = 0.833, # STM IS CUSTOM TO ARKANSAS
 
                         AM   = 1.000,
@@ -588,7 +599,7 @@ class Pax:
                         STS  = 0.812,
                         STU  = 0.828,
                         STX  = 0.816,
-                        XP   = 0.880,)
+                        XP   = 0.880,))
 
 
 

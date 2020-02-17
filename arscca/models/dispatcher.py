@@ -18,7 +18,7 @@ class Dispatcher:
 
     # You only need to fill this out for the current year,
     # since that is the only year that requires point calculation
-    NON_POINTS_EVENT_DATES = ['2019-12-08']
+    NON_POINTS_EVENT_DATES = frozenset(['2019-12-08'])
 
     PAX_STRING = 'PAX'
 

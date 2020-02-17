@@ -95,6 +95,7 @@ Cable Pinout
 ------------
 
 See pp 302 (ref)
+But also see pp 52 (RTS/CTS can be ignored)
 
 
 PL2303 USB Adapter

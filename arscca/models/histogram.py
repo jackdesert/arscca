@@ -11,8 +11,8 @@ from operator import itemgetter
 
 class Histogram:
 
-    POSSIBLE_BIN_WIDTHS = [1, 2, 4, 5, 10, 20, 25, 40, 50, 60, 75, 100,
-                           120, 125, 150, 175, 200, 250, 300]
+    POSSIBLE_BIN_WIDTHS = (1, 2, 4, 5, 10, 20, 25, 40, 50, 60, 75, 100,
+                           120, 125, 150, 175, 200, 250, 300)
     DEFAULT_BIN_WIDTH = 2
     WRITE_DIR = 'arscca/static/histograms'
 

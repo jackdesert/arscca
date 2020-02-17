@@ -1,4 +1,5 @@
 from arscca.models.canon import Canon
+from types import MappingProxyType
 import os
 import pdb
 import re
@@ -11,9 +12,10 @@ class Photo:
     SMALL = 'small'
     MEDIUM = 'medium'
 
-    DIRS = { 'small': '/static/images/driver_photos/small',
-             'medium': '/static/images/driver_photos/medium',
-           }
+    DIRS = MappingProxyType(
+            { 'small': '/static/images/driver_photos/small',
+              'medium': '/static/images/driver_photos/medium',
+            })
 
     TORSO_SUFFIX_REGEX = re.compile(r'_torso(\.jpg)?$')
     CAR_SUFFIX_REGEX = re.compile(r'_car_?\d*(\.jpg)?$')

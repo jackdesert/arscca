@@ -307,6 +307,7 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 Backlog
 -------
 
+  * Fix S3 tests so they break without network.
   * Find a sane way to manage redis data when running pytest
     so it does not clobber development data
   * Pass name through canon before choosing display name (fixes error below?)

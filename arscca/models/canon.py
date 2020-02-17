@@ -3,6 +3,7 @@
 
 import pdb
 import re
+from types import MappingProxyType
 
 class Canon:
     UNDERSCORE = '_'
@@ -17,7 +18,7 @@ class Canon:
     # { erroneous_slug : correct_slug }
     # AKA
     # { associated_slug : canonical_slug }
-    ALIASES = {
+    ALIASES = MappingProxyType({
                # NICKNAMES
                'alexander_hood': 'alex_hood',
                'alexander_ross': 'alex_ross',
@@ -162,7 +163,7 @@ class Canon:
                # QUESTIONS?
                # bill_holt / bill_hoak
                # 'gary_nufen': 'gary_newford', # spelling?
-               }
+               })
 
 
     def __init__(self, name_or_slug):
