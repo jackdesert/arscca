@@ -31,6 +31,9 @@ Docker with Manual Containers
     # Build the image based on the Dockerfile
     docker build -t arscca-pyramid .
 
+    # Create Network
+    docker network create arscca-network
+
     # Run a new container with Redis
     docker run  --rm \
                 --name arscca-redis \
@@ -307,6 +310,11 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 Backlog
 -------
 
+  * Add "6pm All are welcome" to board meetings (all are welcome is a link)
+  * Change home page of arscca.org to read "Upcoming Events" instead of "2019 season"
+  * Store calendar to redis to avoid traffic on motorsportreg
+  * Add bits about follow us on facebook.
+  * Fix S3 tests so they return the correct prepend
   * Fix S3 tests so they break without network.
   * Find a sane way to manage redis data when running pytest
     so it does not clobber development data

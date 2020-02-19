@@ -1,0 +1,22 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        Calendar
+    </div>
+
+    <h2>2020 ARSCCA Calendar</h2>
+    <p><b>ALL EVENT DATES ARE SUBJECT TO CHANGE, so please check back regularly for updates.</b></p>
+
+
+    {% include 'templates/_calendar_table.jinja2' %}
+
+
+
+
+</div>
+{% endblock content %}

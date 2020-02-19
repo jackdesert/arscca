@@ -1,2 +1,6 @@
 Q: Why are slow outliers grouped (conformed) with the next fastest driver?
 A: To make the histogram labels easier to read. (Less dense)
+
+Q: Why does arscca.org fetch /calendar/plain via ajax instead of via iframe?
+A: Setting innerHTML on a div on arscca.org allows the content to flow naturally,
+   and the content renders full height.

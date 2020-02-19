@@ -445,6 +445,26 @@ label.radio
   font-weight: bold;
 }
 
+.calendar-event__tr
+{
+  border-bottom: 1px solid #ddd !important;
+}
+
+.calendar-event__tr_autox
+{
+  background: #fee;
+}
+
+.calendar-event__tr_rallyx
+{
+  background: #ddf;
+}
+
+.calendar-event__tr_meeting
+{
+  background: #ccc;
+}
+
 
 /* Order Matters */
 @media (min-width: 767px) {
