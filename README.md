@@ -50,7 +50,7 @@ Docker with Manual Containers
                 --name arscca-pyramid \
                 --network arscca-network \
                 --publish 6543:6543 \
-                --mount type=bind,source=/home/jd/r/arscca,target=/arscca-pyramid \
+                --mount type=bind,source=/home/jd/p/arscca,target=/arscca-pyramid \
                 --mount type=bind,source=/home/arscca/arscca-live.jinja2,target=/home/arscca/arscca-live.jinja2 \
                 arscca-pyramid:latest \
                 bash
@@ -310,12 +310,26 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 Backlog
 -------
 
+  * Redirect live.arscca.org to uno.arscca.org/live
+    (or just use uno.arscca.org/live)
+  * View that shows the last few pictures
+    that way we can show them on the home page of arscca.org
+  * Fix so that club name can be used to indicate rallycross scoring
+  * If password accepted, whitelist IP address
+  * Fix docker mount so that /live/raw shows updated file
   * Add "6pm All are welcome" to board meetings (all are welcome is a link)
+  * Minimize line-height on small devices for calendar
+  * Update styling so that on small devices the text doesn't wrap so hard
+    (how about:
+      Date    Location1 Details
+      Name    Location2
   * Change home page of arscca.org to read "Upcoming Events" instead of "2019 season"
   * Store calendar to redis to avoid traffic on motorsportreg
   * Add bits about follow us on facebook.
   * Fix S3 tests so they return the correct prepend
   * Fix S3 tests so they break without network.
+
+
   * Find a sane way to manage redis data when running pytest
     so it does not clobber development data
   * Pass name through canon before choosing display name (fixes error below?)

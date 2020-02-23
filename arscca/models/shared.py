@@ -13,3 +13,5 @@ class Shared:
 
     NOT_JUST_WHITESPACE_REGEX = re.compile('[^\s]')
 
+    CORS_DOMAINS = frozenset(['http://arscca.org'])
+

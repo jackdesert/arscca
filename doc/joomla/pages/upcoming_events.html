@@ -1,0 +1,44 @@
+<!-- This script pulls live calendar data from uno.arscca.org/calendar/plain -->
+<div id='calendar-short'><h2>Loading Upcoming Events...</h2></div>
+<script>
+    function ready(fn) {
+        // See http://youmightnotneedjquery.com/
+        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+            fn();
+        } else {
+            document.addEventListener('DOMContentLoaded', fn);
+        }
+    }
+
+    var displayCalendar = function(elemId, short){
+
+        var request = new XMLHttpRequest(),
+            url = 'http://uno.arscca.org/calendar/plain',
+            elem = document.getElementById(elemId)
+
+        if(short){
+            url += '?short=1'
+        }
+
+        request.open('GET', url, true)
+
+        request.onload = function() {
+          if (this.status >= 200 && this.status < 400) {
+            elem.innerHTML = this.response //Success!
+          } else {
+            console.log('We reached our target server, but it returned an error')
+          }
+        }
+
+        request.onerror = function() {
+          console.log('connection error of some sort')
+        }
+
+        request.send()
+
+    }
+
+    ready(function(){
+        displayCalendar('calendar-short', true)
+    })
+</script>

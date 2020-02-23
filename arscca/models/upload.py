@@ -137,6 +137,15 @@ class SingleImage:
 
     @classmethod
     def redis_keys_grouped_and_sorted(cls, group_and_sort_by_upload_date=False):
+        '''Retuns S3 photo keys grouped by date
+        Sample Output:
+
+        [
+            ('2018-02-05', 'Feb 5, 2018', ['key-6', 'key-5', 'key-4']),
+            ('2018-02-04', 'Feb 4, 2018', ['key-3', 'key-2', 'key-1']),
+        ]
+        '''
+
         cursor = 0
         data = []
         while True:
@@ -166,7 +175,6 @@ class SingleImage:
             output_dict[date].append(key)
 
         output_list = sorted(output_dict.items(), reverse=True)
-
 
 
         output = []

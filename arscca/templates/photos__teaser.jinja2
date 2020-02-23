@@ -1,0 +1,12 @@
+{% set link = '//uno.arscca.org/photos' %}
+
+<h2>Event Photos</h2>
+Check out our new
+<a href='{{ link }}'>Event Photos page</a>.
+
+<div class='space-1rem'></div>
+<a href='{{ link }}'>
+    {% for key in keys %}
+        <img class='uploaded-photo' src='//{{bucket}}.s3-us-west-2.amazonaws.com/{{key}}' />
+    {% endfor %}
+</a>

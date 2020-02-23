@@ -82,4 +82,26 @@ def photos_view(request):
                 bucket=bucket)
 
 
+LIMIT = 4
+
+@view_config(route_name='photos__teaser',
+             renderer='templates/photos__teaser.jinja2')
+def photos__teaser_view(request):
+    # TODO Turn this CORS functionality into a decorator
+    origin = request.headers.get('Origin')
+    if origin in Shared.CORS_DOMAINS:
+        # Set CORS headers for cross-domain usage
+        request.response.headers['Access-Control-Allow-Origin'] = origin
+
+    grouped_keys = SingleImage.redis_keys_grouped_and_sorted()
+    keys = []
+    for date, friendly_date, temp_keys in grouped_keys:
+        for key in temp_keys:
+            keys.append(key)
+    keys = keys[:LIMIT]
+
+    bucket = SingleImage.S3_BUCKET
+
+    return dict(keys=keys,
+                bucket=bucket)
 

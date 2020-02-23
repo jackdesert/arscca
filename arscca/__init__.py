@@ -34,7 +34,8 @@ def main(global_config, **settings):
     config.add_route('events_with_slash', '/events/') # redirects to home (slash is distinct)
     config.add_route('index', '/')
     config.add_route('javascript_errors', '/javascript_errors')
-    config.add_route('joomla_test__home_page', '/joomla_test/home_page')
+    config.add_route('joomla_test__home_page_photos', '/joomla_test/home_page_photos')
+    config.add_route('joomla_test__home_page_calendar', '/joomla_test/home_page_calendar')
     config.add_route('live_event', '/live')
     config.add_route('live_event_drivers', '/live/drivers')
     config.add_route('live_event_raw', '/live/raw')
@@ -44,6 +45,7 @@ def main(global_config, **settings):
     config.add_route('photo_upload_create', '/photos/upload', request_method='POST')
     config.add_route('photo_upload_new', '/photos/upload', request_method='GET')
     config.add_route('photos', '/photos')
+    config.add_route('photos__teaser', '/photos/teaser')
     config.add_route('report', '/standings')
     config.add_route('run_groups', '/run_groups')
 

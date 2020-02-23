@@ -63,6 +63,13 @@ For "Category Order" choose which order you want.
 (I wanted Category Reverse, but that is not offered.)
 
 
+Ordering Menu Items
+-------------------
+
+Click Menu Items.
+Grab the handle at left and drag to position.
+
+
 Add Link to Menu
 ----------------
 

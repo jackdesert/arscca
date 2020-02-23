@@ -1,4 +1,5 @@
 from arscca.models.calendar.presenter import Presenter
+from arscca.models.shared import Shared
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 import logging
@@ -6,8 +7,6 @@ import pdb
 
 
 LOG = logging.getLogger(__name__)
-
-CORS_DOMAINS = frozenset(['http://arscca.org'])
 
 
 @view_config(route_name='calendar',
@@ -20,7 +19,7 @@ def calendar_view(request):
              renderer='templates/calendar_plain.jinja2')
 def calendar_plain_view(request):
     origin = request.headers.get('Origin')
-    if origin in CORS_DOMAINS:
+    if origin in Shared.CORS_DOMAINS:
         # Set CORS headers for cross-domain usage
         request.response.headers['Access-Control-Allow-Origin'] = origin
 
