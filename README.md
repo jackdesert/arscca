@@ -310,6 +310,7 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 Backlog
 -------
 
+  * Add transparent border around photos that turns dark when hover
   * Redirect live.arscca.org to uno.arscca.org/live
     (or just use uno.arscca.org/live)
   * View that shows the last few pictures

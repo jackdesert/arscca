@@ -40,16 +40,18 @@ class UploadTests(unittest.TestCase):
         storage = FieldStorageDummy('arscca/test/upload_test_files/plain.zip')
         upload = Upload(storage)
         keys = upload.process()
-        assert keys == ['snapped-2020-02-11__10338522ee0d6ddd72e55efa9d385493_medium.png',
-                        'snapped-2020-02-11__acd92497072fac99dc82b4748693109a_medium.png']
+        today = date.today()
+        assert keys == [f'guessed-{today}__10338522ee0d6ddd72e55efa9d385493_medium.png',
+                        f'guessed-{today}__acd92497072fac99dc82b4748693109a_medium.png']
 
     # Zipped, nested
     def test_initialization_4(self):
         storage = FieldStorageDummy('arscca/test/upload_test_files/nested.zip')
         upload = Upload(storage)
         keys = upload.process()
-        assert keys == ['snapped-2020-02-11__7809413ce19fd04710e8dbdc53798cbd_medium.png',
-                        'snapped-2020-02-11__e45714b7d004e4dccbb26f6c8626ad5a_medium.png']
+        today = date.today()
+        assert keys == [f'guessed-{today}__7809413ce19fd04710e8dbdc53798cbd_medium.png',
+                        f'guessed-{today}__e45714b7d004e4dccbb26f6c8626ad5a_medium.png']
 
 
     # Verify No Temp Files Remain

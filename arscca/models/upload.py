@@ -28,7 +28,7 @@ class SingleImage:
 
     MEDIUM_SIZE = (600, 600)
 
-    EXIF_DATETIME_KEY = 306
+    EXIF_DATETIME_ORIGINAL_KEY = 36867
 
     COLON = ':'
     HYPHEN = '-'
@@ -69,7 +69,7 @@ class SingleImage:
 
         # Source: ??
         # exif = { ExifTags.TAGS[k]: v for k, v in im._getexif().items() if k in ExifTags.TAGS }   # taken_at = exif['DateTime']
-        if snap_timestamp := im.getexif().get(self.EXIF_DATETIME_KEY):
+        if snap_timestamp := im.getexif().get(self.EXIF_DATETIME_ORIGINAL_KEY):
             snap_date = snap_timestamp[0:10].replace(self.COLON, self.HYPHEN)
             snapped = True
         else:
