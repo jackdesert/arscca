@@ -63,7 +63,8 @@ class BaseEvent:
 
     def future_boolean(self):
         '''Answers the question: "Is this event in the future?"'''
-        assert self.DATE_REGEX.match(self.date)
+        if not self.DATE_REGEX.match(self.date):
+            raise AssertionError
         today = str(datetime_date.today())
         return today <= self.date
 

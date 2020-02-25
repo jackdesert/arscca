@@ -120,7 +120,7 @@ class SingleImage:
         Shared.REDIS.hset(Shared.REDIS_KEY_S3_PHOTOS, key, uploaded_at)
 
     def _compute_md5(self):
-        digest = hashlib.md5()
+        digest = hashlib.sha256()
         with open(self._filename, 'rb') as ff:
             digest.update(ff.read())
         md5 = digest.hexdigest()

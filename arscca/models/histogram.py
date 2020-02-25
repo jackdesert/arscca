@@ -99,7 +99,8 @@ class Histogram:
 
     def _construct_digest(self):
         m = hashlib.sha256()
-        assert self._raw_values
+        if not self._raw_values:
+            raise AssertionError
 
         # value comes in as Decimal()
         for value in self._raw_values:

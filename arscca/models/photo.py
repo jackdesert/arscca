@@ -77,7 +77,8 @@ class Photo:
 
     @classmethod
     def all(cls, suffix=TORSO_SUFFIX_REGEX, test_directory=None):
-        assert suffix in [cls.TORSO_SUFFIX_REGEX, cls.CAR_SUFFIX_REGEX]
+        if not suffix in [cls.TORSO_SUFFIX_REGEX, cls.CAR_SUFFIX_REGEX]:
+            raise AssertionError
         directory = test_directory or f'arscca/{cls.DIRS[cls.SMALL]}'
         output = []
         for filename in os.listdir(directory):

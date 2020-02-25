@@ -46,7 +46,8 @@ class NationalEventDriver:
 
     @classmethod
     def all(cls, year):
-        assert cls.YEAR_REGEX.match(str(year))
+        if not cls.YEAR_REGEX.match(str(year)):
+            raise AssertionError
 
         drivers = []
         filename = f'arscca/static/{year}-national-results.csv'

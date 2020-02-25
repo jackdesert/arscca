@@ -177,7 +177,8 @@ class LogSplitter:
         rg = self._row_groups[0]
 
         if (self._num_rows_per_driver == 2) and d1 in rg[0] and d2 in rg[1]:
-            assert rg[0].index(d1) == rg[1].index(d2)
+            if not rg[0].index(d1) == rg[1].index(d2):
+                raise AssertionError
             self.driver_type = TwoCourseDriver
 
         else:

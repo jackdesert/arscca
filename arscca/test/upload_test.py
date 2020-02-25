@@ -33,7 +33,7 @@ class UploadTests(unittest.TestCase):
         storage = FieldStorageDummy('arscca/test/upload_test_files/00_xyl__with_meta.jpg')
         upload = Upload(storage)
         keys = upload.process()
-        assert keys == ['snapped-2008-04-10__17a04f5d26dc09caf72f2ca90e2a52fa_medium.png']
+        assert keys == ['snapped-2008-04-10__0e72357f94407127dd950f3ce4bf8954af6a4842beb2c615d125b837f4946f1b_medium.png']
 
     # Zipped, plain
     def test_initialization_3(self):
@@ -41,8 +41,8 @@ class UploadTests(unittest.TestCase):
         upload = Upload(storage)
         keys = upload.process()
         today = date.today()
-        assert keys == [f'guessed-{today}__10338522ee0d6ddd72e55efa9d385493_medium.png',
-                        f'guessed-{today}__acd92497072fac99dc82b4748693109a_medium.png']
+        assert keys == [f'guessed-{today}__17c31999e60f5f6e2282446453e67b26e318f37d14946ed6d3ea5840af6c952b_medium.png',
+                        f'guessed-{today}__c559e58035d6e042758a84ea1c1f65d5cf31f10965477d88ee022bb894f904ff_medium.png']
 
     # Zipped, nested
     def test_initialization_4(self):
@@ -50,8 +50,8 @@ class UploadTests(unittest.TestCase):
         upload = Upload(storage)
         keys = upload.process()
         today = date.today()
-        assert keys == [f'guessed-{today}__7809413ce19fd04710e8dbdc53798cbd_medium.png',
-                        f'guessed-{today}__e45714b7d004e4dccbb26f6c8626ad5a_medium.png']
+        assert keys == [f'guessed-{today}__6175f2cae66964fe925526e129d8af9d96a08be74dc9d00105f16ab0b0ae40c1_medium.png',
+                        f'guessed-{today}__ad66e755eb605c03508871673b9efe6e6d1d940931441535f46a6d8cfb873f99_medium.png']
 
 
     # Verify No Temp Files Remain

@@ -66,7 +66,8 @@ class PublishedEvent:
 
     @classmethod
     def _friendly_date(cls, date_string):
-        assert len(date_string) == 10
+        if not len(date_string) == 10:
+            raise AssertionError
         date_obj = datetime.strptime(date_string, '%Y-%m-%d')
         return date_obj.strftime('%b&nbsp;%d')
 

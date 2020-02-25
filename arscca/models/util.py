@@ -31,7 +31,8 @@ class Util:
         # This is useful for displaying the event number
         # when certain events have been skipped
         for value in skipped_values:
-            assert isinstance(value, int)
+            if not isinstance(value, int):
+                raise TypeError
 
         output = []
         value = 1

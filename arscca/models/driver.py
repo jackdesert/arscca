@@ -135,9 +135,11 @@ class GenericDriver:
 
         try:
             if isinstance(self, RallyDriver) and (calculated == 0):
-                assert self.DNF_REGEX.match(self.published_primary_score)
+                if not self.DNF_REGEX.match(self.published_primary_score):
+                    raise AssertionError
             if calculated == self.INF:
-                assert self.DNF_REGEX.match(self.published_primary_score)
+                if not self.DNF_REGEX.match(self.published_primary_score):
+                    raise AssertionError
             elif isinstance(self, TwoCourseDriver) and self.second_half_started:
                 # AXWare shows "dns" for two day events if day two has
                 # not started. So we only make the following assertion
@@ -145,7 +147,8 @@ class GenericDriver:
                 #
                 # In the case of 2012-11-04, there are DNS where they don't belong
                 # So test for DNS first before instantiating a Decimal()
-                assert str(calculated) == self.published_primary_score.strip()
+                if not str(calculated) == self.published_primary_score.strip():
+                    raise AssertionError
         except AssertionError:
             try: pub = float(self.published_primary_score)
             except ValueError: pub = self.published_primary_score
