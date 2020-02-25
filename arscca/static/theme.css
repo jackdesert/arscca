@@ -465,6 +465,12 @@ label.radio
   background: #ccc;
 }
 
+pre
+{
+  background: #222 !important;
+  color: #ccc !important;
+}
+
 
 /* Order Matters */
 @media (min-width: 767px) {
