@@ -27,6 +27,7 @@ def main(global_config, **settings):
     config.add_route('admin_run_groups', '/admin/run_groups')
     config.add_route('calendar', '/calendar')
     config.add_route('calendar_plain', '/calendar/plain')
+    config.add_route('documentation_scanner', '/doc/scanner')
     config.add_route('driver', '/drivers/{slug}')
     config.add_route('drivers', '/drivers')
     config.add_route('event', '/events/{date}')

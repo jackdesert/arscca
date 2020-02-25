@@ -36,6 +36,7 @@ Docker with Manual Containers
 
     # Run a new container with Redis
     docker run  --rm \
+                --detach \
                 --name arscca-redis \
                 --network arscca-network \
                 --volume reddata:/data \
@@ -310,6 +311,9 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 Backlog
 -------
 
+  * Write a module for both removing one photo at a time
+    and for making a backup of what's in S3/redis
+  * Write a script or classmethod for removing a photo (both from s3 and redis)
   * Add transparent border around photos that turns dark when hover
   * Redirect live.arscca.org to uno.arscca.org/live
     (or just use uno.arscca.org/live)
