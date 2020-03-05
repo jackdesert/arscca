@@ -22,6 +22,7 @@ jmespath==0.9.4
 kiwisolver==1.1.0
 lxml==4.5.0
 Mako==1.0.12
+Markdown==3.2.1
 markdown2==2.3.8
 MarkupSafe==1.1.1
 matplotlib==3.1.0

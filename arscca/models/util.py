@@ -1,3 +1,4 @@
+# Builtin
 from collections import defaultdict
 from random import shuffle
 from threading import Lock
@@ -6,6 +7,9 @@ import json
 import os
 import pdb
 import re
+
+# Third Party
+from markdown import Markdown
 import requests
 
 class Util:
@@ -164,12 +168,44 @@ class Util:
 
         return region
 
+    @classmethod
+    def html_from_markdown(cls, markdown_string, context={}):
+        '''
+        A simple templating tool.
+        First keys from context are substituted using jinja2-style syntax.
+        ARGUMENTS:
+          markdown_string: a string of markdown text
+          context: a dictionary of values to substitute
+
+        OUTPUT:
+          html.
+
+        EXAMPLE:
+           >>> markdown_string = '# Hello {{ name }}'
+           >>> context = dict(name='Charlie')
+           >>> Util.html_from_markdown(markdown_string, context)
+           '<h1>Hello Charlie</h1>'
+        '''
+
+        for key, value in context.items():
+            prep_a = '\{\{\s*KEY\s*\}\}'
+            prep_b = prep_a.replace('KEY', key)
+            regex = re.compile(prep_b)
+            markdown_string = regex.sub(value, markdown_string)
+
+        html = Markdown().convert(markdown_string)
+        return html
+
 
 if __name__ == '__main__':
-    ip = '99.99.252.41'
-    url = f'https://ipapi.co/{ip}/json'
+    import doctest
+    doctest.testmod()
 
-    data = requests.get(url, timeout=5, headers=headers).json()
-    body.json().get('region')
-    pdb.set_trace()
-    1
+    #pdb.set_trace()
+    #ip = '99.99.252.41'
+    #url = f'https://ipapi.co/{ip}/json'
+
+    #data = requests.get(url, timeout=5, headers=headers).json()
+    #body.json().get('region')
+    #pdb.set_trace()
+    #1

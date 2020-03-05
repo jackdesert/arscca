@@ -1,0 +1,16 @@
+{% extends 'templates/layout.jinja2' %}
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        -> Help -> {{ name }}
+    </div>
+    <div class='space-1rem'></div>
+
+    {{ inner_html | safe }}
+
+</div>
+
+{% endblock content %}
+

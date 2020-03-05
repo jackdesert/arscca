@@ -311,6 +311,8 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
 Backlog
 -------
 
+  * Document how to run all the doctests
+  * Build a middleware that strips trailing slash from url
   * Move javascripts to Typescript for the experience
   * Write a module for both removing one photo at a time
     and for making a backup of what's in S3/redis

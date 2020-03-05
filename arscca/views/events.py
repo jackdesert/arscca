@@ -52,8 +52,8 @@ def events_view(request):
     # Redirect
     return HTTPFound(location='/')
 
-@view_config(route_name='events_with_slash')
-def events_with_slash_view(request):
+@view_config(route_name='events_slash')
+def events_slash_view(request):
     # Redirect
     return HTTPFound(location='/')
 

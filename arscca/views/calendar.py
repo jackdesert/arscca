@@ -14,6 +14,10 @@ LOG = logging.getLogger(__name__)
 def calendar_view(request):
     return _context()
 
+@view_config(route_name='calendar_slash')
+def calendar_slaxh_view(request):
+    return HTTPFound('/calendar')
+
 
 @view_config(route_name='calendar_plain',
              renderer='templates/calendar_plain.jinja2')

@@ -81,6 +81,10 @@ def photos_view(request):
                 by_upload_date=by_upload_date,
                 bucket=bucket)
 
+@view_config(route_name='photos_slash')
+def photos_slash_view(request):
+    return HTTPFound('/photos')
+
 
 LIMIT = 4
 
