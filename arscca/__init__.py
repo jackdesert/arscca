@@ -28,6 +28,7 @@ def main(global_config, **settings):
     config.add_route('calendar', '/calendar')
     config.add_route('calendar_slash', '/calendar/')
     config.add_route('calendar_plain', '/calendar/plain')
+    config.add_route('exception', '/exception')
     config.add_route('help_index', '/help')
     config.add_route('help_index_slash', '/help/')
     config.add_route('help_show', '/help/{document_name}')

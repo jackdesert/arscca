@@ -1,4 +1,5 @@
 # See https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/views.html#custom-exception-views
+from pyramid.view import view_config
 from pyramid.view import exception_view_config
 from pyramid.response import Response
 from arscca.models.util import Util
@@ -48,3 +49,12 @@ if hook_url:
                         content_type=request.content_type,
                         json_body=dict(error='Internal Server Error'))
 
+
+
+@view_config(route_name='exception',
+     renderer='json')
+def exception_view(request):
+    # Use this method to verify that your slack notifier is working
+    # This will raise an exception
+    1 / 0
+    return nothing
