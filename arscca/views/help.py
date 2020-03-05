@@ -34,10 +34,12 @@ def help_scanner_view(request):
     # Build context to pass to markdown parser
     ref_page_314 = request.static_url('arscca:static/pdfs/pbt7100-reference-pages-314-316.pdf')
     settings_png = request.static_url('arscca:static/images/axware-barcode-settings.png')
+    icons_png = request.static_url('arscca:static/images/axware-barcode-status-icons.png')
     reset_png = request.static_path('arscca:static/images/pbt7100-factory-reset-barcode.png')
     context = dict(ref_page_314=ref_page_314,
                    settings_png=settings_png,
-                   reset_png=reset_png)
+                   reset_png=reset_png,
+                   icons_png=icons_png)
 
     inner_html = Util.html_from_markdown(markdown_string, context)
 

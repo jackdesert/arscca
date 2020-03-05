@@ -550,7 +550,10 @@ class Pax:
     # http://solotime.info/pax/rtp2020.html
     # (Hyphens removed)
     FACTORS_2020 = MappingProxyType(dict(
-                        STM   = 0.833, # STM IS CUSTOM TO ARKANSAS
+                        # New Classes This Year
+                        XSA  = 0.844,
+                        XSB  = 0.864,
+                        EV   = 0.824,
 
                         AM   = 1.000,
                         AS   = 0.819,
