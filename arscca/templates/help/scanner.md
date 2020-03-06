@@ -13,7 +13,7 @@
 
 Click this flowchart to enlarge.
 
-<a href='{{ flowchart_png }}'><img style='max-width: 100%' src='{{flowchart_png}}'></img></a>
+<a href='{{ flowchart_svg }}'><img style='max-width: 100%' src='{{flowchart_svg}}'></img></a>
 
 ## 3. Connecting the Cables
 
@@ -208,7 +208,7 @@ The club has two identical scanners. While you are scanning with one, make sure 
 ### 13a. Flowchart
 
 Did you see the
-<a href='{{ flowchart_png }}'>flowchart</a>
+<a href='{{ flowchart_svg }}'>flowchart</a>
 above?
 
 ### 13b. Strange Blinking Pattern

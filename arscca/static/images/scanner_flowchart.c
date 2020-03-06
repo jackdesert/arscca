@@ -1,8 +1,8 @@
 digraph summary{
-		is_handheld_on [color=Blue, fontcolor=Red, fontsize=18, style=filled, fillcolor=Cyan, shape=octagon]
+		is_handheld_on [fontsize=18, style=filled, fillcolor=lightgreen, shape=octagon]
 
 
-    success [style=filled, fillcolor=Green]
+    success [style=filled, fillcolor=lightgreen, fontsize=18]
     verify_axware_barcode_settings [style=filled, fillcolor=pink]
     reset_scanner_and_start_over [style=filled, fillcolor=pink]
     use_python_to_verify_serial_data [style=filled, fillcolor=pink]
