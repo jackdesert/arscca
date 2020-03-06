@@ -9,7 +9,13 @@
 - This document comprises the "Quick Start" for connecting the PBT7100 to AxWare. The full reference guide for the PBT7100 is available at the end of this document. AxWare documentation is availble through the AxWare help menu.
 
 
-## 2. Connecting the Cables
+## 2. Flowchart
+
+Click this flowchart to enlarge.
+
+<a href='{{ flowchart_png }}'><img style='max-width: 100%' src='{{flowchart_png}}'></img></a>
+
+## 3. Connecting the Cables
 
 - Connect the power supply to the base and plug it into an outlet.
 - Place the base near the laptop.
@@ -17,13 +23,13 @@
 - Connect the (coiled) CAB-408 RS232 cable between the base and the Serial-USB adapter. (This cable looks like an Ethernet connector, but it actually has 10 conductors instead of 8.)
 
 
-## 3. Turn On the Handheld
+## 4. Turn On the Handheld
 
 - Insert the battery fully into the handheld.
 - Hold the trigger down for about three seconds until you hear four high beeps. (Now it's on)
 
 
-## 4. Link the Handheld with the Base
+## 5. Link the Handheld with the Base
 
 If the scanner is already paired with a base, you will also hear beeps L-M-H, and the base LED will blink at 50hz for half a second to indicate transmission. If you do not hear this, you must link the handheld as follows:
 
@@ -38,7 +44,7 @@ If the scanner is already paired with a base, you will also hear beeps L-M-H, an
 Only one handheld may be linked at a time. If you link the other handheld, the first one will no longer be linked.
 
 
-## 5. Verify Data Through Cable
+## 6. Verify Data Through Cable
 Scan a barcode (just about anything will do) and listen to the sound it makes. With the default settings, you get a single beep when you get a successful scan. Also the transmission LED on the base will blink ever so briefly. If you make it this far, the handheld and the base are properly linked.
 
 If the handheld and base are linked, you will see all of this:
@@ -56,7 +62,7 @@ Scan a barcode again, and this time watch the LEDs on the Gearmo GM-FTDI-A12 Ser
 
 
 
-## 6. Configure AxWare Bar Code Settings
+## 7. Configure AxWare Bar Code Settings
 
 
 - Click Bar Coding -> Bar Code Scanner Config
@@ -76,7 +82,7 @@ Scan a barcode again, and this time watch the LEDs on the Gearmo GM-FTDI-A12 Ser
 
 
 
-## 7. Print Bar Code Labels in AxWare
+## 8. Print Bar Code Labels in AxWare
 
 First make sure the correct printer is selected (Setup -> Options -> Print Settings)
 
@@ -87,7 +93,7 @@ and click Bar Coding -> Print Bar Codes for Selected Entries
 -  (Not working yet) To print all labels, Bar Coding -> Print Bar Codes for All Entries
 
 
-### 7a. Bar Coding Size
+### 8a. Bar Coding Size
 
 Click In BarCoding -> Bar Code Scanner Config
 
@@ -106,7 +112,7 @@ Smaller is generally better as long as the scanner can still read them.
 The PBT7100 appears to read sizes as small as width 25.
 
 
-### 7b. Bar Coding Position
+### 8b. Bar Coding Position
 
 In order to get the bar code positioned properly on the label,
 make sure that
@@ -120,12 +126,12 @@ within the label. Perhaps we will figure that out.
 
 
 
-### 7c. Ripping Labels
+### 8c. Ripping Labels
 
 Pull DOWN and to the side. (The teeth are UNDER the feeder, not above.)
 
 
-### 7d. Label Jammed (BEEP)
+### 8d. Label Jammed (BEEP)
 
 If the label printer beeps and does not print, press the blue button on the front.
 It will feed out a couple labels and you can print again.
@@ -138,7 +144,7 @@ there is a release mechanism on the left.
 
 
 
-## 8. Activate Scanner in AxWare
+## 9. Activate Scanner in AxWare
 
 There are two places you can activate the scanner in AxWare.
 The first is in the menu, **Bar Coding -> Activate Scanner**. The second is the icon
@@ -163,7 +169,7 @@ Often the last line of the registration log will be cut off and hard to read.
 This is a pain, but if you resize the staging log by just a couple of pixels
 you can by trial and error find a size where the last line will display.
 
-### 8a. Select Staging Mode
+### 9a. Select Staging Mode
 
 Select Staging Mode from the toolbar or from the Bar Coding menu.
 
@@ -173,13 +179,13 @@ Registration Mode means when you scan a barcode, that driver will be highlighted
 
 
 
-## 9. Verify AxWare Receives Scanner Data
+## 10. Verify AxWare Receives Scanner Data
 
 - Scan a bar code. If that car shows up in the staging screen, you're good to go.
 - If you get a pop up with an error, view the staging log. Click View -> Staging Log. This will show you all the data that comes through. If the staging log says the barcode was not found, verify that the barcode you scanned represents a person actually in the event. If it represents a registered driver but it still was not recognized, see Troubleshooting.
 
 
-## 10. Verify Alert Pops Up For Non-Registered Drivers
+## 11. Verify Alert Pops Up For Non-Registered Drivers
 
 - Scan a bar code from a non-registered driver, or from any barcode that you have
   lying around.
@@ -188,7 +194,7 @@ Registration Mode means when you scan a barcode, that driver will be highlighted
   Otherwise the scan silently fails and the run will be attributed to the next driver in line.
 - If alert does not pop up, go back to Barcoding -> Bar Code Setup and enable Strict Scanning.
 
-## 11. Running Start
+## 12. Running Start
 With the scanner activated, whoever is working the computer STILL has the ability to add other cars to the staging grid. Also, if you scan the same barcode twice, it will show up TWICE in the staging grid. If this happens and it was an accident, just call over the radio to have the computer worker delete one of them.
 
 
@@ -197,13 +203,20 @@ The club has two identical scanners. While you are scanning with one, make sure 
 
 
 
-## 12. Troubleshooting
-<h3>11a. Strange Blinking Pattern</h3>
+## 13. Troubleshooting
+
+### 13a. Flowchart
+
+Did you see the
+<a href='{{ flowchart_png }}'>flowchart</a>
+above?
+
+### 13b. Strange Blinking Pattern
 If it gets stuck in some strange mode, power cycle both the handheld (remove the battery, then insert again) and the base (disconnect, then reconnect power adapter). When they power back on, listen for the L M H beep pattern that indicates the handheld and the base are linked. If they are not linked, go back to the section "Link the Handheld with the Base"
 
 
 
-### 12b. Postfix Delimiter
+### 13c. Postfix Delimiter
 
 The PBT7100 is configurable such that given the barcode "STS 57", it can either send just "STS 57", or it can also include some delimiting character and the start and/or end of the string.
 By default, the PBT7100 uses no prefix character, but it uses 0x0D as the postfix character.
@@ -231,7 +244,7 @@ see the section on Verifying Exactly What Data Comes Through.
 
 
 
-### 12c. Verifying Exactly What Data Comes Through
+### 13d. Verifying Exactly What Data Comes Through
 
 If the staging log shows data coming through, but AxWare still does not match it up with a particular driver, you can verify what EXACTLY is coming through your scanner by connecting it to a computer and
 running something like this python script, which will print ALL CHARACTERS that come through.
@@ -270,17 +283,17 @@ postfix character.
 
 
 
-### 12d. Resetting Scanner to Factory Defaults
+### 13e. Resetting Scanner to Factory Defaults
 The scanner has lots of configurable settings, but it works fine with AxWare with its default settings as long as you tell AxWare that the postfix character is 0x0d. To reset the scanner to factory defaults, scan this barcode
 <img class='barcode' src='{{ reset_png }}'></img>
 
 
 
-### 12e. Getting AxWare to Recognize Serial to USB Converter
+### 13f. Getting AxWare to Recognize Serial to USB Converter
 If AxWare doesn't show the Serial to USB device, you may need to install a driver. But first try clicking the "Refresh Port List" button.
 
 
-### 12f. Paging the Handheld
+### 13g. Paging the Handheld
 
 Press the Yellow button on the base and immediately release it.
 (Handheld will beep at 1Hz for several seconds)
@@ -291,7 +304,7 @@ Press the Yellow button on the base and immediately release it.
 
 
 
-## 13. Additional Resources
+## 14. Additional Resources
 
 
 
@@ -300,7 +313,7 @@ Press the Yellow button on the base and immediately release it.
 - [Dymo LabelWriter 450 Turbo User Guide](https://download.dymo.com/UserManuals/labelwriter%20user%20guides/LabelWriter%20Printer%20User%20Guide.en.pdf)
 
 
-### 13a. LED and Beep Indications (Handheld)
+### 14a. LED and Beep Indications (Handheld)
 
 In general, a L M H beep is a good thing, and H M L is a bad thing, a successful scan is one piercing beep, and an unsuccessful scan is one Low beep.
 
@@ -311,7 +324,7 @@ For more details, see  [LED and Beep Indications]({{ ref_page_314 }}) from the R
 
 
 
-## 14. Part Numbers
+## 15. Part Numbers
 <div class='space-1rem'></div>
 
 **DataLogic PBT7100 Scanner w/ Base**

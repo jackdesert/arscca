@@ -1,0 +1,5 @@
+#! /bin/bash
+
+# sudo apt install graphvis
+
+dot -Tpng arscca/static/images/scanner_flowchart.c > arscca/static/images/scanner_flowchart.png

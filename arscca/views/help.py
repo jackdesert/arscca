@@ -36,10 +36,12 @@ def help_scanner_view(request):
     settings_png = request.static_url('arscca:static/images/axware-barcode-settings.png')
     icons_png = request.static_url('arscca:static/images/axware-barcode-status-icons.png')
     reset_png = request.static_path('arscca:static/images/pbt7100-factory-reset-barcode.png')
+    flowchart_png = request.static_path('arscca:static/images/scanner_flowchart.png')
     context = dict(ref_page_314=ref_page_314,
                    settings_png=settings_png,
                    reset_png=reset_png,
-                   icons_png=icons_png)
+                   icons_png=icons_png,
+                   flowchart_png=flowchart_png)
 
     inner_html = Util.html_from_markdown(markdown_string, context)
 

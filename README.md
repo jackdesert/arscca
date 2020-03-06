@@ -306,11 +306,19 @@ Verify All Events Parse  // Load Event Names and Fond Memories into Redis
     env/bin/python bin/load_event_names_and_fond_memories.py
 
 
+Generate Scanner Flowchart
+--------------------------
+
+See https://www.graphviz.org/documentation/
+
+    bin/generate_scanner_flowchart
+
 
 
 Backlog
 -------
 
+  * Make it so you can swipe between photos on photo uploads page (Daniel's Request)
   * Document how to run all the doctests
   * Build a middleware that strips trailing slash from url
   * Move javascripts to Typescript for the experience
