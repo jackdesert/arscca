@@ -16,6 +16,8 @@ services:
       - arscca-redis
     ports:
       - '6543:6543'
+    environment:
+      - ARSCCA_SLACK_HOOK
 
   arscca-twisted:
     build: /home/ubuntu/arscca-twisted/
@@ -32,6 +34,8 @@ services:
       - arscca-redis
     ports:
       - '6544:6544'
+    environment:
+      - ARSCCA_SLACK_HOOK
 
   arscca-redis:
     image: redis:5.0.7
