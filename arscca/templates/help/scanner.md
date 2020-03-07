@@ -64,18 +64,22 @@ Scan a barcode again, and this time watch the LEDs on the Gearmo GM-FTDI-A12 Ser
 
 ## 7. Configure AxWare Bar Code Settings
 
+Click Bar Coding -> Bar Code Scanner Config
 
-- Click Bar Coding -> Bar Code Scanner Config
-- <img src='{{ settings_png }}'></img>
-- Radio Button: Select "Use Default Bar Code Values". (This means car class + car number)
-- Bar Code Width (Printing): 60 (mm) (or as wide as will fit on the labels)
-- <span style='color: red; font-weight: bold;'>Checkboxes: Check "Use strict bar code scanning"</span> (This makes it so any unrecognized barcodes that come through will raise a popup error instead of being silently ignored)
-- Scanner Port: Make sure something is selected. Try disconnecting the Serial to USB converter, click "Refresh Port List" to see which one went away. Then reconnect it and click "Refresh Port List" again. Now you know which one is for the scanner---choose that on.
+The fast way to configure AxWare is to simply match everything up with this screenshot:
+<img src='{{ settings_png }}'></img>
+
+For details on each items, see the following:
+
+- Select **Use Membership # as Bar Code Values**.
+- Bar Code Width (Printing): 30 - 40 works well with 6-digit member numbers.
+- <span style='color: red; font-weight: bold;'>Checkboxes: Check **Use strict bar code scanning**</span> (This makes it so any unrecognized barcodes that come through will raise a popup error instead of being silently ignored)
+- Scanner Port (COM): You are looking for something like "USB Serial Port (COM9)". It might be COM3, COM4, etc. It might have a different name, depending on what brand of Serial - USB converter you are using. If there are more than one in the drop-down, remove the Serial-USB converter, click "Refresh Port List" and see which one disappears.  Then reconnect it and click "Refresh Port List" again. Now you know which one is for the scanner---choose that one.
 - Parity: None (This matches the scanner default)
-- Repeat Scan Timeout: (Default is 2, but set it more if that makes sense)
+- Baud Rate: 9600 (This matches the scanner default)
+- Repeat Scan Timeout: (Default is 2. This means if the same barcode is scanned twice within 2 seconds, the second scan will be ignored.)
 - Prefix Delimiter: (Leave Blank)
-- <span style='color: red; font-weight: bold;'>Postfix Delimiter (This is IMPORTANT): 0x0d </span> (See the section in Troubleshooting on Postfix Delimiters)
-- Select the appropriate Port. (Name depends on make/model of Serial to USB converter). Click "Refresh Port List" if your COM port does not show up.
+- <span style='color: red; font-weight: bold;'>Postfix Delimiter (This is IMPORTANT): \x0d </span> (See the section in Troubleshooting on Postfix Delimiters)
 - Click OK
 
 
@@ -211,12 +215,19 @@ Did you see the
 <a href='{{ flowchart_svg }}'>flowchart</a>
 above?
 
-### 13b. Strange Blinking Pattern
+### 13.b Warning: Scanned entry '473788' - not found
+
+If you get a warning that a scanned entry was not found, double check in BarCoding -> Bar Code Scanner Config
+and make sure that "Use Membership # as Bar Code Values"
+
+If that looks good and it still throws a warning, double check the postfix delimiter in Bar Code Scanner Config.
+
+### 13c. Strange Blinking Pattern
 If it gets stuck in some strange mode, power cycle both the handheld (remove the battery, then insert again) and the base (disconnect, then reconnect power adapter). When they power back on, listen for the L M H beep pattern that indicates the handheld and the base are linked. If they are not linked, go back to the section "Link the Handheld with the Base"
 
 
 
-### 13c. Postfix Delimiter
+### 13d. Postfix Delimiter
 
 The PBT7100 is configurable such that given the barcode "STS 57", it can either send just "STS 57", or it can also include some delimiting character and the start and/or end of the string.
 By default, the PBT7100 uses no prefix character, but it uses 0x0D as the postfix character.
@@ -244,7 +255,7 @@ see the section on Verifying Exactly What Data Comes Through.
 
 
 
-### 13d. Verifying Exactly What Data Comes Through
+### 13e. Verifying Exactly What Data Comes Through
 
 If the staging log shows data coming through, but AxWare still does not match it up with a particular driver, you can verify what EXACTLY is coming through your scanner by connecting it to a computer and
 running something like this python script, which will print ALL CHARACTERS that come through.
@@ -283,17 +294,17 @@ postfix character.
 
 
 
-### 13e. Resetting Scanner to Factory Defaults
+### 13f. Resetting Scanner to Factory Defaults
 The scanner has lots of configurable settings, but it works fine with AxWare with its default settings as long as you tell AxWare that the postfix character is 0x0d. To reset the scanner to factory defaults, scan this barcode
 <img class='barcode' src='{{ reset_png }}'></img>
 
 
 
-### 13f. Getting AxWare to Recognize Serial to USB Converter
+### 13g. Getting AxWare to Recognize Serial to USB Converter
 If AxWare doesn't show the Serial to USB device, you may need to install a driver. But first try clicking the "Refresh Port List" button.
 
 
-### 13g. Paging the Handheld
+### 13h. Paging the Handheld
 
 Press the Yellow button on the base and immediately release it.
 (Handheld will beep at 1Hz for several seconds)
