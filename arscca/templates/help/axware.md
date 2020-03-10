@@ -22,3 +22,35 @@ then click Edit -> Class Definitions. Then use the **Browse** button.
 
 To edit just the file for your current event, you can leave the event open
 and click Edit -> Class Definitions.
+
+
+## Name Order
+
+Setup -> Options -> Event Settings -> Name Order
+
+## Change Number of Runs for an Event
+
+Setup -> Modify Event Attributes
+
+Note: Number of runs is RUNS PER DAY
+
+
+## What does Consolidated mean?
+
+Raw data is stored in the staging grid.
+Consolidated data is stored in the registration grid (It's synonymous with "standings")
+
+
+## Verify that everyone has a Barcode
+
+Sort the registration grid by member number and look for anyone with a blank
+
+## Update Member Number
+
+The registration grid is a glorified excel spreadsheet. You can type right in it.
+
+
+## Why does the registration grid move when a driver crosses the finish line?
+
+The registration grid is also the standings grid, so it sorts
+by who's fastest.

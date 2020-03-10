@@ -179,6 +179,15 @@ Also note the .babelrc file that specifies the "env" preset.
 
 
 
+Adding a New Event
+------------------
+
+  - Publish results with bin/axware_publisher.py
+  - Run bin/archive_events.py to pull new events into repo
+  - Restart server
+  - Click on the new event(s) so their names get loaded into redis
+
+
 Performance
 -----------
 
