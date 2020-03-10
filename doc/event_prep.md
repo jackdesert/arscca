@@ -5,7 +5,7 @@ Before You Arrive (Jack)
 ------------------------
 
 1. Verify that live event demo is functional---then turn it off
-2. Visit arscca.jackdesert.com/admin/run_groups and clear run groups
+2. Visit uno.arscca.org/admin/run_groups and clear run groups
 
 
 In the Truck
@@ -27,10 +27,10 @@ Before Driver's Meeting
 -----------------------
 
 1. From AxWare, press "Standings" to push all registered drivers to cloud
-2. Visit arscca.jackdesert.com/admin/run_groups
+2. Visit uno.arscca.org/admin/run_groups
    - clear any preexisting run groups
    - generate run groups
-   - run groups are available to public at arscca.jackdesert.com/run_groups
+   - run groups are available to public at uno.arscca.org/run_groups
      (there's a link to this at the bottom of the live page)
 
 

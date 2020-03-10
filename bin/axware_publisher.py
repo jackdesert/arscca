@@ -10,7 +10,7 @@ import time
 class AxwarePublisher:
     SITE = 'http://arscca.org/administrator'
     USERNAME = 'jackdesert'
-    YEAR = 2019
+    YEAR = 2020
 
     NEW_CATEGORY_PAGE = 'index.php?option=com_categories&task=category.add&extension=com_content'
     NEW_ARTICLE_PAGE = 'index.php?option=com_content&task=article.add'
@@ -168,6 +168,8 @@ class AxwarePublisher:
         self._driver.execute_script(f'Joomla.submitbutton("{page_type}.save")')
 
     def _toggle_editor(self):
+        print('NOT TOGGLING EDITOR BECAUSE tinyMCE DISABLED')
+        return
         js = "tinyMCE.execCommand('mceToggleEditor', false, 'jform_articletext')"
         self._driver.execute_script(js)
 
