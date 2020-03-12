@@ -199,9 +199,14 @@ def live_event_view(request):
     return event
 
 @view_config(route_name='live_event_raw',
-             renderer=Dispatcher.LIVE_FILENAME)
+             renderer='string')
 def live_event_raw_view(request):
-    return {}
+    # This function uses the string renderer instead of the jinja2 renderer
+    # so we can serve the latest version of the file
+    # instead of the version at server start
+    with open(Dispatcher.LIVE_FILENAME, 'r') as ff:
+        html = ff.read()
+    return html
 
 @view_config(route_name='event',
              renderer='templates/event.jinja2')

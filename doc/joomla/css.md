@@ -1,6 +1,18 @@
 CSS
 ===
 
+(Top Menu) click Extensions -> Templates
+
+(Left Menu) click Templates
+
+Select Protostar Details and Files
+
+(Left Menu) select CSS folder
+(Left Menu) select template.css
+
+
+
+Select
 First find which template is active. The easiest is to view the
 source for the home page and seach for "template".
 

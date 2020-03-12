@@ -327,6 +327,7 @@ See https://www.graphviz.org/documentation/
 Backlog
 -------
 
+  * Fix bug where stale raw file is shown from live page
   * Figure out how to get svg to display with arrows on james' phone
   * Make it so you can swipe between photos on photo uploads page (Daniel's Request)
   * Document how to run all the doctests

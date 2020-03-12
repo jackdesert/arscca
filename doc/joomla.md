@@ -66,7 +66,7 @@ For "Category Order" choose which order you want.
 Ordering Menu Items
 -------------------
 
-Click Menu Items.
+Menus -> Main Menu
 Grab the handle at left and drag to position.
 
 
@@ -86,6 +86,42 @@ Create a Featured Article
 -------------------------
 
 When creating an article, in the right column change Featured to Yes.
+
+
+Redirect www to non-www
+-----------------------
+
+https://hostingmanager.godaddy.com/AccountPanel.aspx?accountUID=aa1c2d99-2f45-4cce-865b-764a067456ee
+
+  - click **File Manager** to edit .htaccess
+
+(Don't bother with .htaccess.txt because it doesn't do anything)
+
+    # Added by Jack Desert 2020-03-11 to redirect www to non-www
+    RewriteBase /
+    RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
+
+Pretty Url
+----------
+
+Add this to htaccess to create a pretty url for /novice
+
+    RewriteRule ^(novice)$ .//index.php?option=com_content&view=article&id=19&Itemid=107
+
+
+    # Added by Jack Desert 2020-03-11 to build pretty urls
+    RewriteRule ^(novice)$ ./index.php?option=com_content&view=article&id=19&Itemid=107
+    RewriteRule ^(calendar)$ ./index.php?option=com_content&view=article&id=440&Itemid=102
+    RewriteRule ^(results/2020)$ ./index.php?option=com_content&view=category&id=160&Itemid=103
+    RewriteRule ^(results)$ http://arscca.org/index.php?option=com_content&view=category&id=8&Itemid=104
+    RewriteRule ^(newsletter)$ ./index.php?option=com_content&view=article&id=467&Itemid=129
+    RewriteRule ^(faq)$ ./index.php?option=com_content&view=article&id=468&Itemid=130
+    RewriteRule ^(guides/rallyx)$ ./arscca.org/index.php?option=com_content&view=article&id=512&Itemid=133
+    RewriteRule ^(rules)$ ./arscca.org/index.php?option=com_content&view=article&id=18&Itemid=105
+    RewriteRule ^(board)$ ./arscca.org/index.php?option=com_content&view=article&id=22&Itemid=115
+    RewriteRule ^(contact)$ ./index.php?option=com_content&view=article&id=521
 
 
 Backlog

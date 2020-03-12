@@ -15,7 +15,7 @@ def calendar_view(request):
     return _context()
 
 @view_config(route_name='calendar_slash')
-def calendar_slaxh_view(request):
+def calendar_slash_view(request):
     return HTTPFound('/calendar')
 
 
