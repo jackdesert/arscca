@@ -30,12 +30,12 @@ import requests
 
 class LogSplitter:
 
-    FIRST_RUN_COLUMN_HEADER_REGEX = re.compile('Times|Runs|Run 1')
+    FIRST_RUN_COLUMN_HEADER_REGEX = re.compile(r'Times|Runs|Run 1')
 
     # This filename ends in jinja2 because it is used as a view template
     LIVE_FILENAME = '/home/arscca/arscca-live.jinja2'
-    DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
-    PRIMARY_PUBLISHED_SCORE_COLUMN_REGEX = re.compile('Total')
+    DATE_REGEX = re.compile(r'(\d\d)-(\d\d)-(\d\d\d\d)')
+    PRIMARY_PUBLISHED_SCORE_COLUMN_REGEX = re.compile(r'Total')
 
 
     def __init__(self, date, url, live, local_html_file=None):

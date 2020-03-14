@@ -10,9 +10,9 @@ class PublishedEvent:
     # Required params: ['com_content', 'view', 'id']
     URL_BASE = 'http://arscca.org/index.php?option=com_content&view=article&id='
     LOCK = Lock()
-    FILENAME_REGEX = re.compile('/(.+)__(.+)\.html')
+    FILENAME_REGEX = re.compile(r'/(.+)__(.+)\.html')
 
-    DIRT_SURFACE_REGEX = re.compile('RallyX Mode')
+    DIRT_SURFACE_REGEX = re.compile(r'RallyX Mode')
     DIRT_SURFACE = 'dirt'
     TARMAC_SURFACE = 'tarmac'
 

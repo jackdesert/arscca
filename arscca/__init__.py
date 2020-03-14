@@ -1,4 +1,5 @@
 from pyramid.config import Configurator
+from pyramid.session import JSONSerializer
 from pyramid.static import QueryStringConstantCacheBuster
 import time
 
@@ -11,9 +12,11 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.include('pyramid_jinja2')
 
+
     # Insecure Session
     # https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html#sessions-chapter
-    my_session_factory = SignedCookieSessionFactory('insecure-but-digitally-signed-382746')
+    my_session_factory = SignedCookieSessionFactory('insecure-but-digitally-signed-382746',
+                                                    serializer=JSONSerializer())
     config.set_session_factory(my_session_factory)
 
     # Cache busting of static assets

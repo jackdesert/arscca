@@ -11,7 +11,7 @@ import traceback
 
 
 # Only show stack frames called from our code
-RELEVANT_STACKFRAME_REGEX = re.compile('arscca/arscca')
+RELEVANT_STACKFRAME_REGEX = re.compile(r'arscca/arscca')
 
 # Only use this view in production environment
 # because in development it is more straighforward
