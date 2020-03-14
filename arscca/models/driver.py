@@ -8,8 +8,8 @@ from .pax import Pax
 from .photo import Photo
 
 class GenericDriver:
-    DNF_REGEX     = re.compile('(dnf)|(dns)|(dsq)', re.IGNORECASE)
-    TIME_AND_PENALTY_REGEX = re.compile('([0-9.]+)(\+(\d)(/(\d))?)?')
+    DNF_REGEX     = re.compile(r'(dnf)|(dns)|(dsq)', re.IGNORECASE)
+    TIME_AND_PENALTY_REGEX = re.compile(r'([0-9.]+)(\+(\d)(/(\d))?)?')
     INF           = Decimal('inf')
 
     PYLON_PENALTY_IN_SECONDS = 2

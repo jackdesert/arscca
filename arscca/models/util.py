@@ -17,8 +17,8 @@ class Util:
     SLACK_HOOK_ENV_KEY = 'ARSCCA_SLACK_HOOK'
     SLACK_HOOK = os.environ.get(SLACK_HOOK_ENV_KEY)
     DEFAULT_SLACK_USERNAME = 'arscca'
-    KART_KLASS_REGEX = re.compile('\Aj')
-    TRAILING_L_REGEX = re.compile('l\Z')
+    KART_KLASS_REGEX = re.compile(r'\Aj')
+    TRAILING_L_REGEX = re.compile(r'l\Z')
     _IP_ADDRESSES = {}
 
     _IP_LOCK = Lock()
@@ -188,7 +188,7 @@ class Util:
         '''
 
         for key, value in context.items():
-            prep_a = '\{\{\s*KEY\s*\}\}'
+            prep_a = r'\{\{\s*KEY\s*\}\}'
             prep_b = prep_a.replace('KEY', key)
             regex = re.compile(prep_b)
             markdown_string = regex.sub(value, markdown_string)

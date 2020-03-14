@@ -8,7 +8,7 @@ class BaseEvent:
     Note this class is just placeholder so that if anything is undefined,
     it return an empty string
     TODO: Consider metaprogramming'''
-    DATE_REGEX = re.compile('\d{4}-\d{2}-\d{2}')
+    DATE_REGEX = re.compile(r'\d{4}-\d{2}-\d{2}')
 
     STANDARD_DATE_FORMAT = '%Y-%m-%d'
     FRIENDLY_DATE_FORMAT = '%b %-d, %Y'
