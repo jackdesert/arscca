@@ -52,7 +52,7 @@ Docker with Manual Containers
                 --network arscca-network \
                 --publish 6543:6543 \
                 --mount type=bind,source=/home/jd/p/arscca,target=/arscca-pyramid \
-                --mount type=bind,source=/home/arscca/arscca-live.jinja2,target=/home/arscca/arscca-live.jinja2 \
+                --mount type=bind,source=/home/arscca,target=/home/arscca \
                 arscca-pyramid:latest \
                 bash
 
