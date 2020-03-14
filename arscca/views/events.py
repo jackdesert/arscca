@@ -1,24 +1,29 @@
+# Builtins
+from datetime import date as Date
+from datetime import datetime
+from threading import Lock
 import json
 import logging
 import pdb
+
+# Third Party
+from pyramid.httpexceptions import HTTPFound
+from pyramid.response import Response
+from pyramid.view import view_config
 import redis
 
+# Local
+from arscca.models.dispatcher import Dispatcher
 from arscca.models.fond_memory import FondMemory
 from arscca.models.histogram import Histogram
 from arscca.models.live_event_presenter import LiveEventPresenter
 from arscca.models.national_event_driver import NationalEventDriver
-from arscca.models.dispatcher import Dispatcher
 from arscca.models.photo import Photo
 from arscca.models.published_event import PublishedEvent
+from arscca.models.report import Report
 from arscca.models.shared import Shared
 from arscca.models.short_queue import ShortQueue
-from arscca.models.report import Report
 from arscca.models.timer import Timer
-from datetime import date as Date
-from datetime import datetime
-from pyramid.httpexceptions import HTTPFound
-from pyramid.view import view_config
-from threading import Lock
 
 class ErrorNoLiveEventInRedis(Exception):
     '''If no live event is in redis, you must
@@ -198,15 +203,17 @@ def live_event_view(request):
     event = json.loads(event_json) # If TypeError, no event stored in redis
     return event
 
-@view_config(route_name='live_event_raw',
-             renderer='string')
+@view_config(route_name='live_event_raw')
 def live_event_raw_view(request):
     # This function uses the string renderer instead of the jinja2 renderer
     # so we can serve the latest version of the file
     # instead of the version at server start
     with open(Dispatcher.LIVE_FILENAME, 'r') as ff:
         html = ff.read()
-    return html
+
+    # invoking Response manually, because using the 'string' renderer
+    # implies content-type "text/plain", and we want "text/html"
+    return Response(html)
 
 @view_config(route_name='event',
              renderer='templates/event.jinja2')
