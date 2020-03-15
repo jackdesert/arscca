@@ -31,8 +31,6 @@
             }
         </script>
 
-        <script src="{{request.static_path('arscca:static/transpiled/arscca_es5.js')}}"></script>
-
         <div class="container">
             <div class='row'>
                 <div class='col-12'>
@@ -55,6 +53,12 @@
                     {% endblock content %}
                 </div>
             </div>
+
+
+            {% block entrypoint %}
+                <script type="module" src="{{request.static_path('arscca:static/04_browserified/common.js')}}"></script>
+            {% endblock %}
+
             <div class="row">
                 <div class='col-12'>
                     <hr class='footer-banner' />
@@ -85,12 +89,7 @@
             </div>
         </div>
 
-        <div class='feedback__link' id='feedback__link'>Feedback</div>
+        <!-- <div class='feedback__link' id='feedback__link'>Feedback</div> -->
 
-        <script>
-            ready(function(){
-                bindFeedbackLink('feedback__link')
-            })
-        </script>
     </body>
 </html>

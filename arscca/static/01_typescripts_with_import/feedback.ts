@@ -2,7 +2,7 @@
 // This also does not require jquery. See http://youmightnotneedjquery.com/
 
 // When calling bindFeedback(), you m
-var bindFeedbackLink = (linkId, extraData) => {
+let bindFeedbackLink = (linkId: string, extraData?: object) => {
     'use strict'
     // CONSTANTS
     const formUrl = 'https://bip.elitecare.com/feedback'
@@ -33,7 +33,7 @@ var bindFeedbackLink = (linkId, extraData) => {
 
         const textareaClass = 'feedback__textarea'
 
-        const buildFeedbackPayload = (message) => {
+        const buildFeedbackPayload = (message: string) => {
             const payload = {'feedback': {'message': message,
                                           'page': window.location.toString()}}
 
@@ -46,7 +46,7 @@ var bindFeedbackLink = (linkId, extraData) => {
         }
 
         const sendFeedback = () => {
-            const textareaDiv = document.querySelector(`.${textareaClass}`)
+            const textareaDiv = document.querySelector(`.${textareaClass}`) as HTMLInputElement
             const textareaValue = textareaDiv.value
             const request = new XMLHttpRequest()
             const payload = buildFeedbackPayload(textareaValue)
@@ -120,3 +120,7 @@ var bindFeedbackLink = (linkId, extraData) => {
 
 
 }
+
+bindFeedbackLink('feedback__link')
+
+export default bindFeedbackLink

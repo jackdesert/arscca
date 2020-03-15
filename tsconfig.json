@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["es2015", "dom", "dom.iterable"],
+    "outDir": "arscca/static/02_compiled_to_es6_modules_with_import",
+    "downlevelIteration": true,
+    "types": ["node"],
+    "noEmitOnError": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    //"listEmittedFiles": true,
+    //"strict": true,
+    //"noImplicitThis": true,
+  },
+  "include": ["arscca/static/01_typescripts_with_import/*.ts"],
+}
+

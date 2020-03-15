@@ -1,11 +1,22 @@
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!')
+interface Driver {
+  name:string,
+  class_rank:number,
+  primary_rank:number
+}
 
-var initializeDriversTable = function(liveBoolean){
+
+declare var drivers:[Driver]
+
+// Hopefully this picks up the correct (ES6) version of Vue
+import Vue from 'vue/dist/vue'
+
+let initializeDriversTable = (liveBoolean) =>{
     'use strict'
 
-    const hugeNumber = 1000000
-    const delimiters = ['${', '}']
+    const hugeNumber:number = 1000000
+    const delimiters:any = ['${', '}']
 
     let currentSortFunction
     let currentActiveHeader
@@ -113,7 +124,7 @@ var initializeDriversTable = function(liveBoolean){
             highlightRow: function(driverId){
                 let index = this.selectedDriverIds.indexOf(driverId)
 
-                if (event.srcElement.href){
+                if (this.event.srcElement.href){
                     // Do not highlight if the clicked element was a link
                     return
                 }
@@ -295,18 +306,20 @@ var initializeDriversTable = function(liveBoolean){
 
             bindings.forEach(function(array){
                 var header = array[0],
-                    func = array[1]
+                    func = array[1],
+                    headerAsElement = header as HTMLInputElement
                 if(header === null){
                     console.log('WARNING: no header for func', func)
                     return
                 }
-                header.addEventListener('click', function(){
+                headerAsElement.addEventListener('click', function(){
                     var that = this
                     // Store which sort function most recently selected
                     currentSortFunction = func
+                    currentSortFunction()
+
+
                     currentActiveHeader = that
-                    func()
-                    //displayDrivers()
                     styleActiveHeader(that)
                 })
             })
@@ -355,7 +368,7 @@ var initializeDriversTable = function(liveBoolean){
 
                     vueRevisionStatus.currentRevision = data.revision
                     vueRevisionStatus.timestamp = data.revision_timestamp
-                    vueRevisionStatus.timestampOffsetMS = new Date() - requestTimestamp
+                    vueRevisionStatus.timestampOffsetMS = new Date() as unknown as number - requestTimestamp as unknown as number
                     kickoff()
                 } else {
                     // We reached our target server, but it returned an error
@@ -408,7 +421,8 @@ var initializeDriversTable = function(liveBoolean){
                 },
                 addDriver = function(name){
                     console.log('Adding driver: ', name)
-                    drivers.push({name: name})
+                    // Name is all that is needed
+                    drivers.push({name: name, class_rank: -1000, primary_rank: -1000 })
                 },
                 updateDriver = function(driverObject){
                     // Note that if a driver is removed,
@@ -515,7 +529,6 @@ var initializeDriversTable = function(liveBoolean){
         kickoff()
     }
 
-
-
 }
 
+export default initializeDriversTable

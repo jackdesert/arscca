@@ -1,0 +1,21 @@
+#! /bin/bash
+
+# Stop on any error
+# This encourages you to fix your jshint errors
+set -e
+
+ENTRYPOINTS=(common.js page-event.js page-photos.js)
+INPUT_DIR=arscca/static/03_transpiled_to_es5_with_require
+OUTPUT_DIR=arscca/static/04_browserified
+
+for item in ${ENTRYPOINTS[*]}
+do
+    COMMAND="browserify $INPUT_DIR/$item > $OUTPUT_DIR/$item"
+    echo $COMMAND
+    browserify $INPUT_DIR/$item > $OUTPUT_DIR/$item
+done
+
+INPUT_FILE=arscca/static/03_transpiled_to_es5_with_require/page-event.js
+OUTPUT_FILE=arscca/static/04_browserified/page-event.js
+
+#browserify $INPUT_FILE > $OUTPUT_FILE
