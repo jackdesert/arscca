@@ -4,3 +4,13 @@ A: To make the histogram labels easier to read. (Less dense)
 Q: Why does arscca.org fetch /calendar/plain via ajax instead of via iframe?
 A: Setting innerHTML on a div on arscca.org allows the content to flow naturally,
    and the content renders full height.
+
+Q: Why was typescript added?
+A: Jack wanted experience with typescript
+
+Q: Why are ESM modules used instead of AMD?
+A: They are the wave of the future.
+
+Q: Why is Browserify used instead of a competing technology like webpack?
+A: Jack tried webpack first, but the default settings totally mangled the code
+   such that it was nearly impossible to read. (And it used eval)

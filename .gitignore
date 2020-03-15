@@ -6,10 +6,7 @@
 *$py.class
 *~
 .coverage
-build/
-dist/
 .tox/
-nosetests.xml
 env*/
 tmp/
 Data.fs*
@@ -19,7 +16,6 @@ coverage
 /arscca/static/uploaded/*.png
 /config/environment.txt
 /node_modules
-package-lock.json
 /config/aws_credentials.json
 /config/user_passwords.json
 /.env

@@ -1,5 +1,602 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict';
+
+require('./on_error');
+},{"./on_error":3}],2:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _vue = require('vue/dist/vue');
+
+var _vue2 = _interopRequireDefault(_vue);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// var used here because some browsers throw error if "let" used outside of strict context
+console.log('Not seeing your changes? Make sure you transpile!');
+// Hopefully this picks up the correct (ES6) version of Vue
+
+var initializeDriversTable = function initializeDriversTable(liveBoolean) {
+    'use strict';
+
+    var hugeNumber = 1000000;
+    var delimiters = ['${', '}'];
+    var currentSortFunction = void 0;
+    var currentActiveHeader = void 0;
+    var mySocket = void 0;
+    var dimmed = false;
+    //var templateSource = document.getElementById('driver-template').innerHTML,
+    //var template = Handlebars.compile(templateSource),
+    var vueRevisionStatus = void 0;
+    if (liveBoolean) {
+        vueRevisionStatus = new _vue2.default({
+            delimiters: delimiters,
+            el: '#current-revision',
+            data: {
+                currentRevision: -1,
+                timestampOffsetMS: 0,
+                timestamp: '1970-01-01T00:00:00.000000',
+                now: new Date()
+            },
+            methods: {
+                timestampAgo: function timestampAgo(event) {
+                    var then = Date.parse(this.timestamp),
+                        deltaMS = this.now - then - this.timestampOffsetMS,
+                        deltaS = deltaMS / 1000,
+                        deltaM = deltaS / 60;
+                    // absolute value so that it doesn't start counting from -0.0
+                    return Math.abs(deltaM).toFixed(1);
+                }
+            }
+        });
+    }
+    var vueDriversTable = new _vue2.default({
+        delimiters: delimiters,
+        el: '#drivers-table-holder',
+        data: {
+            drivers: drivers,
+            // selectedDriverIds is an array, not a new Set()
+            // because Vue knows how to be reactive to changes in an array
+            selectedDriverIds: [],
+            solo: false
+        },
+        methods: {
+            visible: function visible(driverId) {
+                if (!this.solo) {
+                    return true;
+                }
+                if (this.selectedDriverIds.includes(driverId)) {
+                    return true;
+                }
+                return false;
+            },
+            replaceInfinity: function replaceInfinity(value) {
+                if (value === 'Infinity') {
+                    return '-';
+                }
+                return value;
+            },
+            rowKlass: function rowKlass(driverId, rowIndex) {
+                if (this.solo) {
+                    return this.rowKlassWhenSolo(driverId);
+                }
+                var klass = '';
+                if (this.selectedDriverIds.includes(driverId)) {
+                    klass = 'selected';
+                }
+                if (rowIndex % 2 === 1) {
+                    klass += ' tr_stripe';
+                }
+                return klass;
+            },
+            rowKlassWhenSolo: function rowKlassWhenSolo(driverId) {
+                // This function decides whether this row should be striped
+                // among its peers of other selected drivers
+                //
+                // WARNING: This runs in N*M time
+                // where N is number of drivers and M is number of selected rows
+                var stripe = false;
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = this.drivers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var driver = _step.value;
+
+                        if (this.selectedDriverIds.includes(driver.id)) {
+                            stripe = !stripe;
+                        }
+                        if (driverId === driver.id) {
+                            return stripe ? 'selected tr_stripe' : 'selected';
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            },
+            toggleSolo: function toggleSolo() {
+                if (!this.solo && this.selectedDriverIds.length === 0) {
+                    alert('Please select one or more rows first');
+                    return;
+                }
+                this.solo = !this.solo;
+            },
+            highlightRow: function highlightRow(driverId) {
+                var index = this.selectedDriverIds.indexOf(driverId);
+                if (this.event.srcElement.href) {
+                    // Do not highlight if the clicked element was a link
+                    return;
+                }
+                if (this.solo) {
+                    return;
+                }
+                if (index === -1) {
+                    this.selectedDriverIds.push(driverId);
+                } else {
+                    this.selectedDriverIds.splice(index, 1);
+                }
+            },
+            soloButtonKlass: function soloButtonKlass() {
+                if (this.solo) {
+                    return 'solo-button solo-button_active';
+                } else {
+                    return 'solo-button';
+                }
+            }
+        }
+    });
+    var target = document.getElementById('drivers-tbody'),
+        sortByCarModel = function sortByCarModel() {
+        sortString('car_model');
+    },
+        sortByCarNumber = function sortByCarNumber() {
+        sortNumeric('car_number');
+    },
+        sortByCodriverCarNumber = function sortByCodriverCarNumber() {
+        sortParsedInteger('codriver_car_number');
+    },
+        sortByDriverLastName = function sortByDriverLastName() {
+        drivers.sort(function (a, b) {
+            var lastNameFirstA = a.name.toLowerCase().split(' ').reverse().join(),
+                lastNameFirstB = b.name.toLowerCase().split(' ').reverse().join();
+            if (lastNameFirstA === lastNameFirstB) {
+                return 0;
+            } else if (lastNameFirstA > lastNameFirstB) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+    },
+        sortByPaxPosition = function sortByPaxPosition() {
+        sortNumeric('secondary_rank');
+    },
+        sortByOverallPosition = function sortByOverallPosition() {
+        sortNumeric('primary_rank');
+    },
+        sortNumeric = function sortNumeric(attribute) {
+        drivers.sort(function (a, b) {
+            var aa = a[attribute],
+                bb = b[attribute];
+            if (!aa) {
+                aa = hugeNumber;
+            }
+            if (!bb) {
+                bb = hugeNumber;
+            }
+            return aa - bb;
+        });
+    },
+        sortParsedInteger = function sortParsedInteger(attribute) {
+        var regex = /\[|\]/g;
+        drivers.sort(function (a, b) {
+            var aa = a[attribute] || '',
+                bb = b[attribute] || '';
+            aa = parseInt(aa.replace(regex, '')) || hugeNumber;
+            bb = parseInt(bb.replace(regex, '')) || hugeNumber;
+            return aa - bb;
+        });
+    },
+        sortByNumericThenByString = function sortByNumericThenByString(numericAttribute, stringAttribute) {
+        drivers.sort(function (a, b) {
+            var a_number = parseFloat(a[numericAttribute]) || hugeNumber;
+            var b_number = parseFloat(b[numericAttribute]) || hugeNumber;
+            var a_string_lower = a[stringAttribute].toLowerCase();
+            var b_string_lower = b[stringAttribute].toLowerCase();
+            // Compare numeric
+            if (a_number > b_number) {
+                return 1;
+            } else if (a_number < b_number) {
+                return -1;
+            }
+            // If numeric was equal, compare string
+            if (a_string_lower === b_string_lower) {
+                return 0;
+            } else if (a_string_lower > b_string_lower) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+    },
+        sortString = function sortString(attribute) {
+        drivers.sort(function (a, b) {
+            var aa = a[attribute].toLowerCase(),
+                bb = b[attribute].toLowerCase();
+            if (aa === bb) {
+                return 0;
+            } else if (aa > bb) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+    },
+        sortByStringAttributeThenByOverallPosition = function sortByStringAttributeThenByOverallPosition(stringAttribute) {
+        drivers.sort(function (a, b) {
+            var overallPositionAttribute = 'primary_rank',
+                a1 = a[stringAttribute].toLowerCase(),
+                b1 = b[stringAttribute].toLowerCase(),
+                a2 = a[overallPositionAttribute],
+                b2 = b[overallPositionAttribute];
+            if (a1 > b1) {
+                return 1;
+            } else if (a1 < b1) {
+                return -1;
+            }
+            // If you made it to here, a1 === b1
+            return a2 - b2;
+        });
+    },
+        sortByCarClassThenByOverallPosition = function sortByCarClassThenByOverallPosition() {
+        sortByStringAttributeThenByOverallPosition('car_class');
+    },
+        sortByCarYearThenByCarModel = function sortByCarYearThenByCarModel() {
+        sortByNumericThenByString('car_year', 'car_model');
+    },
+        sortByCarModelThenByOverallPosition = function sortByCarModelThenByOverallPosition() {
+        sortByStringAttributeThenByOverallPosition('car_model');
+    },
+        sortByPaxFactorThenByOverallPosition = function sortByPaxFactorThenByOverallPosition() {
+        sortByStringAttributeThenByOverallPosition('pax_factor');
+    },
+        sortByClassPositionThenByOverallPosition = function sortByClassPositionThenByOverallPosition() {
+        drivers.sort(function (a, b) {
+            var A = a.class_rank * hugeNumber + a.primary_rank,
+                B = b.class_rank * hugeNumber + b.primary_rank;
+            return A - B;
+        });
+    },
+        bindHeaders = function bindHeaders() {
+        var carClassHeader = document.getElementById('car-class'),
+            bestCombinedHeader = document.getElementById('best-combined'),
+            positionOverallHeader = document.getElementById('primary-rank'),
+            positionPaxHeader = document.getElementById('secondary-rank'),
+            positionClassHeader = document.getElementById('class-rank'),
+            bestCombinedPaxHeader = document.getElementById('best-combined-pax'),
+            driverNameHeader = document.getElementById('driver-name'),
+            carYearHeader = document.getElementById('car-year'),
+            carModelHeader = document.getElementById('car-model'),
+            codriverCarNumberHeader = document.getElementById('codriver-car-number'),
+            carNumberHeader = document.getElementById('car-number'),
+            paxFactorHeader = document.getElementById('pax-factor'),
+            bindings = [[carClassHeader, sortByCarClassThenByOverallPosition], [carNumberHeader, sortByCarNumber], [codriverCarNumberHeader, sortByCodriverCarNumber], [bestCombinedHeader, sortByOverallPosition], [positionOverallHeader, sortByOverallPosition], [positionPaxHeader, sortByPaxPosition], [positionClassHeader, sortByClassPositionThenByOverallPosition], [driverNameHeader, sortByDriverLastName], [carYearHeader, sortByCarYearThenByCarModel], [carModelHeader, sortByCarModelThenByOverallPosition], [paxFactorHeader, sortByPaxFactorThenByOverallPosition], [bestCombinedPaxHeader, sortByPaxPosition]];
+        bindings.forEach(function (array) {
+            var header = array[0],
+                func = array[1],
+                headerAsElement = header;
+            if (header === null) {
+                console.log('WARNING: no header for func', func);
+                return;
+            }
+            headerAsElement.addEventListener('click', function () {
+                var that = this;
+                // Store which sort function most recently selected
+                currentSortFunction = func;
+                currentSortFunction();
+                currentActiveHeader = that;
+                styleActiveHeader(that);
+            });
+        });
+    },
+        styleActiveHeader = function styleActiveHeader(activeElement) {
+        var sortableHeaderClass = 'sortable-header',
+            activeHeaderClass = 'sortable-header_active',
+            cellHighlightClass = 'td_active-sort',
+            cellClassToHighlight = activeElement.id;
+        // Header
+        document.querySelectorAll('.' + sortableHeaderClass).forEach(function (element) {
+            element.classList.remove(activeHeaderClass);
+        });
+        activeElement.classList.add(activeHeaderClass);
+        // Columns
+        document.querySelectorAll('td').forEach(function (element) {
+            element.classList.remove(cellHighlightClass);
+        });
+        document.querySelectorAll('.' + cellClassToHighlight).forEach(function (element) {
+            element.classList.add(cellHighlightClass);
+        });
+    },
+        fetchLiveDriversAndKickoff = function fetchLiveDriversAndKickoff() {
+        var request = new XMLHttpRequest();
+        request.open('GET', '/live/drivers', true);
+        request.onload = function () {
+            if (this.status >= 200 && this.status < 400) {
+                // Success!
+                var data = JSON.parse(this.response),
+                    requestTimestamp = Date.parse(data.request_timestamp);
+                // Remove all drivers from array
+                drivers.splice(0);
+                data.drivers.forEach(function (row) {
+                    drivers.push(row);
+                });
+                vueRevisionStatus.currentRevision = data.revision;
+                vueRevisionStatus.timestamp = data.revision_timestamp;
+                vueRevisionStatus.timestampOffsetMS = new Date() - requestTimestamp;
+                kickoff();
+            } else {
+                // We reached our target server, but it returned an error
+                console.log('status ' + this.status + ' fetching drivers');
+            }
+        };
+        request.onerror = function () {
+            console.log('error fetching live drivers');
+        };
+        request.send();
+    },
+        kickoff = function kickoff() {
+        // Apply the most recently selected sort function
+        currentSortFunction();
+        // These next methods are called with setTimeout
+        // so the view can populate before it takes action
+        // I wonder if slow devices will need more than the token 1 ms
+        setTimeout(function () {
+            styleActiveHeader(currentActiveHeader);
+        }, 1);
+        setTimeout(initializeWebsocket, 1000);
+    },
+        driverIndexFromName = function driverIndexFromName(name) {
+        var index = drivers.findIndex(function (item) {
+            return item.name === name;
+        });
+        return index;
+    },
+        processWebsocketMessage = function processWebsocketMessage(event) {
+        var messageData = JSON.parse(event.data),
+            revision = messageData.revision,
+            revisionTimestamp = messageData.revision_timestamp,
+            driverChanges = messageData.driver_changes,
+            removeDriver = function removeDriver(name) {
+            var index = driverIndexFromName(name);
+            console.log('Deleting driver: ', name);
+            // Use splice to delete driver
+            drivers.splice(index, 1);
+        },
+            addDriver = function addDriver(name) {
+            console.log('Adding driver: ', name);
+            // Name is all that is needed
+            drivers.push({ name: name, class_rank: -1000, primary_rank: -1000 });
+        },
+            updateDriver = function updateDriver(driverObject) {
+            // Note that if a driver is removed,
+            // "primary_rank" will change for any
+            // slower drivers, and hence they will be updated
+            var index = driverIndexFromName(driverObject.name);
+            console.log('Updating driver: ', driverObject);
+            _vue2.default.set(drivers, index, driverObject);
+        };
+        if (!revision) {
+            console.log('ERROR: No revision in message');
+        }
+        console.log('Message received: ', revision);
+        if (revision <= vueRevisionStatus.currentRevision) {
+            console.log('skipping revision ' + revision + ' because currentRevision is ' + vueRevisionStatus.currentRevision);
+        } else if (revision === vueRevisionStatus.currentRevision + 1) {
+            vueRevisionStatus.currentRevision = revision;
+            vueRevisionStatus.timestamp = revisionTimestamp;
+            driverChanges.create.forEach(addDriver);
+            driverChanges.destroy.forEach(removeDriver);
+            driverChanges.update.forEach(updateDriver);
+            // apply sorting
+            currentSortFunction();
+            // re-bind clickDriverRow
+            dimScreen();
+        } else {
+            // Close socket and start over
+            console.log('Closing socket and starting over because revision ' + revision + ' vs currentRevision ' + vueRevisionStatus.currentRevision);
+            mySocket.close();
+            fetchLiveDriversAndKickoff();
+        }
+    },
+        initializeWebsocketSoon = function initializeWebsocketSoon() {
+        setTimeout(initializeWebsocket, 1000);
+    },
+        initializeWebsocket = function initializeWebsocket() {
+        var printConnectionState = function printConnectionState() {
+            var element = document.getElementById('connection-state'),
+                stateInteger = mySocket.readyState,
+                labels = ['0  CONNECTING  Socket has been created. The connection is not yet open.', '1  OPEN  The connection is open and ready to communicate.', '2  CLOSING   The connection is in the process of closing.', '3  CLOSED  The connection is closed or could not be opened.'];
+            element.textContent = labels[stateInteger];
+            // Long delay so we can actually read the inital state before the div changes
+            setTimeout(printConnectionState, 400);
+        },
+            hostname = window.location.hostname;
+        if (liveBoolean) {
+            // create websocket instance
+            mySocket = new WebSocket('ws://' + hostname + ':6544/ws');
+            mySocket.onmessage = processWebsocketMessage;
+            mySocket.onclose = initializeWebsocketSoon;
+            printConnectionState();
+        }
+    },
+        dimScreen = function dimScreen() {
+        var body = document.getElementById('body'),
+            dimKlass = 'body_dimmed',
+            unDimScreen = function unDimScreen() {
+            dimmed = false;
+            body.classList.remove(dimKlass);
+        };
+        if (!dimmed) {
+            body.classList.add(dimKlass);
+            dimmed = true;
+            setTimeout(unDimScreen, 600);
+        }
+    },
+        updateTimeAgo = function updateTimeAgo() {
+        vueRevisionStatus.now = new Date();
+        setTimeout(updateTimeAgo, 6000);
+    };
+    // Specify initial sort
+    currentSortFunction = sortByOverallPosition;
+    currentActiveHeader = document.getElementById('best-combined');
+    bindHeaders();
+    if (liveBoolean) {
+        fetchLiveDriversAndKickoff();
+        updateTimeAgo();
+    } else {
+        kickoff();
+    }
+};
+exports.default = initializeDriversTable;
+},{"vue/dist/vue":5}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var on_error = function on_error() {
+    // SENDING ERROR MESSAGES TO ENGINEERS
+    //
+    // A. When an unexpected exception is raised
+    //    When a legitimate error is found, the definition of window.onerror
+    //    below calls "sendDataToEngineers" for you, including pertinent information
+    //
+    // B. When your code identifies something amiss, AND YOU WANT EVERYTHING TO STOP
+    //    To send data to engineers AND STOP EXECUTION,
+    //    just call an unknown method right in your code.
+    //
+    // C. When your code identifies something amiss, AND YOU WANT TO CONTINUE
+    //    If, for example, you notice that the number of divs does not match
+    //    your expectation, you probably want to alertEngineersAndContinue().
+    // C. (tell engineers and halt execution)
+    var alertEngineersAndHalt = function alertEngineersAndHalt(message) {
+        'use strict';
+
+        alertEngineersCommon(message, true);
+    };
+    // C. (tell engineers, but continue execution)
+    var alertEngineersAndContinue = function alertEngineersAndContinue(message) {
+        'use strict';
+
+        alertEngineersCommon(message);
+    };
+    // Consider this method private.
+    // Only call it from the other methods defined on this page
+    var alertEngineersCommon = function alertEngineersCommon(message, haltExecution) {
+        'use strict';
+
+        var details = { message: message,
+            path: window.location.href,
+            user_agent: navigator.userAgent
+            //story: story.read()
+        };
+        sendDataToEngineers(details);
+        if (haltExecution) {
+            throw message;
+        }
+    };
+    // A. (Covers unexpected exceptions)
+    //    This is called automatically when an unexpected error occurs
+    window.onerror = function (message, fileName, lineNumber, columnNumber, error) {
+        // Source: https://stackoverflow.com/questions/951791/javascript-global-error-handling
+        // In development, url is the page you visited.
+        // In production, url is the location of the javascript file that was run.
+        'use strict';
+
+        var details = { message: message,
+            file_name: fileName,
+            path: window.location.href,
+            line_number: lineNumber,
+            column_number: columnNumber,
+            error: error,
+            user_agent: navigator.userAgent
+            //story: story.read()
+        };
+        // Return value matters for IE
+        return sendDataToEngineers(details);
+    };
+    // Consider this method private.
+    // Only call it from the other methods defined on this page
+    var sendDataToEngineers = function sendDataToEngineers(details) {
+        'use strict';
+
+        var url = '/javascript_errors',
+            data_json = JSON.stringify(details),
+            request = new XMLHttpRequest();
+        request.open('POST', url, true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.onload = function () {
+            if (request.status >= 200 && request.status < 400) {
+                // Success!
+                var respJson = request.responseText,
+                    resp = JSON.parse(respJson),
+                    alertUser = resp.alert_user;
+                console.log('SUCCESSFULLY sent the following error to server:');
+                if (alertUser) {
+                    // Server tells us whether to alert user
+                    alert(details.message);
+                }
+            } else {
+                // We reached our target server, but it returned an error
+                console.log('UNABLE to send the following error to server:');
+            }
+            console.log(details.message + '.  Line: ' + details.line_number);
+        };
+        request.onerror = function () {
+            // There was a connection error of some sort
+        };
+        request.send(data_json);
+        var suppressErrorAlert = true;
+        // If you return true, then error alerts (like in older versions of
+        // Internet Explorer) will be suppressed.
+        return suppressErrorAlert;
+    };
+};
+on_error();
+exports.default = on_error;
+},{}],4:[function(require,module,exports){
+'use strict';
+
+require('./common');
+
+var _initializeDriversTable = require('./initializeDriversTable');
+
+var _initializeDriversTable2 = _interopRequireDefault(_initializeDriversTable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Import for side effects only
+(0, _initializeDriversTable2.default)(true);
+// Import default export
+},{"./common":1,"./initializeDriversTable":2}],5:[function(require,module,exports){
+(function (global,setImmediate){
 /*!
- * Vue.js v2.6.10
+ * Vue.js v2.6.11
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -1969,7 +2566,7 @@
     isUsingMicroTask = true;
   } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
     // Fallback to setImmediate.
-    // Techinically it leverages the (macro) task queue,
+    // Technically it leverages the (macro) task queue,
     // but it is still a better choice than setTimeout.
     timerFunc = function () {
       setImmediate(flushCallbacks);
@@ -2058,7 +2655,7 @@
       warn(
         "Property \"" + key + "\" must be accessed with \"$data." + key + "\" because " +
         'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
-        'prevent conflicts with Vue internals' +
+        'prevent conflicts with Vue internals. ' +
         'See: https://vuejs.org/v2/api/#data',
         target
       );
@@ -2918,7 +3515,7 @@
       if (typeof key === 'string' && key) {
         baseObj[values[i]] = values[i + 1];
       } else if (key !== '' && key !== null) {
-        // null is a speical value for explicitly removing a binding
+        // null is a special value for explicitly removing a binding
         warn(
           ("Invalid value for dynamic directive argument (expected string or null): " + key),
           this
@@ -3413,6 +4010,12 @@
       ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
       if (config.isReservedTag(tag)) {
         // platform built-in elements
+        if (isDef(data) && isDef(data.nativeOn)) {
+          warn(
+            ("The .native modifier for v-on is only valid on components but it was used on <" + tag + ">."),
+            context
+          );
+        }
         vnode = new VNode(
           config.parsePlatformTagName(tag), data, children,
           undefined, undefined, context
@@ -3538,7 +4141,7 @@
       // render self
       var vnode;
       try {
-        // There's no need to maintain a stack becaues all render fns are called
+        // There's no need to maintain a stack because all render fns are called
         // separately from one another. Nested component's render fns are called
         // when parent component is patched.
         currentRenderingInstance = vm;
@@ -5437,7 +6040,7 @@
     value: FunctionalRenderContext
   });
 
-  Vue.version = '2.6.10';
+  Vue.version = '2.6.11';
 
   /*  */
 
@@ -6110,7 +6713,7 @@
       }
     }
 
-    function removeVnodes (parentElm, vnodes, startIdx, endIdx) {
+    function removeVnodes (vnodes, startIdx, endIdx) {
       for (; startIdx <= endIdx; ++startIdx) {
         var ch = vnodes[startIdx];
         if (isDef(ch)) {
@@ -6221,7 +6824,7 @@
         refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm;
         addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
       } else if (newStartIdx > newEndIdx) {
-        removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+        removeVnodes(oldCh, oldStartIdx, oldEndIdx);
       }
     }
 
@@ -6313,7 +6916,7 @@
           if (isDef(oldVnode.text)) { nodeOps.setTextContent(elm, ''); }
           addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
         } else if (isDef(oldCh)) {
-          removeVnodes(elm, oldCh, 0, oldCh.length - 1);
+          removeVnodes(oldCh, 0, oldCh.length - 1);
         } else if (isDef(oldVnode.text)) {
           nodeOps.setTextContent(elm, '');
         }
@@ -6542,7 +7145,7 @@
 
           // destroy old node
           if (isDef(parentElm)) {
-            removeVnodes(parentElm, [oldVnode], 0, 0);
+            removeVnodes([oldVnode], 0, 0);
           } else if (isDef(oldVnode.tag)) {
             invokeDestroyHook(oldVnode);
           }
@@ -9248,7 +9851,7 @@
   var startTagClose = /^\s*(\/?)>/;
   var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
   var doctype = /^<!DOCTYPE [^>]+>/i;
-  // #7298: escape - to avoid being pased as HTML comment when inlined in page
+  // #7298: escape - to avoid being passed as HTML comment when inlined in page
   var comment = /^<!\--/;
   var conditionalComment = /^<!\[/;
 
@@ -9533,7 +10136,7 @@
   /*  */
 
   var onRE = /^@|^v-on:/;
-  var dirRE = /^v-|^@|^:/;
+  var dirRE = /^v-|^@|^:|^#/;
   var forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
   var forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
   var stripParensRE = /^\(|\)$/g;
@@ -10157,7 +10760,7 @@
             if (el.parent && !maybeComponent(el.parent)) {
               warn$2(
                 "<template v-slot> can only appear at the root level inside " +
-                "the receiving the component",
+                "the receiving component",
                 el
               );
             }
@@ -10720,7 +11323,7 @@
 
   /*  */
 
-  var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
+  var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function(?:\s+[\w$]+)?\s*\(/;
   var fnInvokeRE = /\([^)]*?\);*$/;
   var simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
@@ -11489,6 +12092,8 @@
             var range = node.rawAttrsMap[name];
             if (name === 'v-for') {
               checkFor(node, ("v-for=\"" + value + "\""), warn, range);
+            } else if (name === 'v-slot' || name[0] === '#') {
+              checkFunctionParameterExpression(value, (name + "=\"" + value + "\""), warn, range);
             } else if (onRE.test(name)) {
               checkEvent(value, (name + "=\"" + value + "\""), warn, range);
             } else {
@@ -11508,9 +12113,9 @@
   }
 
   function checkEvent (exp, text, warn, range) {
-    var stipped = exp.replace(stripStringRE, '');
-    var keywordMatch = stipped.match(unaryOperatorsRE);
-    if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
+    var stripped = exp.replace(stripStringRE, '');
+    var keywordMatch = stripped.match(unaryOperatorsRE);
+    if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
       warn(
         "avoid using JavaScript unary operator as property name: " +
         "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim()),
@@ -11562,6 +12167,19 @@
           range
         );
       }
+    }
+  }
+
+  function checkFunctionParameterExpression (exp, text, warn, range) {
+    try {
+      new Function(exp, '');
+    } catch (e) {
+      warn(
+        "invalid function parameter expression: " + (e.message) + " in\n\n" +
+        "    " + exp + "\n\n" +
+        "  Raw expression: " + (text.trim()) + "\n",
+        range
+      );
     }
   }
 
@@ -11942,3 +12560,271 @@
   return Vue;
 
 }));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
+},{"timers":7}],6:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],7:[function(require,module,exports){
+(function (setImmediate,clearImmediate){
+var nextTick = require('process/browser.js').nextTick;
+var apply = Function.prototype.apply;
+var slice = Array.prototype.slice;
+var immediateIds = {};
+var nextImmediateId = 0;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) { timeout.close(); };
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// That's not how node.js implements it but the exposed api is the same.
+exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
+  var id = nextImmediateId++;
+  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
+
+  immediateIds[id] = true;
+
+  nextTick(function onNextTick() {
+    if (immediateIds[id]) {
+      // fn.call() is faster so we optimize for the common use-case
+      // @see http://jsperf.com/call-apply-segu
+      if (args) {
+        fn.apply(null, args);
+      } else {
+        fn.call(null);
+      }
+      // Prevent ids from leaking
+      exports.clearImmediate(id);
+    }
+  });
+
+  return id;
+};
+
+exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
+  delete immediateIds[id];
+};
+}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
+},{"process/browser.js":6,"timers":7}]},{},[4]);

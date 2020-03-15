@@ -37,3 +37,7 @@
 
 </div>
 {% endblock content %}
+
+{% block entrypoint %}
+    <script type="module" src="{{request.static_path('arscca:static/04_browserified/page-photos.js')}}"></script>
+{% endblock %}

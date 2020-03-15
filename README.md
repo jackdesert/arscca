@@ -323,6 +323,20 @@ See https://www.graphviz.org/documentation/
     bin/generate_scanner_flowchart
 
 
+Building from TypeScript
+------------------------
+
+This project uses typescript.
+tsc compiles to es6 modules.
+bin/transpile_javascript uses babel to transpile to es5 for old browser support
+bin/browserify uses browserify to build a single javascript file based on all the
+  dependencies of a single entry point
+
+At the time of this writing, three separate entry points are used.
+Which means browserify is generating three builds.
+
+    tsc && bin/transpile_javascript && bin/browserify && echo CHAIN-OF-SUCCESS
+
 
 Backlog
 -------

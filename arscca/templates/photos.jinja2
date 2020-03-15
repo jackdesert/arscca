@@ -68,8 +68,10 @@
 <div id='overlay' class='overlay'>
     <img id='overlay__img' class='overlay__img' src=''></img>
 </div>
-<script>
-    ready(bindEnlargePhotoOnClick)
-    ready(bindGroupPhotosByRadioButtons)
-</script>
 {% endblock content %}
+
+
+{% block entrypoint %}
+    <script type="module" src="{{request.static_path('arscca:static/04_browserified/page-photos.js')}}"></script>
+{% endblock %}
+
