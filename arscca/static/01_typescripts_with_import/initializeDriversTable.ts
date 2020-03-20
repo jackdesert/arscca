@@ -19,7 +19,7 @@ interface DriverUpdateMessage {
 }
 
 
-declare var drivers:[Driver]
+declare let drivers:[Driver]
 
 // Hopefully this picks up the correct (ES6) version of Vue
 import Vue from 'vue/dist/vue'
@@ -35,8 +35,8 @@ let initializeDriversTable = (liveBoolean) =>{
     let mySocket:WebSocket
     let dimmed:boolean = false
 
-    //var templateSource = document.getElementById('driver-template').innerHTML,
-    //var template = Handlebars.compile(templateSource),
+    //let templateSource = document.getElementById('driver-template').innerHTML,
+    //let template = Handlebars.compile(templateSource),
 
 
     let vueRevisionStatus: Vue
@@ -160,7 +160,7 @@ let initializeDriversTable = (liveBoolean) =>{
         }
     })
 
-    var target = document.getElementById('drivers-tbody'),
+    let target = document.getElementById('drivers-tbody'),
         sortByCarModel = function(){
             sortString('car_model')
         },
@@ -172,8 +172,8 @@ let initializeDriversTable = (liveBoolean) =>{
         },
         sortByDriverLastName = function(){
             drivers.sort(function(a, b){
-                var lastNameFirstA = a.name.toLowerCase().split(' ').reverse().join(),
-                    lastNameFirstB = b.name.toLowerCase().split(' ').reverse().join()
+                let lastNameFirstA:string = a.name.toLowerCase().split(' ').reverse().join(),
+                    lastNameFirstB:string = b.name.toLowerCase().split(' ').reverse().join()
                 if (lastNameFirstA === lastNameFirstB){
                     return 0
                 }else if (lastNameFirstA > lastNameFirstB){
@@ -191,31 +191,30 @@ let initializeDriversTable = (liveBoolean) =>{
         },
         sortNumeric = function(attribute){
             drivers.sort(function(a, b){
-                var aa = a[attribute],
-                    bb = b[attribute]
+                let aa:number = a[attribute],
+                    bb:number = b[attribute]
                 if (!aa){ aa = hugeNumber }
                 if (!bb){ bb = hugeNumber }
                 return aa - bb
             })
         },
         sortParsedInteger = function(attribute){
-            var regex = /\[|\]/g
+            let regex = /\[|\]/g
             drivers.sort(function(a, b){
-                var aa = a[attribute] || '',
-                    bb = b[attribute] || ''
+                let aa:string  = a[attribute] || '',
+                    bb:string  = b[attribute] || '',
+                    aaa:number = parseInt(aa.replace(regex, '')) || hugeNumber,
+                    bbb:number = parseInt(bb.replace(regex, '')) || hugeNumber
 
-                aa = parseInt(aa.replace(regex, '')) || hugeNumber
-                bb = parseInt(bb.replace(regex, '')) || hugeNumber
-
-                return aa - bb
+                return aaa - bbb
             })
         },
         sortByNumericThenByString = function(numericAttribute, stringAttribute){
             drivers.sort(function(a, b){
-                var a_number = parseFloat(a[numericAttribute]) || hugeNumber
-                var b_number = parseFloat(b[numericAttribute]) || hugeNumber
-                var a_string_lower = a[stringAttribute].toLowerCase()
-                var b_string_lower = b[stringAttribute].toLowerCase()
+                let a_number:number = parseFloat(a[numericAttribute]) || hugeNumber
+                let b_number:number = parseFloat(b[numericAttribute]) || hugeNumber
+                let a_string_lower:string = a[stringAttribute].toLowerCase()
+                let b_string_lower:string = b[stringAttribute].toLowerCase()
 
 
                 // Compare numeric
@@ -235,10 +234,10 @@ let initializeDriversTable = (liveBoolean) =>{
                 }
             })
         },
-        sortString = function(attribute){
-            drivers.sort(function(a, b){
-                var aa = a[attribute].toLowerCase(),
-                    bb = b[attribute].toLowerCase()
+        sortString = function(attribute:string){
+            drivers.sort(function(a:any, b:any){
+                let aa:string = a[attribute].toLowerCase(),
+                    bb:string = b[attribute].toLowerCase()
                 if (aa === bb){
                     return 0
                 }else if (aa > bb){
@@ -250,12 +249,12 @@ let initializeDriversTable = (liveBoolean) =>{
         },
 
         sortByStringAttributeThenByOverallPosition = function(stringAttribute:string){
-            drivers.sort(function(a, b){
-                var overallPositionAttribute = 'primary_rank',
-                    a1 = a[stringAttribute].toLowerCase(),
-                    b1 = b[stringAttribute].toLowerCase(),
-                    a2 = a[overallPositionAttribute],
-                    b2 = b[overallPositionAttribute]
+            drivers.sort(function(a:any, b:any){
+                let overallPositionAttribute:string = 'primary_rank',
+                    a1:string = a[stringAttribute].toLowerCase(),
+                    b1:string = b[stringAttribute].toLowerCase(),
+                    a2:number = a[overallPositionAttribute],
+                    b2:number = b[overallPositionAttribute]
                 if(a1 > b1){
                     return 1
                 }else if (a1 < b1){
@@ -282,15 +281,15 @@ let initializeDriversTable = (liveBoolean) =>{
         },
 
         sortByClassPositionThenByOverallPosition = function(){
-            drivers.sort(function(a, b){
-                var A = a.class_rank * hugeNumber + a.primary_rank,
-                    B = b.class_rank * hugeNumber + b.primary_rank
+            drivers.sort(function(a:Driver, b:Driver){
+                let A:number = a.class_rank * hugeNumber + a.primary_rank,
+                    B:number = b.class_rank * hugeNumber + b.primary_rank
                 return A - B
             })
         },
 
         bindHeaders = function(){
-            var carClassHeader        = document.getElementById('car-class'),
+            let carClassHeader        = document.getElementById('car-class'),
                 bestCombinedHeader    = document.getElementById('best-combined'),
                 positionOverallHeader = document.getElementById('primary-rank'),
                 positionPaxHeader     = document.getElementById('secondary-rank'),
@@ -317,7 +316,7 @@ let initializeDriversTable = (liveBoolean) =>{
                     [bestCombinedPaxHeader, sortByPaxPosition]]
 
             bindings.forEach(function(array){
-                var header = array[0],
+                let header = array[0],
                     func = array[1],
                     headerAsElement = header as HTMLInputElement
                 if(header === null){
@@ -325,7 +324,7 @@ let initializeDriversTable = (liveBoolean) =>{
                     return
                 }
                 headerAsElement.addEventListener('click', function(){
-                    var that = this
+                    let that = this
                     // Store which sort function most recently selected
                     currentSortFunction = func as Function
                     currentSortFunction()
@@ -338,10 +337,10 @@ let initializeDriversTable = (liveBoolean) =>{
         },
 
         styleActiveHeader = function(activeElement:HTMLElement){
-            var sortableHeaderClass = 'sortable-header',
-                activeHeaderClass = 'sortable-header_active',
-                cellHighlightClass = 'td_active-sort',
-                cellClassToHighlight = activeElement.id
+            let sortableHeaderClass:string = 'sortable-header',
+                activeHeaderClass:string = 'sortable-header_active',
+                cellHighlightClass:string = 'td_active-sort',
+                cellClassToHighlight:string = activeElement.id
 
 
             // Header
@@ -413,7 +412,7 @@ let initializeDriversTable = (liveBoolean) =>{
         },
 
         driverIndexFromName = function(name: string){
-            const index: number = drivers.findIndex(function(item: Driver){
+            const index:number = drivers.findIndex(function(item: Driver){
                 return item.name === name
             })
 

@@ -23,8 +23,8 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
     var currentActiveHeader = void 0;
     var mySocket = void 0;
     var dimmed = false;
-    //var templateSource = document.getElementById('driver-template').innerHTML,
-    //var template = Handlebars.compile(templateSource),
+    //let templateSource = document.getElementById('driver-template').innerHTML,
+    //let template = Handlebars.compile(templateSource),
     var vueRevisionStatus = void 0;
     if (liveBoolean) {
         vueRevisionStatus = new _vue2.default({
@@ -201,10 +201,10 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
         var regex = /\[|\]/g;
         drivers.sort(function (a, b) {
             var aa = a[attribute] || '',
-                bb = b[attribute] || '';
-            aa = parseInt(aa.replace(regex, '')) || hugeNumber;
-            bb = parseInt(bb.replace(regex, '')) || hugeNumber;
-            return aa - bb;
+                bb = b[attribute] || '',
+                aaa = parseInt(aa.replace(regex, '')) || hugeNumber,
+                bbb = parseInt(bb.replace(regex, '')) || hugeNumber;
+            return aaa - bbb;
         });
     },
         sortByNumericThenByString = function sortByNumericThenByString(numericAttribute, stringAttribute) {

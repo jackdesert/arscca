@@ -10,8 +10,8 @@ let initializeDriversTable = (liveBoolean) => {
     let currentActiveHeader;
     let mySocket;
     let dimmed = false;
-    //var templateSource = document.getElementById('driver-template').innerHTML,
-    //var template = Handlebars.compile(templateSource),
+    //let templateSource = document.getElementById('driver-template').innerHTML,
+    //let template = Handlebars.compile(templateSource),
     let vueRevisionStatus;
     if (liveBoolean) {
         vueRevisionStatus = new Vue({
@@ -120,7 +120,7 @@ let initializeDriversTable = (liveBoolean) => {
             }
         }
     });
-    var target = document.getElementById('drivers-tbody'), sortByCarModel = function () {
+    let target = document.getElementById('drivers-tbody'), sortByCarModel = function () {
         sortString('car_model');
     }, sortByCarNumber = function () {
         sortNumeric('car_number');
@@ -128,7 +128,7 @@ let initializeDriversTable = (liveBoolean) => {
         sortParsedInteger('codriver_car_number');
     }, sortByDriverLastName = function () {
         drivers.sort(function (a, b) {
-            var lastNameFirstA = a.name.toLowerCase().split(' ').reverse().join(), lastNameFirstB = b.name.toLowerCase().split(' ').reverse().join();
+            let lastNameFirstA = a.name.toLowerCase().split(' ').reverse().join(), lastNameFirstB = b.name.toLowerCase().split(' ').reverse().join();
             if (lastNameFirstA === lastNameFirstB) {
                 return 0;
             }
@@ -145,7 +145,7 @@ let initializeDriversTable = (liveBoolean) => {
         sortNumeric('primary_rank');
     }, sortNumeric = function (attribute) {
         drivers.sort(function (a, b) {
-            var aa = a[attribute], bb = b[attribute];
+            let aa = a[attribute], bb = b[attribute];
             if (!aa) {
                 aa = hugeNumber;
             }
@@ -155,19 +155,17 @@ let initializeDriversTable = (liveBoolean) => {
             return aa - bb;
         });
     }, sortParsedInteger = function (attribute) {
-        var regex = /\[|\]/g;
+        let regex = /\[|\]/g;
         drivers.sort(function (a, b) {
-            var aa = a[attribute] || '', bb = b[attribute] || '';
-            aa = parseInt(aa.replace(regex, '')) || hugeNumber;
-            bb = parseInt(bb.replace(regex, '')) || hugeNumber;
-            return aa - bb;
+            let aa = a[attribute] || '', bb = b[attribute] || '', aaa = parseInt(aa.replace(regex, '')) || hugeNumber, bbb = parseInt(bb.replace(regex, '')) || hugeNumber;
+            return aaa - bbb;
         });
     }, sortByNumericThenByString = function (numericAttribute, stringAttribute) {
         drivers.sort(function (a, b) {
-            var a_number = parseFloat(a[numericAttribute]) || hugeNumber;
-            var b_number = parseFloat(b[numericAttribute]) || hugeNumber;
-            var a_string_lower = a[stringAttribute].toLowerCase();
-            var b_string_lower = b[stringAttribute].toLowerCase();
+            let a_number = parseFloat(a[numericAttribute]) || hugeNumber;
+            let b_number = parseFloat(b[numericAttribute]) || hugeNumber;
+            let a_string_lower = a[stringAttribute].toLowerCase();
+            let b_string_lower = b[stringAttribute].toLowerCase();
             // Compare numeric
             if (a_number > b_number) {
                 return 1;
@@ -188,7 +186,7 @@ let initializeDriversTable = (liveBoolean) => {
         });
     }, sortString = function (attribute) {
         drivers.sort(function (a, b) {
-            var aa = a[attribute].toLowerCase(), bb = b[attribute].toLowerCase();
+            let aa = a[attribute].toLowerCase(), bb = b[attribute].toLowerCase();
             if (aa === bb) {
                 return 0;
             }
@@ -201,7 +199,7 @@ let initializeDriversTable = (liveBoolean) => {
         });
     }, sortByStringAttributeThenByOverallPosition = function (stringAttribute) {
         drivers.sort(function (a, b) {
-            var overallPositionAttribute = 'primary_rank', a1 = a[stringAttribute].toLowerCase(), b1 = b[stringAttribute].toLowerCase(), a2 = a[overallPositionAttribute], b2 = b[overallPositionAttribute];
+            let overallPositionAttribute = 'primary_rank', a1 = a[stringAttribute].toLowerCase(), b1 = b[stringAttribute].toLowerCase(), a2 = a[overallPositionAttribute], b2 = b[overallPositionAttribute];
             if (a1 > b1) {
                 return 1;
             }
@@ -221,11 +219,11 @@ let initializeDriversTable = (liveBoolean) => {
         sortByStringAttributeThenByOverallPosition('pax_factor');
     }, sortByClassPositionThenByOverallPosition = function () {
         drivers.sort(function (a, b) {
-            var A = a.class_rank * hugeNumber + a.primary_rank, B = b.class_rank * hugeNumber + b.primary_rank;
+            let A = a.class_rank * hugeNumber + a.primary_rank, B = b.class_rank * hugeNumber + b.primary_rank;
             return A - B;
         });
     }, bindHeaders = function () {
-        var carClassHeader = document.getElementById('car-class'), bestCombinedHeader = document.getElementById('best-combined'), positionOverallHeader = document.getElementById('primary-rank'), positionPaxHeader = document.getElementById('secondary-rank'), positionClassHeader = document.getElementById('class-rank'), bestCombinedPaxHeader = document.getElementById('best-combined-pax'), driverNameHeader = document.getElementById('driver-name'), carYearHeader = document.getElementById('car-year'), carModelHeader = document.getElementById('car-model'), codriverCarNumberHeader = document.getElementById('codriver-car-number'), carNumberHeader = document.getElementById('car-number'), paxFactorHeader = document.getElementById('pax-factor'), bindings = [
+        let carClassHeader = document.getElementById('car-class'), bestCombinedHeader = document.getElementById('best-combined'), positionOverallHeader = document.getElementById('primary-rank'), positionPaxHeader = document.getElementById('secondary-rank'), positionClassHeader = document.getElementById('class-rank'), bestCombinedPaxHeader = document.getElementById('best-combined-pax'), driverNameHeader = document.getElementById('driver-name'), carYearHeader = document.getElementById('car-year'), carModelHeader = document.getElementById('car-model'), codriverCarNumberHeader = document.getElementById('codriver-car-number'), carNumberHeader = document.getElementById('car-number'), paxFactorHeader = document.getElementById('pax-factor'), bindings = [
             [carClassHeader, sortByCarClassThenByOverallPosition],
             [carNumberHeader, sortByCarNumber],
             [codriverCarNumberHeader, sortByCodriverCarNumber],
@@ -240,13 +238,13 @@ let initializeDriversTable = (liveBoolean) => {
             [bestCombinedPaxHeader, sortByPaxPosition]
         ];
         bindings.forEach(function (array) {
-            var header = array[0], func = array[1], headerAsElement = header;
+            let header = array[0], func = array[1], headerAsElement = header;
             if (header === null) {
                 console.log('WARNING: no header for func', func);
                 return;
             }
             headerAsElement.addEventListener('click', function () {
-                var that = this;
+                let that = this;
                 // Store which sort function most recently selected
                 currentSortFunction = func;
                 currentSortFunction();
@@ -255,7 +253,7 @@ let initializeDriversTable = (liveBoolean) => {
             });
         });
     }, styleActiveHeader = function (activeElement) {
-        var sortableHeaderClass = 'sortable-header', activeHeaderClass = 'sortable-header_active', cellHighlightClass = 'td_active-sort', cellClassToHighlight = activeElement.id;
+        let sortableHeaderClass = 'sortable-header', activeHeaderClass = 'sortable-header_active', cellHighlightClass = 'td_active-sort', cellClassToHighlight = activeElement.id;
         // Header
         document.querySelectorAll('.' + sortableHeaderClass).forEach(function (element) {
             element.classList.remove(activeHeaderClass);
