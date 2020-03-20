@@ -4,8 +4,9 @@ let initializePhotosPage = () => {
 
         let photos = document.querySelectorAll('.uploaded-photo')
 
-        let enlargePhoto = (e) => {
-            let clickedImageSrc = e.target.getAttribute('src'),
+        let enlargePhoto = (e: MouseEvent) => {
+            let target = e.target as HTMLElement,
+                clickedImageSrc = target.getAttribute('src'),
                 overlay = document.getElementById('overlay'),
                 overlayImage = document.getElementById('overlay__img'),
                 body = document.querySelector('body')

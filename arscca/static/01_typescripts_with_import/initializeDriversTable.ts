@@ -18,16 +18,16 @@ let initializeDriversTable = (liveBoolean) =>{
     const hugeNumber:number = 1000000
     const delimiters:any = ['${', '}']
 
-    let currentSortFunction
+    let currentSortFunction: Function
     let currentActiveHeader
-    let mySocket
-    let dimmed = false
+    let mySocket: Websocket
+    let dimmed: boolean = false
 
     //var templateSource = document.getElementById('driver-template').innerHTML,
     //var template = Handlebars.compile(templateSource),
 
 
-    let vueRevisionStatus
+    let vueRevisionStatus: Vue
     if (liveBoolean){
 
         vueRevisionStatus = new Vue({
@@ -37,7 +37,7 @@ let initializeDriversTable = (liveBoolean) =>{
                 currentRevision: -1,
                 timestampOffsetMS: 0,
                 timestamp: '1970-01-01T00:00:00.000000',
-                now: new Date()
+                now: new Date() as Date
             },
             methods:{
                 timestampAgo: function(event){
@@ -368,7 +368,7 @@ let initializeDriversTable = (liveBoolean) =>{
 
                     vueRevisionStatus.currentRevision = data.revision
                     vueRevisionStatus.timestamp = data.revision_timestamp
-                    vueRevisionStatus.timestampOffsetMS = new Date() as unknown as number - requestTimestamp as unknown as number
+                    vueRevisionStatus.timestampOffsetMS = new Date() as Date - requestTimestamp as Date
                     kickoff()
                 } else {
                     // We reached our target server, but it returned an error
@@ -400,8 +400,8 @@ let initializeDriversTable = (liveBoolean) =>{
             setTimeout(initializeWebsocket, 1000)
         },
 
-        driverIndexFromName = function(name){
-            const index = drivers.findIndex(function(item){
+        driverIndexFromName = function(name: string){
+            const index: number = drivers.findIndex(function(item: Driver){
                 return item.name === name
             })
 
@@ -413,18 +413,18 @@ let initializeDriversTable = (liveBoolean) =>{
                 revision = messageData.revision,
                 revisionTimestamp = messageData.revision_timestamp,
                 driverChanges = messageData.driver_changes,
-                removeDriver = function(name){
+                removeDriver = function(name: string){
                     const index = driverIndexFromName(name)
                     console.log('Deleting driver: ', name)
                     // Use splice to delete driver
                     drivers.splice(index, 1)
                 },
-                addDriver = function(name){
+                addDriver = function(name: string){
                     console.log('Adding driver: ', name)
                     // Name is all that is needed
                     drivers.push({name: name, class_rank: -1000, primary_rank: -1000 })
                 },
-                updateDriver = function(driverObject){
+                updateDriver = function(driverObject: Driver){
                     // Note that if a driver is removed,
                     // "primary_rank" will change for any
                     // slower drivers, and hence they will be updated

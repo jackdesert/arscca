@@ -14,7 +14,8 @@ var initializePhotosPage = function initializePhotosPage() {
 
         var photos = document.querySelectorAll('.uploaded-photo');
         var enlargePhoto = function enlargePhoto(e) {
-            var clickedImageSrc = e.target.getAttribute('src'),
+            var target = e.target,
+                clickedImageSrc = target.getAttribute('src'),
                 overlay = document.getElementById('overlay'),
                 overlayImage = document.getElementById('overlay__img'),
                 body = document.querySelector('body');

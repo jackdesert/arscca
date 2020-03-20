@@ -323,6 +323,22 @@ See https://www.graphviz.org/documentation/
     bin/generate_scanner_flowchart
 
 
+Installing Typescript
+---------------------
+
+    sudo npm install -g typescript
+    which tsc
+
+
+Installing Node Dependencies
+----------------------------
+
+This will build node dependencies based on package.json and package-lock.json.
+
+    cd /path/to/repo
+    npm install
+
+
 Building from TypeScript
 ------------------------
 
