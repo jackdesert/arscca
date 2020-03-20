@@ -18,19 +18,6 @@
 
     <body id='body'>
 
-
-        <script>
-            // Including this script early in the page so other templates can use it
-            function ready(fn) {
-                // See http://youmightnotneedjquery.com/
-                if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
-                    fn();
-                } else {
-                    document.addEventListener('DOMContentLoaded', fn);
-                }
-            }
-        </script>
-
         <div class="container">
             <div class='row'>
                 <div class='col-12'>
@@ -45,7 +32,6 @@
             </div>
 
 
-
             <div class="row">
                 <div class="col-12">
                     {% block content %}
@@ -54,10 +40,6 @@
                 </div>
             </div>
 
-
-            {% block entrypoint %}
-                <script type="module" src="{{request.static_path('arscca:static/04_browserified/common.js')}}"></script>
-            {% endblock %}
 
             <div class="row">
                 <div class='col-12'>
@@ -91,5 +73,8 @@
 
         <!-- <div class='feedback__link' id='feedback__link'>Feedback</div> -->
 
+        {% block entrypoint %}
+            <script type="module" src="{{request.static_path('arscca:static/04_browserified/common.js')}}"></script>
+        {% endblock %}
     </body>
 </html>
