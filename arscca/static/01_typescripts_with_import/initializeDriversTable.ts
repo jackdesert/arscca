@@ -21,10 +21,10 @@ interface DriverUpdateMessage {
 
 declare let drivers:[Driver]
 
-// Hopefully this picks up the correct (ES6) version of Vue
+// How do we get type declarations for this?
 import Vue from 'vue/dist/vue'
 
-let initializeDriversTable = (liveBoolean) =>{
+let initializeDriversTable = (liveBoolean:boolean) =>{
     'use strict'
 
     const hugeNumber:number = 1000000
@@ -39,7 +39,7 @@ let initializeDriversTable = (liveBoolean) =>{
     //let template = Handlebars.compile(templateSource),
 
 
-    let vueRevisionStatus: Vue
+    let vueRevisionStatus:Vue
     if (liveBoolean){
 
         vueRevisionStatus = new Vue({
@@ -52,11 +52,12 @@ let initializeDriversTable = (liveBoolean) =>{
                 now: new Date() as Date
             },
             methods:{
-                timestampAgo: function(event){
-                    const then = Date.parse(this.timestamp),
-                        deltaMS = this.now - then - this.timestampOffsetMS,
-                        deltaS = deltaMS / 1000,
-                        deltaM = deltaS / 60
+                timestampAgo: function(){
+                    const that = this as any,
+                        then = Date.parse(that.timestamp) as unknown as number,
+                        deltaMS:number = that.now - then - that.timestampOffsetMS,
+                        deltaS:number = deltaMS / 1000,
+                        deltaM:number = deltaS / 60
                     // absolute value so that it doesn't start counting from -0.0
                     return Math.abs(deltaM).toFixed(1)
                 }
@@ -77,30 +78,33 @@ let initializeDriversTable = (liveBoolean) =>{
             solo: false
         },
         methods: {
-            visible: function(driverId){
-                if (!this.solo){
+            visible: function(driverId:string){
+                let that = this as any
+                if (!that.solo){
                     return true
                 }
 
-                if (this.selectedDriverIds.includes(driverId)){
+                if (that.selectedDriverIds.includes(driverId)){
                     return true
                 }
 
                 return false
             },
-            replaceInfinity: function(value){
+            replaceInfinity: function(value:string){
                 if(value === 'Infinity'){
                     return '-'
                 }
                 return value
             },
-            rowKlass: function(driverId, rowIndex){
-                if (this.solo){
+            rowKlass: function(driverId:string, rowIndex:number){
+              let that = this as any
+
+                if (that.solo){
                     return this.rowKlassWhenSolo(driverId)
                 }
 
                 let klass = ''
-                if (this.selectedDriverIds.includes(driverId)){
+                if (that.selectedDriverIds.includes(driverId)){
                     klass = 'selected'
                 }
                 if (rowIndex % 2 === 1){
@@ -108,15 +112,16 @@ let initializeDriversTable = (liveBoolean) =>{
                 }
                 return klass
             },
-            rowKlassWhenSolo: function(driverId){
+            rowKlassWhenSolo: function(driverId:string){
                 // This function decides whether this row should be striped
                 // among its peers of other selected drivers
                 //
                 // WARNING: This runs in N*M time
                 // where N is number of drivers and M is number of selected rows
-                let stripe = false
-                for (let driver of this.drivers){
-                    if (this.selectedDriverIds.includes(driver.id)){
+                let stripe = false,
+                    that = this as any
+                for (let driver of that.drivers){
+                    if (that.selectedDriverIds.includes(driver.id)){
                         stripe = !stripe
                     }
                     if (driverId === driver.id){
@@ -125,34 +130,39 @@ let initializeDriversTable = (liveBoolean) =>{
                 }
             },
             toggleSolo: function(){
-                if (!this.solo && (this.selectedDriverIds.length === 0)){
+                let that = this as any
+                if (!that.solo && (that.selectedDriverIds.length === 0)){
                     alert('Please select one or more rows first')
                     return
                 }
 
-                this.solo = !this.solo
+                that.solo = !that.solo
 
             },
-            highlightRow: function(driverId){
-                let index:number = this.selectedDriverIds.indexOf(driverId),
-                  sourceElem = event.srcElement as any
+            highlightRow: function(driverId:string){
+                let that = this as any,
+                    index:number = that.selectedDriverIds.indexOf(driverId),
+                    sourceElem = event.srcElement as any
+
 
                 if (sourceElem.href){
                     // Do not highlight if the clicked element was a link
                     return
                 }
-                if (this.solo){
+                if (that.solo){
                     return
                 }
 
                 if (index === -1){
-                    this.selectedDriverIds.push(driverId)
+                    that.selectedDriverIds.push(driverId)
                 }else{
-                    this.selectedDriverIds.splice(index, 1)
+                    that.selectedDriverIds.splice(index, 1)
                 }
             },
             soloButtonKlass: function(){
-                if (this.solo){
+                let that = this as any
+
+                if (that.solo){
                     return 'solo-button solo-button_active'
                 }else{
                     return 'solo-button'
@@ -172,7 +182,7 @@ let initializeDriversTable = (liveBoolean) =>{
             sortParsedInteger('codriver_car_number')
         },
         sortByDriverLastName = function(){
-            drivers.sort(function(a, b){
+            drivers.sort(function(a:Driver, b:Driver){
                 let lastNameFirstA:string = a.name.toLowerCase().split(' ').reverse().join(),
                     lastNameFirstB:string = b.name.toLowerCase().split(' ').reverse().join()
                 if (lastNameFirstA === lastNameFirstB){

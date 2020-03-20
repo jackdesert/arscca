@@ -1,8 +1,9 @@
 // For ease of installation across many projects, this does not use handlebars
 // This also does not require jquery. See http://youmightnotneedjquery.com/
 
+
 // When calling bindFeedback(), you m
-let bindFeedbackLink = (linkId: string, extraData?: object) => {
+let bindFeedbackLink = (linkId:string, extraData?:any) => {
     'use strict'
     // CONSTANTS
     const formUrl = 'https://bip.elitecare.com/feedback'
@@ -14,7 +15,7 @@ let bindFeedbackLink = (linkId: string, extraData?: object) => {
 
 
     let acceptMessage = () => {
-        const activeElements = []
+        const activeElements:HTMLElement[] = []
 
         const closeFeedbackDivs = () => {
             activeElements.forEach((element) => {
@@ -34,7 +35,7 @@ let bindFeedbackLink = (linkId: string, extraData?: object) => {
         const textareaClass = 'feedback__textarea'
 
         const buildFeedbackPayload = (message: string) => {
-            const payload = {'feedback': {'message': message,
+            const payload:any = {'feedback': {'message': message,
                                           'page': window.location.toString()}}
 
             for (var key in extraData){
