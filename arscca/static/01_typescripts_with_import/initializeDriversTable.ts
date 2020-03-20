@@ -200,7 +200,7 @@ let initializeDriversTable = (liveBoolean) =>{
         },
         sortParsedInteger = function(attribute){
             let regex = /\[|\]/g
-            drivers.sort(function(a, b){
+            drivers.sort(function(a:any, b:any){
                 let aa:string  = a[attribute] || '',
                     bb:string  = b[attribute] || '',
                     aaa:number = parseInt(aa.replace(regex, '')) || hugeNumber,
