@@ -249,7 +249,7 @@ let initializeDriversTable = (liveBoolean) =>{
             })
         },
 
-        sortByStringAttributeThenByOverallPosition = function(stringAttribute){
+        sortByStringAttributeThenByOverallPosition = function(stringAttribute:string){
             drivers.sort(function(a, b){
                 var overallPositionAttribute = 'primary_rank',
                     a1 = a[stringAttribute].toLowerCase(),
