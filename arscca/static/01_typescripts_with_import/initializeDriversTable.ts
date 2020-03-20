@@ -408,7 +408,7 @@ let initializeDriversTable = (liveBoolean) =>{
             return index
         },
 
-        processWebsocketMessage = function(event){
+        processWebsocketMessage = function(event: Event){
             const messageData = JSON.parse(event.data),
                 revision = messageData.revision,
                 revisionTimestamp = messageData.revision_timestamp,
