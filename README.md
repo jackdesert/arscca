@@ -68,7 +68,7 @@ Docker with Manual Containers
                 --name arscca-twisted \
                 --network arscca-network \
                 --publish 6544:6544 \
-                --mount type=bind,source=/home/jd/r/arscca-twisted,target=/arscca-twisted \
+                --mount type=bind,source=/home/jd/p/arscca-twisted,target=/arscca-twisted \
                 --mount type=bind,source=/home/arscca,target=/home/arscca \
                 arscca-twisted:latest \
                 bash

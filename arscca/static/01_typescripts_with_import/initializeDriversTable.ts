@@ -6,6 +6,18 @@ interface Driver {
   primary_rank:number
 }
 
+interface DriverChanges {
+  create: any[],
+  destroy: any[],
+  update: any[]
+}
+
+interface DriverUpdateMessage {
+  revision: number,
+  revision_timestamp: string,
+  driver_changes: DriverChanges
+}
+
 
 declare var drivers:[Driver]
 
@@ -409,10 +421,10 @@ let initializeDriversTable = (liveBoolean) =>{
         },
 
         processWebsocketMessage = function(event){
-            const messageData = JSON.parse(event.data),
+            const messageData:DriverUpdateMessage = JSON.parse(event.data),
                 revision = messageData.revision,
-                revisionTimestamp = messageData.revision_timestamp,
-                driverChanges = messageData.driver_changes,
+                revisionTimestamp:string = messageData.revision_timestamp,
+                driverChanges:DriverChanges = messageData.driver_changes,
                 removeDriver = function(name: string){
                     const index = driverIndexFromName(name)
                     console.log('Deleting driver: ', name)
