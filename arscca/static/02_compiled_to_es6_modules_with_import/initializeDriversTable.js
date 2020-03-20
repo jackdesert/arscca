@@ -95,8 +95,8 @@ let initializeDriversTable = (liveBoolean) => {
                 this.solo = !this.solo;
             },
             highlightRow: function (driverId) {
-                let index = this.selectedDriverIds.indexOf(driverId);
-                if (this.event.srcElement.href) {
+                let index = this.selectedDriverIds.indexOf(driverId), sourceElem = event.srcElement;
+                if (sourceElem.href) {
                     // Do not highlight if the clicked element was a link
                     return;
                 }
@@ -160,7 +160,9 @@ let initializeDriversTable = (liveBoolean) => {
             let aa = a[attribute] || '', bb = b[attribute] || '', aaa = parseInt(aa.replace(regex, '')) || hugeNumber, bbb = parseInt(bb.replace(regex, '')) || hugeNumber;
             return aaa - bbb;
         });
-    }, sortByNumericThenByString = function (numericAttribute, stringAttribute) {
+    }, 
+    // Note the numericAttribute is a string (like 'car_year') that **references** a numeric
+    sortByNumericThenByString = function (numericAttribute, stringAttribute) {
         drivers.sort(function (a, b) {
             let a_number = parseFloat(a[numericAttribute]) || hugeNumber;
             let b_number = parseFloat(b[numericAttribute]) || hugeNumber;

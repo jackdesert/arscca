@@ -137,8 +137,9 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 this.solo = !this.solo;
             },
             highlightRow: function highlightRow(driverId) {
-                var index = this.selectedDriverIds.indexOf(driverId);
-                if (this.event.srcElement.href) {
+                var index = this.selectedDriverIds.indexOf(driverId),
+                    sourceElem = event.srcElement;
+                if (sourceElem.href) {
                     // Do not highlight if the clicked element was a link
                     return;
                 }
@@ -212,7 +213,9 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
             return aaa - bbb;
         });
     },
-        sortByNumericThenByString = function sortByNumericThenByString(numericAttribute, stringAttribute) {
+
+    // Note the numericAttribute is a string (like 'car_year') that **references** a numeric
+    sortByNumericThenByString = function sortByNumericThenByString(numericAttribute, stringAttribute) {
         drivers.sort(function (a, b) {
             var a_number = parseFloat(a[numericAttribute]) || hugeNumber;
             var b_number = parseFloat(b[numericAttribute]) || hugeNumber;

@@ -134,9 +134,10 @@ let initializeDriversTable = (liveBoolean) =>{
 
             },
             highlightRow: function(driverId){
-                let index = this.selectedDriverIds.indexOf(driverId)
+                let index:number = this.selectedDriverIds.indexOf(driverId),
+                  sourceElem = event.srcElement as any
 
-                if (this.event.srcElement.href){
+                if (sourceElem.href){
                     // Do not highlight if the clicked element was a link
                     return
                 }
@@ -189,8 +190,8 @@ let initializeDriversTable = (liveBoolean) =>{
         sortByOverallPosition = function(){
             sortNumeric('primary_rank')
         },
-        sortNumeric = function(attribute){
-            drivers.sort(function(a, b){
+        sortNumeric = function(attribute:string){
+            drivers.sort(function(a:any, b:any){
                 let aa:number = a[attribute],
                     bb:number = b[attribute]
                 if (!aa){ aa = hugeNumber }
@@ -198,7 +199,7 @@ let initializeDriversTable = (liveBoolean) =>{
                 return aa - bb
             })
         },
-        sortParsedInteger = function(attribute){
+        sortParsedInteger = function(attribute:string){
             let regex = /\[|\]/g
             drivers.sort(function(a:any, b:any){
                 let aa:string  = a[attribute] || '',
