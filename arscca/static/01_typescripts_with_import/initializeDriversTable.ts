@@ -209,8 +209,10 @@ let initializeDriversTable = (liveBoolean) =>{
                 return aaa - bbb
             })
         },
-        sortByNumericThenByString = function(numericAttribute, stringAttribute){
-            drivers.sort(function(a, b){
+
+        // Note the numericAttribute is a string (like 'car_year') that **references** a numeric
+        sortByNumericThenByString = function(numericAttribute:string, stringAttribute:string){
+            drivers.sort(function(a:any, b:any){
                 let a_number:number = parseFloat(a[numericAttribute]) || hugeNumber
                 let b_number:number = parseFloat(b[numericAttribute]) || hugeNumber
                 let a_string_lower:string = a[stringAttribute].toLowerCase()
