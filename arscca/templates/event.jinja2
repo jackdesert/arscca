@@ -165,5 +165,8 @@
 
 
 {% block entrypoint %}
+    <script>
+        ARSCCA_GLOBALS.live = {{ live | lower }}
+    </script>
     <script type="module" src="{{request.static_path('arscca:static/04_browserified/page-event.js')}}"></script>
 {% endblock %}

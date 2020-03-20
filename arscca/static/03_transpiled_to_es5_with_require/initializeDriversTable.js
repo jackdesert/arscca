@@ -12,42 +12,59 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!');
-// Hopefully this picks up the correct (ES6) version of Vue
+// How do we get type declarations for this?
+//import Vue from 'vue/dist/vue'
+// If I simply:
+//    import Vue from 'vue'
+// I get an error in the browser:
+//    "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
+// Therefore I am importing specifically 'vue/dist/vue',
+// which resolves to 'node_modules/vue/dist/vue.js',
+// which is the full version of Vue that inclues the compiler
+//
+// In order to get type declarations when using `import Vue from 'vue.dist.vue'`,
+// run this command in the unix terminal:
+//     mkdir node_modules/vue/dist/vue
+//     cp -r node_modules/vue/types node_modules/vue/dist/vue
 
 var initializeDriversTable = function initializeDriversTable(liveBoolean) {
     'use strict';
+    // Most variables can be declared without specifying a type,
+    // and typescript will infer a type. No such
 
-    var hugeNumber = 1000000;
     var delimiters = ['${', '}'];
+    var hugeNumber = 1000000;
     var currentSortFunction = void 0;
     var currentActiveHeader = void 0;
     var mySocket = void 0;
     var dimmed = false;
-    //var templateSource = document.getElementById('driver-template').innerHTML,
-    //var template = Handlebars.compile(templateSource),
-    var vueRevisionStatus = void 0;
-    if (liveBoolean) {
-        vueRevisionStatus = new _vue2.default({
-            delimiters: delimiters,
-            el: '#current-revision',
-            data: {
-                currentRevision: -1,
-                timestampOffsetMS: 0,
-                timestamp: '1970-01-01T00:00:00.000000',
-                now: new Date()
-            },
-            methods: {
-                timestampAgo: function timestampAgo(event) {
-                    var then = Date.parse(this.timestamp),
-                        deltaMS = this.now - then - this.timestampOffsetMS,
-                        deltaS = deltaMS / 1000,
-                        deltaM = deltaS / 60;
-                    // absolute value so that it doesn't start counting from -0.0
-                    return Math.abs(deltaM).toFixed(1);
-                }
+    // vueRevisionStatus is only needed when liveBoolean is true.
+    // However, it is initialized even when liveBoolean is false
+    // so that TS can infer its type. (We are using noImplicitAny)
+    //
+    // Allow TS to infer type on vueRevisionStatus.
+    // Otherwise it will complain when you access vueRevisionStatus.currentRevision directly
+    var vueRevisionStatus = new _vue2.default({
+        delimiters: delimiters,
+        el: '#current-revision',
+        data: {
+            currentRevision: -1,
+            timestampOffsetMS: 0,
+            timestamp: '1970-01-01T00:00:00.000000',
+            now: new Date()
+        },
+        methods: {
+            timestampAgo: function timestampAgo() {
+                var that = this,
+                    then = Date.parse(that.timestamp),
+                    deltaMS = that.now - then - that.timestampOffsetMS,
+                    deltaS = deltaMS / 1000,
+                    deltaM = deltaS / 60;
+                // absolute value so that it doesn't start counting from -0.0
+                return Math.abs(deltaM).toFixed(1);
             }
-        });
-    }
+        }
+    });
     var vueDriversTable = new _vue2.default({
         delimiters: delimiters,
         el: '#drivers-table-holder',
@@ -60,10 +77,11 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
         },
         methods: {
             visible: function visible(driverId) {
-                if (!this.solo) {
+                var that = this;
+                if (!that.solo) {
                     return true;
                 }
-                if (this.selectedDriverIds.includes(driverId)) {
+                if (that.selectedDriverIds.includes(driverId)) {
                     return true;
                 }
                 return false;
@@ -75,11 +93,12 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 return value;
             },
             rowKlass: function rowKlass(driverId, rowIndex) {
-                if (this.solo) {
+                var that = this;
+                if (that.solo) {
                     return this.rowKlassWhenSolo(driverId);
                 }
                 var klass = '';
-                if (this.selectedDriverIds.includes(driverId)) {
+                if (that.selectedDriverIds.includes(driverId)) {
                     klass = 'selected';
                 }
                 if (rowIndex % 2 === 1) {
@@ -93,16 +112,17 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 //
                 // WARNING: This runs in N*M time
                 // where N is number of drivers and M is number of selected rows
-                var stripe = false;
+                var stripe = false,
+                    that = this;
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = this.drivers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    for (var _iterator = that.drivers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var driver = _step.value;
 
-                        if (this.selectedDriverIds.includes(driver.id)) {
+                        if (that.selectedDriverIds.includes(driver.id)) {
                             stripe = !stripe;
                         }
                         if (driverId === driver.id) {
@@ -125,29 +145,33 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 }
             },
             toggleSolo: function toggleSolo() {
-                if (!this.solo && this.selectedDriverIds.length === 0) {
+                var that = this;
+                if (!that.solo && that.selectedDriverIds.length === 0) {
                     alert('Please select one or more rows first');
                     return;
                 }
-                this.solo = !this.solo;
+                that.solo = !that.solo;
             },
             highlightRow: function highlightRow(driverId) {
-                var index = this.selectedDriverIds.indexOf(driverId);
-                if (this.event.srcElement.href) {
+                var that = this,
+                    index = that.selectedDriverIds.indexOf(driverId),
+                    sourceElem = event.srcElement;
+                if (sourceElem.href) {
                     // Do not highlight if the clicked element was a link
                     return;
                 }
-                if (this.solo) {
+                if (that.solo) {
                     return;
                 }
                 if (index === -1) {
-                    this.selectedDriverIds.push(driverId);
+                    that.selectedDriverIds.push(driverId);
                 } else {
-                    this.selectedDriverIds.splice(index, 1);
+                    that.selectedDriverIds.splice(index, 1);
                 }
             },
             soloButtonKlass: function soloButtonKlass() {
-                if (this.solo) {
+                var that = this;
+                if (that.solo) {
                     return 'solo-button solo-button_active';
                 } else {
                     return 'solo-button';
@@ -201,13 +225,15 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
         var regex = /\[|\]/g;
         drivers.sort(function (a, b) {
             var aa = a[attribute] || '',
-                bb = b[attribute] || '';
-            aa = parseInt(aa.replace(regex, '')) || hugeNumber;
-            bb = parseInt(bb.replace(regex, '')) || hugeNumber;
-            return aa - bb;
+                bb = b[attribute] || '',
+                aaa = parseInt(aa.replace(regex, '')) || hugeNumber,
+                bbb = parseInt(bb.replace(regex, '')) || hugeNumber;
+            return aaa - bbb;
         });
     },
-        sortByNumericThenByString = function sortByNumericThenByString(numericAttribute, stringAttribute) {
+
+    // Note the numericAttribute is a string (like 'car_year') that **references** a numeric
+    sortByNumericThenByString = function sortByNumericThenByString(numericAttribute, stringAttribute) {
         drivers.sort(function (a, b) {
             var a_number = parseFloat(a[numericAttribute]) || hugeNumber;
             var b_number = parseFloat(b[numericAttribute]) || hugeNumber;
@@ -363,7 +389,9 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
         setTimeout(function () {
             styleActiveHeader(currentActiveHeader);
         }, 1);
-        setTimeout(initializeWebsocket, 1000);
+        if (liveBoolean) {
+            setTimeout(initializeWebsocket, 1000);
+        }
     },
         driverIndexFromName = function driverIndexFromName(name) {
         var index = drivers.findIndex(function (item) {

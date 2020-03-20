@@ -1,37 +1,53 @@
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!');
-// Hopefully this picks up the correct (ES6) version of Vue
+// How do we get type declarations for this?
+//import Vue from 'vue/dist/vue'
+// If I simply:
+//    import Vue from 'vue'
+// I get an error in the browser:
+//    "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
+// Therefore I am importing specifically 'vue/dist/vue',
+// which resolves to 'node_modules/vue/dist/vue.js',
+// which is the full version of Vue that inclues the compiler
+//
+// In order to get type declarations when using `import Vue from 'vue.dist.vue'`,
+// run this command in the unix terminal:
+//     mkdir node_modules/vue/dist/vue
+//     cp -r node_modules/vue/types node_modules/vue/dist/vue
 import Vue from 'vue/dist/vue';
 let initializeDriversTable = (liveBoolean) => {
     'use strict';
-    const hugeNumber = 1000000;
+    // Most variables can be declared without specifying a type,
+    // and typescript will infer a type. No such
     const delimiters = ['${', '}'];
+    const hugeNumber = 1000000;
     let currentSortFunction;
     let currentActiveHeader;
     let mySocket;
     let dimmed = false;
-    //var templateSource = document.getElementById('driver-template').innerHTML,
-    //var template = Handlebars.compile(templateSource),
-    let vueRevisionStatus;
-    if (liveBoolean) {
-        vueRevisionStatus = new Vue({
-            delimiters: delimiters,
-            el: '#current-revision',
-            data: {
-                currentRevision: -1,
-                timestampOffsetMS: 0,
-                timestamp: '1970-01-01T00:00:00.000000',
-                now: new Date()
-            },
-            methods: {
-                timestampAgo: function (event) {
-                    const then = Date.parse(this.timestamp), deltaMS = this.now - then - this.timestampOffsetMS, deltaS = deltaMS / 1000, deltaM = deltaS / 60;
-                    // absolute value so that it doesn't start counting from -0.0
-                    return Math.abs(deltaM).toFixed(1);
-                }
+    // vueRevisionStatus is only needed when liveBoolean is true.
+    // However, it is initialized even when liveBoolean is false
+    // so that TS can infer its type. (We are using noImplicitAny)
+    //
+    // Allow TS to infer type on vueRevisionStatus.
+    // Otherwise it will complain when you access vueRevisionStatus.currentRevision directly
+    let vueRevisionStatus = new Vue({
+        delimiters: delimiters,
+        el: '#current-revision',
+        data: {
+            currentRevision: -1,
+            timestampOffsetMS: 0,
+            timestamp: '1970-01-01T00:00:00.000000',
+            now: new Date()
+        },
+        methods: {
+            timestampAgo: function () {
+                const that = this, then = Date.parse(that.timestamp), deltaMS = that.now - then - that.timestampOffsetMS, deltaS = deltaMS / 1000, deltaM = deltaS / 60;
+                // absolute value so that it doesn't start counting from -0.0
+                return Math.abs(deltaM).toFixed(1);
             }
-        });
-    }
+        }
+    });
     const vueDriversTable = new Vue({
         delimiters: delimiters,
         el: '#drivers-table-holder',
@@ -44,10 +60,11 @@ let initializeDriversTable = (liveBoolean) => {
         },
         methods: {
             visible: function (driverId) {
-                if (!this.solo) {
+                let that = this;
+                if (!that.solo) {
                     return true;
                 }
-                if (this.selectedDriverIds.includes(driverId)) {
+                if (that.selectedDriverIds.includes(driverId)) {
                     return true;
                 }
                 return false;
@@ -59,11 +76,12 @@ let initializeDriversTable = (liveBoolean) => {
                 return value;
             },
             rowKlass: function (driverId, rowIndex) {
-                if (this.solo) {
+                let that = this;
+                if (that.solo) {
                     return this.rowKlassWhenSolo(driverId);
                 }
                 let klass = '';
-                if (this.selectedDriverIds.includes(driverId)) {
+                if (that.selectedDriverIds.includes(driverId)) {
                     klass = 'selected';
                 }
                 if (rowIndex % 2 === 1) {
@@ -77,9 +95,9 @@ let initializeDriversTable = (liveBoolean) => {
                 //
                 // WARNING: This runs in N*M time
                 // where N is number of drivers and M is number of selected rows
-                let stripe = false;
-                for (let driver of this.drivers) {
-                    if (this.selectedDriverIds.includes(driver.id)) {
+                let stripe = false, that = this;
+                for (let driver of that.drivers) {
+                    if (that.selectedDriverIds.includes(driver.id)) {
                         stripe = !stripe;
                     }
                     if (driverId === driver.id) {
@@ -88,30 +106,32 @@ let initializeDriversTable = (liveBoolean) => {
                 }
             },
             toggleSolo: function () {
-                if (!this.solo && (this.selectedDriverIds.length === 0)) {
+                let that = this;
+                if (!that.solo && (that.selectedDriverIds.length === 0)) {
                     alert('Please select one or more rows first');
                     return;
                 }
-                this.solo = !this.solo;
+                that.solo = !that.solo;
             },
             highlightRow: function (driverId) {
-                let index = this.selectedDriverIds.indexOf(driverId);
-                if (this.event.srcElement.href) {
+                let that = this, index = that.selectedDriverIds.indexOf(driverId), sourceElem = event.srcElement;
+                if (sourceElem.href) {
                     // Do not highlight if the clicked element was a link
                     return;
                 }
-                if (this.solo) {
+                if (that.solo) {
                     return;
                 }
                 if (index === -1) {
-                    this.selectedDriverIds.push(driverId);
+                    that.selectedDriverIds.push(driverId);
                 }
                 else {
-                    this.selectedDriverIds.splice(index, 1);
+                    that.selectedDriverIds.splice(index, 1);
                 }
             },
             soloButtonKlass: function () {
-                if (this.solo) {
+                let that = this;
+                if (that.solo) {
                     return 'solo-button solo-button_active';
                 }
                 else {
@@ -120,7 +140,7 @@ let initializeDriversTable = (liveBoolean) => {
             }
         }
     });
-    var target = document.getElementById('drivers-tbody'), sortByCarModel = function () {
+    let target = document.getElementById('drivers-tbody'), sortByCarModel = function () {
         sortString('car_model');
     }, sortByCarNumber = function () {
         sortNumeric('car_number');
@@ -128,7 +148,7 @@ let initializeDriversTable = (liveBoolean) => {
         sortParsedInteger('codriver_car_number');
     }, sortByDriverLastName = function () {
         drivers.sort(function (a, b) {
-            var lastNameFirstA = a.name.toLowerCase().split(' ').reverse().join(), lastNameFirstB = b.name.toLowerCase().split(' ').reverse().join();
+            let lastNameFirstA = a.name.toLowerCase().split(' ').reverse().join(), lastNameFirstB = b.name.toLowerCase().split(' ').reverse().join();
             if (lastNameFirstA === lastNameFirstB) {
                 return 0;
             }
@@ -145,7 +165,7 @@ let initializeDriversTable = (liveBoolean) => {
         sortNumeric('primary_rank');
     }, sortNumeric = function (attribute) {
         drivers.sort(function (a, b) {
-            var aa = a[attribute], bb = b[attribute];
+            let aa = a[attribute], bb = b[attribute];
             if (!aa) {
                 aa = hugeNumber;
             }
@@ -155,19 +175,19 @@ let initializeDriversTable = (liveBoolean) => {
             return aa - bb;
         });
     }, sortParsedInteger = function (attribute) {
-        var regex = /\[|\]/g;
+        let regex = /\[|\]/g;
         drivers.sort(function (a, b) {
-            var aa = a[attribute] || '', bb = b[attribute] || '';
-            aa = parseInt(aa.replace(regex, '')) || hugeNumber;
-            bb = parseInt(bb.replace(regex, '')) || hugeNumber;
-            return aa - bb;
+            let aa = a[attribute] || '', bb = b[attribute] || '', aaa = parseInt(aa.replace(regex, '')) || hugeNumber, bbb = parseInt(bb.replace(regex, '')) || hugeNumber;
+            return aaa - bbb;
         });
-    }, sortByNumericThenByString = function (numericAttribute, stringAttribute) {
+    }, 
+    // Note the numericAttribute is a string (like 'car_year') that **references** a numeric
+    sortByNumericThenByString = function (numericAttribute, stringAttribute) {
         drivers.sort(function (a, b) {
-            var a_number = parseFloat(a[numericAttribute]) || hugeNumber;
-            var b_number = parseFloat(b[numericAttribute]) || hugeNumber;
-            var a_string_lower = a[stringAttribute].toLowerCase();
-            var b_string_lower = b[stringAttribute].toLowerCase();
+            let a_number = parseFloat(a[numericAttribute]) || hugeNumber;
+            let b_number = parseFloat(b[numericAttribute]) || hugeNumber;
+            let a_string_lower = a[stringAttribute].toLowerCase();
+            let b_string_lower = b[stringAttribute].toLowerCase();
             // Compare numeric
             if (a_number > b_number) {
                 return 1;
@@ -188,7 +208,7 @@ let initializeDriversTable = (liveBoolean) => {
         });
     }, sortString = function (attribute) {
         drivers.sort(function (a, b) {
-            var aa = a[attribute].toLowerCase(), bb = b[attribute].toLowerCase();
+            let aa = a[attribute].toLowerCase(), bb = b[attribute].toLowerCase();
             if (aa === bb) {
                 return 0;
             }
@@ -201,7 +221,7 @@ let initializeDriversTable = (liveBoolean) => {
         });
     }, sortByStringAttributeThenByOverallPosition = function (stringAttribute) {
         drivers.sort(function (a, b) {
-            var overallPositionAttribute = 'primary_rank', a1 = a[stringAttribute].toLowerCase(), b1 = b[stringAttribute].toLowerCase(), a2 = a[overallPositionAttribute], b2 = b[overallPositionAttribute];
+            let overallPositionAttribute = 'primary_rank', a1 = a[stringAttribute].toLowerCase(), b1 = b[stringAttribute].toLowerCase(), a2 = a[overallPositionAttribute], b2 = b[overallPositionAttribute];
             if (a1 > b1) {
                 return 1;
             }
@@ -221,11 +241,11 @@ let initializeDriversTable = (liveBoolean) => {
         sortByStringAttributeThenByOverallPosition('pax_factor');
     }, sortByClassPositionThenByOverallPosition = function () {
         drivers.sort(function (a, b) {
-            var A = a.class_rank * hugeNumber + a.primary_rank, B = b.class_rank * hugeNumber + b.primary_rank;
+            let A = a.class_rank * hugeNumber + a.primary_rank, B = b.class_rank * hugeNumber + b.primary_rank;
             return A - B;
         });
     }, bindHeaders = function () {
-        var carClassHeader = document.getElementById('car-class'), bestCombinedHeader = document.getElementById('best-combined'), positionOverallHeader = document.getElementById('primary-rank'), positionPaxHeader = document.getElementById('secondary-rank'), positionClassHeader = document.getElementById('class-rank'), bestCombinedPaxHeader = document.getElementById('best-combined-pax'), driverNameHeader = document.getElementById('driver-name'), carYearHeader = document.getElementById('car-year'), carModelHeader = document.getElementById('car-model'), codriverCarNumberHeader = document.getElementById('codriver-car-number'), carNumberHeader = document.getElementById('car-number'), paxFactorHeader = document.getElementById('pax-factor'), bindings = [
+        let carClassHeader = document.getElementById('car-class'), bestCombinedHeader = document.getElementById('best-combined'), positionOverallHeader = document.getElementById('primary-rank'), positionPaxHeader = document.getElementById('secondary-rank'), positionClassHeader = document.getElementById('class-rank'), bestCombinedPaxHeader = document.getElementById('best-combined-pax'), driverNameHeader = document.getElementById('driver-name'), carYearHeader = document.getElementById('car-year'), carModelHeader = document.getElementById('car-model'), codriverCarNumberHeader = document.getElementById('codriver-car-number'), carNumberHeader = document.getElementById('car-number'), paxFactorHeader = document.getElementById('pax-factor'), bindings = [
             [carClassHeader, sortByCarClassThenByOverallPosition],
             [carNumberHeader, sortByCarNumber],
             [codriverCarNumberHeader, sortByCodriverCarNumber],
@@ -240,13 +260,13 @@ let initializeDriversTable = (liveBoolean) => {
             [bestCombinedPaxHeader, sortByPaxPosition]
         ];
         bindings.forEach(function (array) {
-            var header = array[0], func = array[1], headerAsElement = header;
+            let header = array[0], func = array[1], headerAsElement = header;
             if (header === null) {
                 console.log('WARNING: no header for func', func);
                 return;
             }
             headerAsElement.addEventListener('click', function () {
-                var that = this;
+                let that = this;
                 // Store which sort function most recently selected
                 currentSortFunction = func;
                 currentSortFunction();
@@ -255,7 +275,7 @@ let initializeDriversTable = (liveBoolean) => {
             });
         });
     }, styleActiveHeader = function (activeElement) {
-        var sortableHeaderClass = 'sortable-header', activeHeaderClass = 'sortable-header_active', cellHighlightClass = 'td_active-sort', cellClassToHighlight = activeElement.id;
+        let sortableHeaderClass = 'sortable-header', activeHeaderClass = 'sortable-header_active', cellHighlightClass = 'td_active-sort', cellClassToHighlight = activeElement.id;
         // Header
         document.querySelectorAll('.' + sortableHeaderClass).forEach(function (element) {
             element.classList.remove(activeHeaderClass);
@@ -303,7 +323,9 @@ let initializeDriversTable = (liveBoolean) => {
         setTimeout(function () {
             styleActiveHeader(currentActiveHeader);
         }, 1);
-        setTimeout(initializeWebsocket, 1000);
+        if (liveBoolean) {
+            setTimeout(initializeWebsocket, 1000);
+        }
     }, driverIndexFromName = function (name) {
         const index = drivers.findIndex(function (item) {
             return item.name === name;

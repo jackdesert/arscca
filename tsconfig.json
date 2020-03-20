@@ -8,9 +8,13 @@
     "noEmitOnError": true,
     "module": "es6",
     "moduleResolution": "node",
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+
+
+
     //"listEmittedFiles": true,
     //"strict": true,
-    //"noImplicitThis": true,
   },
   "include": ["arscca/static/01_typescripts_with_import/*.ts"],
 }

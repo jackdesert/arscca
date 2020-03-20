@@ -2,4 +2,4 @@
 import './common';
 // Import default export
 import initializeDriversTable from './initializeDriversTable';
-initializeDriversTable(true);
+initializeDriversTable(ARSCCA_GLOBALS.live);

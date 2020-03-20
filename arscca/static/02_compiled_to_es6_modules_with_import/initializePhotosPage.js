@@ -3,7 +3,7 @@ let initializePhotosPage = () => {
         'use strict';
         let photos = document.querySelectorAll('.uploaded-photo');
         let enlargePhoto = (e) => {
-            let clickedImageSrc = e.target.getAttribute('src'), overlay = document.getElementById('overlay'), overlayImage = document.getElementById('overlay__img'), body = document.querySelector('body');
+            let target = e.target, clickedImageSrc = target.getAttribute('src'), overlay = document.getElementById('overlay'), overlayImage = document.getElementById('overlay__img'), body = document.querySelector('body');
             let reducePhoto = () => {
                 overlay.classList.remove('active');
                 body.classList.remove('no-scroll');

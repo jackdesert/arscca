@@ -1,58 +1,85 @@
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!')
 interface Driver {
-  name:string,
-  class_rank:number,
+  name:string
+  class_rank:number
   primary_rank:number
 }
 
+interface DriverChanges {
+  create:  any[]
+  destroy: any[]
+  update:  any[]
+}
 
-declare var drivers:[Driver]
+interface DriverUpdateMessage {
+  revision: number
+  revision_timestamp: string
+  driver_changes: DriverChanges
+}
 
-// Hopefully this picks up the correct (ES6) version of Vue
+
+declare let drivers:[Driver]
+
+// How do we get type declarations for this?
+//import Vue from 'vue/dist/vue'
+
+// If I simply:
+//    import Vue from 'vue'
+// I get an error in the browser:
+//    "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
+// Therefore I am importing specifically 'vue/dist/vue',
+// which resolves to 'node_modules/vue/dist/vue.js',
+// which is the full version of Vue that inclues the compiler
+//
+// In order to get type declarations when using `import Vue from 'vue.dist.vue'`,
+// run this command in the unix terminal:
+//     mkdir node_modules/vue/dist/vue
+//     cp -r node_modules/vue/types node_modules/vue/dist/vue
+
 import Vue from 'vue/dist/vue'
 
-let initializeDriversTable = (liveBoolean) =>{
+let initializeDriversTable = (liveBoolean:boolean) =>{
     'use strict'
 
-    const hugeNumber:number = 1000000
+    // Most variables can be declared without specifying a type,
+    // and typescript will infer a type. No such
     const delimiters:any = ['${', '}']
+    const hugeNumber = 1000000
 
-    let currentSortFunction
-    let currentActiveHeader
-    let mySocket
+    let currentSortFunction:Function
+    let currentActiveHeader:HTMLElement
+    let mySocket:WebSocket
     let dimmed = false
 
-    //var templateSource = document.getElementById('driver-template').innerHTML,
-    //var template = Handlebars.compile(templateSource),
-
-
-    let vueRevisionStatus
-    if (liveBoolean){
-
-        vueRevisionStatus = new Vue({
-            delimiters: delimiters,
-            el: '#current-revision',
-            data: {
-                currentRevision: -1,
-                timestampOffsetMS: 0,
-                timestamp: '1970-01-01T00:00:00.000000',
-                now: new Date()
-            },
-            methods:{
-                timestampAgo: function(event){
-                    const then = Date.parse(this.timestamp),
-                        deltaMS = this.now - then - this.timestampOffsetMS,
-                        deltaS = deltaMS / 1000,
-                        deltaM = deltaS / 60
-                    // absolute value so that it doesn't start counting from -0.0
-                    return Math.abs(deltaM).toFixed(1)
-                }
+    // vueRevisionStatus is only needed when liveBoolean is true.
+    // However, it is initialized even when liveBoolean is false
+    // so that TS can infer its type. (We are using noImplicitAny)
+    //
+    // Allow TS to infer type on vueRevisionStatus.
+    // Otherwise it will complain when you access vueRevisionStatus.currentRevision directly
+    let vueRevisionStatus = new Vue({
+        delimiters: delimiters,
+        el: '#current-revision',
+        data: {
+            currentRevision: -1,
+            timestampOffsetMS: 0,
+            timestamp: '1970-01-01T00:00:00.000000',
+            now: new Date() as Date
+        },
+        methods:{
+            timestampAgo: function(){
+                const that = this as any,
+                    then = Date.parse(that.timestamp) as unknown as number,
+                    deltaMS:number = that.now - then - that.timestampOffsetMS,
+                    deltaS:number = deltaMS / 1000,
+                    deltaM:number = deltaS / 60
+                // absolute value so that it doesn't start counting from -0.0
+                return Math.abs(deltaM).toFixed(1)
             }
-        })
+        }
+    })
 
-
-    }
 
     const vueDriversTable = new Vue({
         delimiters: delimiters,
@@ -65,30 +92,33 @@ let initializeDriversTable = (liveBoolean) =>{
             solo: false
         },
         methods: {
-            visible: function(driverId){
-                if (!this.solo){
+            visible: function(driverId:string){
+                let that = this as any
+                if (!that.solo){
                     return true
                 }
 
-                if (this.selectedDriverIds.includes(driverId)){
+                if (that.selectedDriverIds.includes(driverId)){
                     return true
                 }
 
                 return false
             },
-            replaceInfinity: function(value){
+            replaceInfinity: function(value:string){
                 if(value === 'Infinity'){
                     return '-'
                 }
                 return value
             },
-            rowKlass: function(driverId, rowIndex){
-                if (this.solo){
+            rowKlass: function(driverId:string, rowIndex:number){
+              let that = this as any
+
+                if (that.solo){
                     return this.rowKlassWhenSolo(driverId)
                 }
 
                 let klass = ''
-                if (this.selectedDriverIds.includes(driverId)){
+                if (that.selectedDriverIds.includes(driverId)){
                     klass = 'selected'
                 }
                 if (rowIndex % 2 === 1){
@@ -96,15 +126,16 @@ let initializeDriversTable = (liveBoolean) =>{
                 }
                 return klass
             },
-            rowKlassWhenSolo: function(driverId){
+            rowKlassWhenSolo: function(driverId:string){
                 // This function decides whether this row should be striped
                 // among its peers of other selected drivers
                 //
                 // WARNING: This runs in N*M time
                 // where N is number of drivers and M is number of selected rows
-                let stripe = false
-                for (let driver of this.drivers){
-                    if (this.selectedDriverIds.includes(driver.id)){
+                let stripe = false,
+                    that = this as any
+                for (let driver of that.drivers){
+                    if (that.selectedDriverIds.includes(driver.id)){
                         stripe = !stripe
                     }
                     if (driverId === driver.id){
@@ -113,33 +144,39 @@ let initializeDriversTable = (liveBoolean) =>{
                 }
             },
             toggleSolo: function(){
-                if (!this.solo && (this.selectedDriverIds.length === 0)){
+                let that = this as any
+                if (!that.solo && (that.selectedDriverIds.length === 0)){
                     alert('Please select one or more rows first')
                     return
                 }
 
-                this.solo = !this.solo
+                that.solo = !that.solo
 
             },
-            highlightRow: function(driverId){
-                let index = this.selectedDriverIds.indexOf(driverId)
+            highlightRow: function(driverId:string){
+                let that = this as any,
+                    index:number = that.selectedDriverIds.indexOf(driverId),
+                    sourceElem = event.srcElement as any
 
-                if (this.event.srcElement.href){
+
+                if (sourceElem.href){
                     // Do not highlight if the clicked element was a link
                     return
                 }
-                if (this.solo){
+                if (that.solo){
                     return
                 }
 
                 if (index === -1){
-                    this.selectedDriverIds.push(driverId)
+                    that.selectedDriverIds.push(driverId)
                 }else{
-                    this.selectedDriverIds.splice(index, 1)
+                    that.selectedDriverIds.splice(index, 1)
                 }
             },
             soloButtonKlass: function(){
-                if (this.solo){
+                let that = this as any
+
+                if (that.solo){
                     return 'solo-button solo-button_active'
                 }else{
                     return 'solo-button'
@@ -148,7 +185,7 @@ let initializeDriversTable = (liveBoolean) =>{
         }
     })
 
-    var target = document.getElementById('drivers-tbody'),
+    let target = document.getElementById('drivers-tbody'),
         sortByCarModel = function(){
             sortString('car_model')
         },
@@ -159,9 +196,9 @@ let initializeDriversTable = (liveBoolean) =>{
             sortParsedInteger('codriver_car_number')
         },
         sortByDriverLastName = function(){
-            drivers.sort(function(a, b){
-                var lastNameFirstA = a.name.toLowerCase().split(' ').reverse().join(),
-                    lastNameFirstB = b.name.toLowerCase().split(' ').reverse().join()
+            drivers.sort(function(a:Driver, b:Driver){
+                let lastNameFirstA:string = a.name.toLowerCase().split(' ').reverse().join(),
+                    lastNameFirstB:string = b.name.toLowerCase().split(' ').reverse().join()
                 if (lastNameFirstA === lastNameFirstB){
                     return 0
                 }else if (lastNameFirstA > lastNameFirstB){
@@ -177,33 +214,34 @@ let initializeDriversTable = (liveBoolean) =>{
         sortByOverallPosition = function(){
             sortNumeric('primary_rank')
         },
-        sortNumeric = function(attribute){
-            drivers.sort(function(a, b){
-                var aa = a[attribute],
-                    bb = b[attribute]
+        sortNumeric = function(attribute:string){
+            drivers.sort(function(a:any, b:any){
+                let aa:number = a[attribute],
+                    bb:number = b[attribute]
                 if (!aa){ aa = hugeNumber }
                 if (!bb){ bb = hugeNumber }
                 return aa - bb
             })
         },
-        sortParsedInteger = function(attribute){
-            var regex = /\[|\]/g
-            drivers.sort(function(a, b){
-                var aa = a[attribute] || '',
-                    bb = b[attribute] || ''
+        sortParsedInteger = function(attribute:string){
+            let regex = /\[|\]/g
+            drivers.sort(function(a:any, b:any){
+                let aa:string  = a[attribute] || '',
+                    bb:string  = b[attribute] || '',
+                    aaa:number = parseInt(aa.replace(regex, '')) || hugeNumber,
+                    bbb:number = parseInt(bb.replace(regex, '')) || hugeNumber
 
-                aa = parseInt(aa.replace(regex, '')) || hugeNumber
-                bb = parseInt(bb.replace(regex, '')) || hugeNumber
-
-                return aa - bb
+                return aaa - bbb
             })
         },
-        sortByNumericThenByString = function(numericAttribute, stringAttribute){
-            drivers.sort(function(a, b){
-                var a_number = parseFloat(a[numericAttribute]) || hugeNumber
-                var b_number = parseFloat(b[numericAttribute]) || hugeNumber
-                var a_string_lower = a[stringAttribute].toLowerCase()
-                var b_string_lower = b[stringAttribute].toLowerCase()
+
+        // Note the numericAttribute is a string (like 'car_year') that **references** a numeric
+        sortByNumericThenByString = function(numericAttribute:string, stringAttribute:string){
+            drivers.sort(function(a:any, b:any){
+                let a_number:number = parseFloat(a[numericAttribute]) || hugeNumber
+                let b_number:number = parseFloat(b[numericAttribute]) || hugeNumber
+                let a_string_lower:string = a[stringAttribute].toLowerCase()
+                let b_string_lower:string = b[stringAttribute].toLowerCase()
 
 
                 // Compare numeric
@@ -223,10 +261,10 @@ let initializeDriversTable = (liveBoolean) =>{
                 }
             })
         },
-        sortString = function(attribute){
-            drivers.sort(function(a, b){
-                var aa = a[attribute].toLowerCase(),
-                    bb = b[attribute].toLowerCase()
+        sortString = function(attribute:string){
+            drivers.sort(function(a:any, b:any){
+                let aa:string = a[attribute].toLowerCase(),
+                    bb:string = b[attribute].toLowerCase()
                 if (aa === bb){
                     return 0
                 }else if (aa > bb){
@@ -237,13 +275,13 @@ let initializeDriversTable = (liveBoolean) =>{
             })
         },
 
-        sortByStringAttributeThenByOverallPosition = function(stringAttribute){
-            drivers.sort(function(a, b){
-                var overallPositionAttribute = 'primary_rank',
-                    a1 = a[stringAttribute].toLowerCase(),
-                    b1 = b[stringAttribute].toLowerCase(),
-                    a2 = a[overallPositionAttribute],
-                    b2 = b[overallPositionAttribute]
+        sortByStringAttributeThenByOverallPosition = function(stringAttribute:string){
+            drivers.sort(function(a:any, b:any){
+                let overallPositionAttribute:string = 'primary_rank',
+                    a1:string = a[stringAttribute].toLowerCase(),
+                    b1:string = b[stringAttribute].toLowerCase(),
+                    a2:number = a[overallPositionAttribute],
+                    b2:number = b[overallPositionAttribute]
                 if(a1 > b1){
                     return 1
                 }else if (a1 < b1){
@@ -270,15 +308,15 @@ let initializeDriversTable = (liveBoolean) =>{
         },
 
         sortByClassPositionThenByOverallPosition = function(){
-            drivers.sort(function(a, b){
-                var A = a.class_rank * hugeNumber + a.primary_rank,
-                    B = b.class_rank * hugeNumber + b.primary_rank
+            drivers.sort(function(a:Driver, b:Driver){
+                let A:number = a.class_rank * hugeNumber + a.primary_rank,
+                    B:number = b.class_rank * hugeNumber + b.primary_rank
                 return A - B
             })
         },
 
         bindHeaders = function(){
-            var carClassHeader        = document.getElementById('car-class'),
+            let carClassHeader        = document.getElementById('car-class'),
                 bestCombinedHeader    = document.getElementById('best-combined'),
                 positionOverallHeader = document.getElementById('primary-rank'),
                 positionPaxHeader     = document.getElementById('secondary-rank'),
@@ -305,7 +343,7 @@ let initializeDriversTable = (liveBoolean) =>{
                     [bestCombinedPaxHeader, sortByPaxPosition]]
 
             bindings.forEach(function(array){
-                var header = array[0],
+                let header = array[0],
                     func = array[1],
                     headerAsElement = header as HTMLInputElement
                 if(header === null){
@@ -313,9 +351,9 @@ let initializeDriversTable = (liveBoolean) =>{
                     return
                 }
                 headerAsElement.addEventListener('click', function(){
-                    var that = this
+                    let that = this
                     // Store which sort function most recently selected
-                    currentSortFunction = func
+                    currentSortFunction = func as Function
                     currentSortFunction()
 
 
@@ -325,11 +363,11 @@ let initializeDriversTable = (liveBoolean) =>{
             })
         },
 
-        styleActiveHeader = function(activeElement){
-            var sortableHeaderClass = 'sortable-header',
-                activeHeaderClass = 'sortable-header_active',
-                cellHighlightClass = 'td_active-sort',
-                cellClassToHighlight = activeElement.id
+        styleActiveHeader = function(activeElement:HTMLElement){
+            let sortableHeaderClass:string = 'sortable-header',
+                activeHeaderClass:string = 'sortable-header_active',
+                cellHighlightClass:string = 'td_active-sort',
+                cellClassToHighlight:string = activeElement.id
 
 
             // Header
@@ -362,7 +400,7 @@ let initializeDriversTable = (liveBoolean) =>{
                         requestTimestamp = Date.parse(data.request_timestamp)
                     // Remove all drivers from array
                     drivers.splice(0)
-                    data.drivers.forEach(function(row){
+                    data.drivers.forEach(function(row:Driver){
                         drivers.push(row)
                     })
 
@@ -397,34 +435,36 @@ let initializeDriversTable = (liveBoolean) =>{
                 styleActiveHeader(currentActiveHeader)
             }, 1)
 
-            setTimeout(initializeWebsocket, 1000)
+            if (liveBoolean){
+                setTimeout(initializeWebsocket, 1000)
+            }
         },
 
-        driverIndexFromName = function(name){
-            const index = drivers.findIndex(function(item){
+        driverIndexFromName = function(name: string){
+            const index:number = drivers.findIndex(function(item: Driver){
                 return item.name === name
             })
 
             return index
         },
 
-        processWebsocketMessage = function(event){
-            const messageData = JSON.parse(event.data),
+        processWebsocketMessage = function(event:MessageEvent){
+            const messageData:DriverUpdateMessage = JSON.parse(event.data),
                 revision = messageData.revision,
-                revisionTimestamp = messageData.revision_timestamp,
-                driverChanges = messageData.driver_changes,
-                removeDriver = function(name){
+                revisionTimestamp:string = messageData.revision_timestamp,
+                driverChanges:DriverChanges = messageData.driver_changes,
+                removeDriver = function(name: string){
                     const index = driverIndexFromName(name)
                     console.log('Deleting driver: ', name)
                     // Use splice to delete driver
                     drivers.splice(index, 1)
                 },
-                addDriver = function(name){
+                addDriver = function(name: string){
                     console.log('Adding driver: ', name)
                     // Name is all that is needed
                     drivers.push({name: name, class_rank: -1000, primary_rank: -1000 })
                 },
-                updateDriver = function(driverObject){
+                updateDriver = function(driverObject: Driver){
                     // Note that if a driver is removed,
                     // "primary_rank" will change for any
                     // slower drivers, and hence they will be updated
@@ -511,7 +551,7 @@ let initializeDriversTable = (liveBoolean) =>{
         }
     },
     updateTimeAgo = function(){
-        vueRevisionStatus.now = new Date()
+        vueRevisionStatus.now = new Date() as Date
         setTimeout(updateTimeAgo, 6000)
     }
 

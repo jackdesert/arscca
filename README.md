@@ -68,7 +68,7 @@ Docker with Manual Containers
                 --name arscca-twisted \
                 --network arscca-network \
                 --publish 6544:6544 \
-                --mount type=bind,source=/home/jd/r/arscca-twisted,target=/arscca-twisted \
+                --mount type=bind,source=/home/jd/p/arscca-twisted,target=/arscca-twisted \
                 --mount type=bind,source=/home/arscca,target=/home/arscca \
                 arscca-twisted:latest \
                 bash
@@ -321,6 +321,22 @@ Generate Scanner Flowchart
 See https://www.graphviz.org/documentation/
 
     bin/generate_scanner_flowchart
+
+
+Installing Typescript
+---------------------
+
+    sudo npm install -g typescript
+    which tsc
+
+
+Installing Node Dependencies
+----------------------------
+
+This will build node dependencies based on package.json and package-lock.json.
+
+    cd /path/to/repo
+    npm install
 
 
 Building from TypeScript
