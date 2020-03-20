@@ -315,6 +315,7 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
         });
     },
         styleActiveHeader = function styleActiveHeader(activeElement) {
+            debugger
         var sortableHeaderClass = 'sortable-header',
             activeHeaderClass = 'sortable-header_active',
             cellHighlightClass = 'td_active-sort',

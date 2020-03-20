@@ -7,9 +7,9 @@ interface Driver {
 }
 
 interface DriverChanges {
-  create: any[],
+  create:  any[],
   destroy: any[],
-  update: any[]
+  update:  any[]
 }
 
 interface DriverUpdateMessage {
@@ -30,10 +30,10 @@ let initializeDriversTable = (liveBoolean) =>{
     const hugeNumber:number = 1000000
     const delimiters:any = ['${', '}']
 
-    let currentSortFunction: Function
-    let currentActiveHeader
-    let mySocket: WebSocket
-    let dimmed: boolean = false
+    let currentSortFunction:Function
+    let currentActiveHeader:HTMLElement
+    let mySocket:WebSocket
+    let dimmed:boolean = false
 
     //var templateSource = document.getElementById('driver-template').innerHTML,
     //var template = Handlebars.compile(templateSource),
@@ -337,7 +337,7 @@ let initializeDriversTable = (liveBoolean) =>{
             })
         },
 
-        styleActiveHeader = function(activeElement){
+        styleActiveHeader = function(activeElement:HTMLElement){
             var sortableHeaderClass = 'sortable-header',
                 activeHeaderClass = 'sortable-header_active',
                 cellHighlightClass = 'td_active-sort',
@@ -374,7 +374,7 @@ let initializeDriversTable = (liveBoolean) =>{
                         requestTimestamp = Date.parse(data.request_timestamp)
                     // Remove all drivers from array
                     drivers.splice(0)
-                    data.drivers.forEach(function(row){
+                    data.drivers.forEach(function(row:Driver){
                         drivers.push(row)
                     })
 
@@ -420,7 +420,7 @@ let initializeDriversTable = (liveBoolean) =>{
             return index
         },
 
-        processWebsocketMessage = function(event){
+        processWebsocketMessage = function(event:MessageEvent){
             const messageData:DriverUpdateMessage = JSON.parse(event.data),
                 revision = messageData.revision,
                 revisionTimestamp:string = messageData.revision_timestamp,
