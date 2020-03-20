@@ -20,7 +20,7 @@ let initializeDriversTable = (liveBoolean) =>{
 
     let currentSortFunction: Function
     let currentActiveHeader
-    let mySocket: Websocket
+    let mySocket: WebSocket
     let dimmed: boolean = false
 
     //var templateSource = document.getElementById('driver-template').innerHTML,
@@ -315,7 +315,7 @@ let initializeDriversTable = (liveBoolean) =>{
                 headerAsElement.addEventListener('click', function(){
                     var that = this
                     // Store which sort function most recently selected
-                    currentSortFunction = func
+                    currentSortFunction = func as Function
                     currentSortFunction()
 
 
@@ -368,7 +368,7 @@ let initializeDriversTable = (liveBoolean) =>{
 
                     vueRevisionStatus.currentRevision = data.revision
                     vueRevisionStatus.timestamp = data.revision_timestamp
-                    vueRevisionStatus.timestampOffsetMS = new Date() as Date - requestTimestamp as Date
+                    vueRevisionStatus.timestampOffsetMS = new Date() as unknown as number - requestTimestamp as unknown as number
                     kickoff()
                 } else {
                     // We reached our target server, but it returned an error
@@ -408,7 +408,7 @@ let initializeDriversTable = (liveBoolean) =>{
             return index
         },
 
-        processWebsocketMessage = function(event: Event){
+        processWebsocketMessage = function(event){
             const messageData = JSON.parse(event.data),
                 revision = messageData.revision,
                 revisionTimestamp = messageData.revision_timestamp,
