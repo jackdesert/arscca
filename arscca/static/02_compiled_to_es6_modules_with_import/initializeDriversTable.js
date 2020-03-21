@@ -1,6 +1,19 @@
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!');
 // How do we get type declarations for this?
+//import Vue from 'vue/dist/vue'
+// If I simply:
+//    import Vue from 'vue'
+// I get an error in the browser:
+//    "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
+// Therefore I am importing specifically 'vue/dist/vue',
+// which resolves to 'node_modules/vue/dist/vue.js',
+// which is the full version of Vue that inclues the compiler
+//
+// In order to get type declarations when using `import Vue from 'vue.dist.vue'`,
+// run this command in the unix terminal:
+//     mkdir node_modules/vue/dist/vue
+//     cp -r node_modules/vue/types node_modules/vue/dist/vue
 import Vue from 'vue/dist/vue';
 let initializeDriversTable = (liveBoolean) => {
     'use strict';
@@ -10,8 +23,6 @@ let initializeDriversTable = (liveBoolean) => {
     let currentActiveHeader;
     let mySocket;
     let dimmed = false;
-    //let templateSource = document.getElementById('driver-template').innerHTML,
-    //let template = Handlebars.compile(templateSource),
     let vueRevisionStatus;
     if (liveBoolean) {
         vueRevisionStatus = new Vue({
@@ -284,9 +295,9 @@ let initializeDriversTable = (liveBoolean) => {
                 data.drivers.forEach(function (row) {
                     drivers.push(row);
                 });
-                vueRevisionStatus.currentRevision = data.revision;
-                vueRevisionStatus.timestamp = data.revision_timestamp;
-                vueRevisionStatus.timestampOffsetMS = new Date() - requestTimestamp;
+                vueRevisionStatus.$data.currentRevision = data.revision;
+                vueRevisionStatus.$data.timestamp = data.revision_timestamp;
+                vueRevisionStatus.$data.timestampOffsetMS = new Date() - requestTimestamp;
                 kickoff();
             }
             else {
@@ -335,12 +346,12 @@ let initializeDriversTable = (liveBoolean) => {
             console.log('ERROR: No revision in message');
         }
         console.log('Message received: ', revision);
-        if (revision <= vueRevisionStatus.currentRevision) {
-            console.log(`skipping revision ${revision} because currentRevision is ${vueRevisionStatus.currentRevision}`);
+        if (revision <= vueRevisionStatus.$data.currentRevision) {
+            console.log(`skipping revision ${revision} because currentRevision is ${vueRevisionStatus.$data.currentRevision}`);
         }
-        else if (revision === vueRevisionStatus.currentRevision + 1) {
-            vueRevisionStatus.currentRevision = revision;
-            vueRevisionStatus.timestamp = revisionTimestamp;
+        else if (revision === vueRevisionStatus.$data.currentRevision + 1) {
+            vueRevisionStatus.$data.currentRevision = revision;
+            vueRevisionStatus.$data.timestamp = revisionTimestamp;
             driverChanges.create.forEach(addDriver);
             driverChanges.destroy.forEach(removeDriver);
             driverChanges.update.forEach(updateDriver);
@@ -351,7 +362,7 @@ let initializeDriversTable = (liveBoolean) => {
         }
         else {
             // Close socket and start over
-            console.log(`Closing socket and starting over because revision ${revision} vs currentRevision ${vueRevisionStatus.currentRevision}`);
+            console.log(`Closing socket and starting over because revision ${revision} vs currentRevision ${vueRevisionStatus.$data.currentRevision}`);
             mySocket.close();
             fetchLiveDriversAndKickoff();
         }
@@ -385,7 +396,7 @@ let initializeDriversTable = (liveBoolean) => {
             setTimeout(unDimScreen, 600);
         }
     }, updateTimeAgo = function () {
-        vueRevisionStatus.now = new Date();
+        vueRevisionStatus.$data.now = new Date();
         setTimeout(updateTimeAgo, 6000);
     };
     // Specify initial sort

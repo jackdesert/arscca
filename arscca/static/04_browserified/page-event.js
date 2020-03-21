@@ -18,6 +18,19 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!');
 // How do we get type declarations for this?
+//import Vue from 'vue/dist/vue'
+// If I simply:
+//    import Vue from 'vue'
+// I get an error in the browser:
+//    "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
+// Therefore I am importing specifically 'vue/dist/vue',
+// which resolves to 'node_modules/vue/dist/vue.js',
+// which is the full version of Vue that inclues the compiler
+//
+// In order to get type declarations when using `import Vue from 'vue.dist.vue'`,
+// run this command in the unix terminal:
+//     mkdir node_modules/vue/dist/vue
+//     cp -r node_modules/vue/types node_modules/vue/dist/vue
 
 var initializeDriversTable = function initializeDriversTable(liveBoolean) {
     'use strict';
@@ -28,8 +41,6 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
     var currentActiveHeader = void 0;
     var mySocket = void 0;
     var dimmed = false;
-    //let templateSource = document.getElementById('driver-template').innerHTML,
-    //let template = Handlebars.compile(templateSource),
     var vueRevisionStatus = void 0;
     if (liveBoolean) {
         vueRevisionStatus = new _vue2.default({
@@ -355,9 +366,9 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 data.drivers.forEach(function (row) {
                     drivers.push(row);
                 });
-                vueRevisionStatus.currentRevision = data.revision;
-                vueRevisionStatus.timestamp = data.revision_timestamp;
-                vueRevisionStatus.timestampOffsetMS = new Date() - requestTimestamp;
+                vueRevisionStatus.$data.currentRevision = data.revision;
+                vueRevisionStatus.$data.timestamp = data.revision_timestamp;
+                vueRevisionStatus.$data.timestampOffsetMS = new Date() - requestTimestamp;
                 kickoff();
             } else {
                 // We reached our target server, but it returned an error
@@ -414,11 +425,11 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
             console.log('ERROR: No revision in message');
         }
         console.log('Message received: ', revision);
-        if (revision <= vueRevisionStatus.currentRevision) {
-            console.log('skipping revision ' + revision + ' because currentRevision is ' + vueRevisionStatus.currentRevision);
-        } else if (revision === vueRevisionStatus.currentRevision + 1) {
-            vueRevisionStatus.currentRevision = revision;
-            vueRevisionStatus.timestamp = revisionTimestamp;
+        if (revision <= vueRevisionStatus.$data.currentRevision) {
+            console.log('skipping revision ' + revision + ' because currentRevision is ' + vueRevisionStatus.$data.currentRevision);
+        } else if (revision === vueRevisionStatus.$data.currentRevision + 1) {
+            vueRevisionStatus.$data.currentRevision = revision;
+            vueRevisionStatus.$data.timestamp = revisionTimestamp;
             driverChanges.create.forEach(addDriver);
             driverChanges.destroy.forEach(removeDriver);
             driverChanges.update.forEach(updateDriver);
@@ -428,7 +439,7 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
             dimScreen();
         } else {
             // Close socket and start over
-            console.log('Closing socket and starting over because revision ' + revision + ' vs currentRevision ' + vueRevisionStatus.currentRevision);
+            console.log('Closing socket and starting over because revision ' + revision + ' vs currentRevision ' + vueRevisionStatus.$data.currentRevision);
             mySocket.close();
             fetchLiveDriversAndKickoff();
         }
@@ -468,7 +479,7 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
         }
     },
         updateTimeAgo = function updateTimeAgo() {
-        vueRevisionStatus.now = new Date();
+        vueRevisionStatus.$data.now = new Date();
         setTimeout(updateTimeAgo, 6000);
     };
     // Specify initial sort

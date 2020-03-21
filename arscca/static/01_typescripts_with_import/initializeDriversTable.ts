@@ -1,20 +1,20 @@
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!')
 interface Driver {
-  name:string,
-  class_rank:number,
+  name:string
+  class_rank:number
   primary_rank:number
 }
 
 interface DriverChanges {
-  create:  any[],
-  destroy: any[],
+  create:  any[]
+  destroy: any[]
   update:  any[]
 }
 
 interface DriverUpdateMessage {
-  revision: number,
-  revision_timestamp: string,
+  revision: number
+  revision_timestamp: string
   driver_changes: DriverChanges
 }
 
@@ -22,6 +22,21 @@ interface DriverUpdateMessage {
 declare let drivers:[Driver]
 
 // How do we get type declarations for this?
+//import Vue from 'vue/dist/vue'
+
+// If I simply:
+//    import Vue from 'vue'
+// I get an error in the browser:
+//    "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
+// Therefore I am importing specifically 'vue/dist/vue',
+// which resolves to 'node_modules/vue/dist/vue.js',
+// which is the full version of Vue that inclues the compiler
+//
+// In order to get type declarations when using `import Vue from 'vue.dist.vue'`,
+// run this command in the unix terminal:
+//     mkdir node_modules/vue/dist/vue
+//     cp -r node_modules/vue/types node_modules/vue/dist/vue
+
 import Vue from 'vue/dist/vue'
 
 let initializeDriversTable = (liveBoolean:boolean) =>{
@@ -34,10 +49,6 @@ let initializeDriversTable = (liveBoolean:boolean) =>{
     let currentActiveHeader:HTMLElement
     let mySocket:WebSocket
     let dimmed:boolean = false
-
-    //let templateSource = document.getElementById('driver-template').innerHTML,
-    //let template = Handlebars.compile(templateSource),
-
 
     let vueRevisionStatus:Vue
     if (liveBoolean){
@@ -390,9 +401,9 @@ let initializeDriversTable = (liveBoolean:boolean) =>{
                         drivers.push(row)
                     })
 
-                    vueRevisionStatus.currentRevision = data.revision
-                    vueRevisionStatus.timestamp = data.revision_timestamp
-                    vueRevisionStatus.timestampOffsetMS = new Date() as unknown as number - requestTimestamp as unknown as number
+                    vueRevisionStatus.$data.currentRevision = data.revision
+                    vueRevisionStatus.$data.timestamp = data.revision_timestamp
+                    vueRevisionStatus.$data.timestampOffsetMS = new Date() as unknown as number - requestTimestamp as unknown as number
                     kickoff()
                 } else {
                     // We reached our target server, but it returned an error
@@ -465,11 +476,11 @@ let initializeDriversTable = (liveBoolean:boolean) =>{
 
             console.log('Message received: ', revision)
 
-            if (revision <= vueRevisionStatus.currentRevision){
-                console.log(`skipping revision ${revision} because currentRevision is ${vueRevisionStatus.currentRevision}`)
-            }else if (revision === vueRevisionStatus.currentRevision + 1){
-                vueRevisionStatus.currentRevision = revision
-                vueRevisionStatus.timestamp = revisionTimestamp
+            if (revision <= vueRevisionStatus.$data.currentRevision){
+                console.log(`skipping revision ${revision} because currentRevision is ${vueRevisionStatus.$data.currentRevision}`)
+            }else if (revision === vueRevisionStatus.$data.currentRevision + 1){
+                vueRevisionStatus.$data.currentRevision = revision
+                vueRevisionStatus.$data.timestamp = revisionTimestamp
 
                 driverChanges.create.forEach(addDriver)
                 driverChanges.destroy.forEach(removeDriver)
@@ -481,7 +492,7 @@ let initializeDriversTable = (liveBoolean:boolean) =>{
 
             }else{
                 // Close socket and start over
-                console.log(`Closing socket and starting over because revision ${revision} vs currentRevision ${vueRevisionStatus.currentRevision}`)
+                console.log(`Closing socket and starting over because revision ${revision} vs currentRevision ${vueRevisionStatus.$data.currentRevision}`)
                 mySocket.close()
                 fetchLiveDriversAndKickoff()
             }
@@ -535,7 +546,7 @@ let initializeDriversTable = (liveBoolean:boolean) =>{
         }
     },
     updateTimeAgo = function(){
-        vueRevisionStatus.now = new Date()
+        vueRevisionStatus.$data.now = new Date()
         setTimeout(updateTimeAgo, 6000)
     }
 
