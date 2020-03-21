@@ -12,7 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!');
-// Hopefully this picks up the correct (ES6) version of Vue
+// How do we get type declarations for this?
 
 var initializeDriversTable = function initializeDriversTable(liveBoolean) {
     'use strict';
@@ -37,9 +37,10 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 now: new Date()
             },
             methods: {
-                timestampAgo: function timestampAgo(event) {
-                    var then = Date.parse(this.timestamp),
-                        deltaMS = this.now - then - this.timestampOffsetMS,
+                timestampAgo: function timestampAgo() {
+                    var that = this,
+                        then = Date.parse(that.timestamp),
+                        deltaMS = that.now - then - that.timestampOffsetMS,
                         deltaS = deltaMS / 1000,
                         deltaM = deltaS / 60;
                     // absolute value so that it doesn't start counting from -0.0
@@ -60,10 +61,11 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
         },
         methods: {
             visible: function visible(driverId) {
-                if (!this.solo) {
+                var that = this;
+                if (!that.solo) {
                     return true;
                 }
-                if (this.selectedDriverIds.includes(driverId)) {
+                if (that.selectedDriverIds.includes(driverId)) {
                     return true;
                 }
                 return false;
@@ -75,11 +77,12 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 return value;
             },
             rowKlass: function rowKlass(driverId, rowIndex) {
-                if (this.solo) {
+                var that = this;
+                if (that.solo) {
                     return this.rowKlassWhenSolo(driverId);
                 }
                 var klass = '';
-                if (this.selectedDriverIds.includes(driverId)) {
+                if (that.selectedDriverIds.includes(driverId)) {
                     klass = 'selected';
                 }
                 if (rowIndex % 2 === 1) {
@@ -93,16 +96,17 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 //
                 // WARNING: This runs in N*M time
                 // where N is number of drivers and M is number of selected rows
-                var stripe = false;
+                var stripe = false,
+                    that = this;
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = this.drivers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    for (var _iterator = that.drivers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var driver = _step.value;
 
-                        if (this.selectedDriverIds.includes(driver.id)) {
+                        if (that.selectedDriverIds.includes(driver.id)) {
                             stripe = !stripe;
                         }
                         if (driverId === driver.id) {
@@ -125,30 +129,33 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
                 }
             },
             toggleSolo: function toggleSolo() {
-                if (!this.solo && this.selectedDriverIds.length === 0) {
+                var that = this;
+                if (!that.solo && that.selectedDriverIds.length === 0) {
                     alert('Please select one or more rows first');
                     return;
                 }
-                this.solo = !this.solo;
+                that.solo = !that.solo;
             },
             highlightRow: function highlightRow(driverId) {
-                var index = this.selectedDriverIds.indexOf(driverId),
+                var that = this,
+                    index = that.selectedDriverIds.indexOf(driverId),
                     sourceElem = event.srcElement;
                 if (sourceElem.href) {
                     // Do not highlight if the clicked element was a link
                     return;
                 }
-                if (this.solo) {
+                if (that.solo) {
                     return;
                 }
                 if (index === -1) {
-                    this.selectedDriverIds.push(driverId);
+                    that.selectedDriverIds.push(driverId);
                 } else {
-                    this.selectedDriverIds.splice(index, 1);
+                    that.selectedDriverIds.splice(index, 1);
                 }
             },
             soloButtonKlass: function soloButtonKlass() {
-                if (this.solo) {
+                var that = this;
+                if (that.solo) {
                     return 'solo-button solo-button_active';
                 } else {
                     return 'solo-button';

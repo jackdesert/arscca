@@ -1,6 +1,6 @@
 // var used here because some browsers throw error if "let" used outside of strict context
 console.log('Not seeing your changes? Make sure you transpile!');
-// Hopefully this picks up the correct (ES6) version of Vue
+// How do we get type declarations for this?
 import Vue from 'vue/dist/vue';
 let initializeDriversTable = (liveBoolean) => {
     'use strict';
@@ -24,8 +24,8 @@ let initializeDriversTable = (liveBoolean) => {
                 now: new Date()
             },
             methods: {
-                timestampAgo: function (event) {
-                    const then = Date.parse(this.timestamp), deltaMS = this.now - then - this.timestampOffsetMS, deltaS = deltaMS / 1000, deltaM = deltaS / 60;
+                timestampAgo: function () {
+                    const that = this, then = Date.parse(that.timestamp), deltaMS = that.now - then - that.timestampOffsetMS, deltaS = deltaMS / 1000, deltaM = deltaS / 60;
                     // absolute value so that it doesn't start counting from -0.0
                     return Math.abs(deltaM).toFixed(1);
                 }
@@ -44,10 +44,11 @@ let initializeDriversTable = (liveBoolean) => {
         },
         methods: {
             visible: function (driverId) {
-                if (!this.solo) {
+                let that = this;
+                if (!that.solo) {
                     return true;
                 }
-                if (this.selectedDriverIds.includes(driverId)) {
+                if (that.selectedDriverIds.includes(driverId)) {
                     return true;
                 }
                 return false;
@@ -59,11 +60,12 @@ let initializeDriversTable = (liveBoolean) => {
                 return value;
             },
             rowKlass: function (driverId, rowIndex) {
-                if (this.solo) {
+                let that = this;
+                if (that.solo) {
                     return this.rowKlassWhenSolo(driverId);
                 }
                 let klass = '';
-                if (this.selectedDriverIds.includes(driverId)) {
+                if (that.selectedDriverIds.includes(driverId)) {
                     klass = 'selected';
                 }
                 if (rowIndex % 2 === 1) {
@@ -77,9 +79,9 @@ let initializeDriversTable = (liveBoolean) => {
                 //
                 // WARNING: This runs in N*M time
                 // where N is number of drivers and M is number of selected rows
-                let stripe = false;
-                for (let driver of this.drivers) {
-                    if (this.selectedDriverIds.includes(driver.id)) {
+                let stripe = false, that = this;
+                for (let driver of that.drivers) {
+                    if (that.selectedDriverIds.includes(driver.id)) {
                         stripe = !stripe;
                     }
                     if (driverId === driver.id) {
@@ -88,30 +90,32 @@ let initializeDriversTable = (liveBoolean) => {
                 }
             },
             toggleSolo: function () {
-                if (!this.solo && (this.selectedDriverIds.length === 0)) {
+                let that = this;
+                if (!that.solo && (that.selectedDriverIds.length === 0)) {
                     alert('Please select one or more rows first');
                     return;
                 }
-                this.solo = !this.solo;
+                that.solo = !that.solo;
             },
             highlightRow: function (driverId) {
-                let index = this.selectedDriverIds.indexOf(driverId), sourceElem = event.srcElement;
+                let that = this, index = that.selectedDriverIds.indexOf(driverId), sourceElem = event.srcElement;
                 if (sourceElem.href) {
                     // Do not highlight if the clicked element was a link
                     return;
                 }
-                if (this.solo) {
+                if (that.solo) {
                     return;
                 }
                 if (index === -1) {
-                    this.selectedDriverIds.push(driverId);
+                    that.selectedDriverIds.push(driverId);
                 }
                 else {
-                    this.selectedDriverIds.splice(index, 1);
+                    that.selectedDriverIds.splice(index, 1);
                 }
             },
             soloButtonKlass: function () {
-                if (this.solo) {
+                let that = this;
+                if (that.solo) {
                     return 'solo-button solo-button_active';
                 }
                 else {
