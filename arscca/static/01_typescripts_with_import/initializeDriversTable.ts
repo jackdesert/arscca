@@ -19,7 +19,7 @@ interface DriverUpdateMessage {
 }
 
 
-declare let drivers:[Driver]
+declare let ARSCCA_GLOBALS:Record<string, any>
 
 // How do we get type declarations for this?
 //import Vue from 'vue/dist/vue'
@@ -51,6 +51,7 @@ let initializeDriversTable = (liveBoolean:boolean) =>{
     let currentActiveHeader:HTMLElement
     let mySocket:WebSocket
     let dimmed = false
+    let drivers:Driver[] = ARSCCA_GLOBALS.drivers
 
     // vueRevisionStatus is only needed when liveBoolean is true.
     // However, it is initialized even when liveBoolean is false

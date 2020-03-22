@@ -5,7 +5,7 @@ import './common'
 import initializeDriversTable from './initializeDriversTable'
 
 // Declare this variable (set in templates/layout.jinja2)
-declare let ARSCCA_GLOBALS:Record<string, boolean>
+declare let ARSCCA_GLOBALS:Record<string, any>
 
 initializeDriversTable(ARSCCA_GLOBALS.live)
 
