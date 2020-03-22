@@ -25,7 +25,7 @@ let initializeDriversTable = (liveBoolean) => {
     let currentActiveHeader;
     let mySocket;
     let dimmed = false;
-    let drivers = ARSCCA_GLOBALS.drivers;
+    let drivers = JSON.parse(ARSCCA_GLOBALS.drivers_json);
     // vueRevisionStatus is only needed when liveBoolean is true.
     // However, it is initialized even when liveBoolean is false
     // so that TS can infer its type. (We are using noImplicitAny)

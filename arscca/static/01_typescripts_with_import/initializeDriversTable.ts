@@ -51,7 +51,7 @@ let initializeDriversTable = (liveBoolean:boolean) =>{
     let currentActiveHeader:HTMLElement
     let mySocket:WebSocket
     let dimmed = false
-    let drivers:Driver[] = ARSCCA_GLOBALS.drivers
+    let drivers:Driver[] = JSON.parse(ARSCCA_GLOBALS.drivers_json)
 
     // vueRevisionStatus is only needed when liveBoolean is true.
     // However, it is initialized even when liveBoolean is false

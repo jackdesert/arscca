@@ -154,12 +154,12 @@
         {% if live %}
             {# Make the browser fetch from /live/drivers so we can fail fast #}
             {# Using var instead of let because some browsers expect let to only be inside 'use strict' #}
-            ARSCCA_GLOBALS.drivers = []
+            ARSCCA_GLOBALS.drivers_json = '[]'
         {% else %}
             {# Javascript strings use two backslashes to escape newline, so replace #}
             {# Javascript strings use four backslashes to escape quotes, so replace #}
             {# (see event 2018-10-05, which has newlines in driver data) #}
-            ARSCCA_GLOBALS.drivers = JSON.parse('{{ drivers_json | replace('\n', '\\n') | replace('\\"', '\\\\"') | safe}}')
+            ARSCCA_GLOBALS.drivers_json = '{{ drivers_json | replace('\n', '\\n') | replace('\\"', '\\\\"') | safe }}'
         {% endif %}
 
         ARSCCA_GLOBALS.live = {{ live | lower }}
