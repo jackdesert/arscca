@@ -145,28 +145,25 @@
 
 
 </div>
-
-<script>
-    // Use |safe filter so jinja2 does not escape the quotes
-    {% if live %}
-        {# Make the browser fetch from /live/drivers so we can fail fast #}
-        {# Using var instead of let because some browsers expect let to only be inside 'use strict' #}
-        var drivers = []
-    {% else %}
-        {# Javascript strings use four backslashes to escape quotes #}
-        {# Piping through "safe" so jinja2 does not escape quotes   #}
-        var drivers = JSON.parse('{{ drivers_json | replace('\\"', '\\\\"') | safe}}')
-    {% endif %}
-</script>
-
-
 {% endblock content %}
 
-
-
 {% block entrypoint %}
+
     <script>
+        // Use |safe filter so jinja2 does not escape the quotes
+        {% if live %}
+            {# Make the browser fetch from /live/drivers so we can fail fast #}
+            {# Using var instead of let because some browsers expect let to only be inside 'use strict' #}
+            var drivers = []
+        {% else %}
+            {# Javascript strings use two backslashes to escape newline, so replace #}
+            {# Javascript strings use four backslashes to escape quotes, so replace #}
+            {# (see event 2018-10-05, which has newlines in driver data) #}
+            var drivers = JSON.parse('{{ drivers_json | replace('\n', '\\n') | replace('\\"', '\\\\"') | safe}}')
+        {% endif %}
+
         ARSCCA_GLOBALS.live = {{ live | lower }}
     </script>
+
     <script type="module" src="{{request.static_path('arscca:static/04_browserified/page-event.js')}}"></script>
 {% endblock %}
