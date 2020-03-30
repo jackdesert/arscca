@@ -5,6 +5,7 @@ from threading import Lock
 import json
 import logging
 import pdb
+import re
 
 # Third Party
 from pyramid.httpexceptions import HTTPFound
@@ -296,6 +297,11 @@ def fetch_event(date, url, live=False):
         drivers_as_dicts.append(props)
 
     drivers_json = json.dumps(drivers_as_dicts)
+
+    # Remove double- or quadruple-escaped newlines
+    # (Event 2012-05-06 has \\n in it which was breaking javascript)
+    # (Event 2018-10-05)
+    drivers_json = re.sub('\\\\n|\\n', '', drivers_json)
 
     event = dict(drivers_json=drivers_json,
                  event_name=dispatcher.event_name,
