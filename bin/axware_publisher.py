@@ -1,11 +1,20 @@
-from bs4 import BeautifulSoup
+'''
+This module publishes results located on your thumb drive to arscca.org.
+
+The general flow is:
+    1. Use this module to publish results to arscca.org
+    2. Use bin/archive_results.py to make a copy of those results
+'''
+
 from getpass import getpass
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import os
 import pdb
-import requests
 import time
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import requests
 
 class AxwarePublisher:
     SITE = 'http://arscca.org/administrator'
@@ -93,6 +102,10 @@ class AxwarePublisher:
             item_path = f'{self.USB_DRIVE}/{item}'
             if os.path.isfile(item_path):
                 # We want directories, not files
+                continue
+
+            if not item.startswith('event'):
+                # We only want directories that start with "event"
                 continue
 
             for subitem in os.listdir(item_path):
