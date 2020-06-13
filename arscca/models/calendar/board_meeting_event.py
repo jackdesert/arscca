@@ -27,11 +27,11 @@ class BoardMeetingEvent(BaseEvent):
 
     @property
     def venue(self):
-        return "Corky's Barbecue"
+        return "TBD"
 
     @property
     def address(self):
-        return 'North Little Rock, AR'
+        return ''
 
     @property
     def css_class(self):
