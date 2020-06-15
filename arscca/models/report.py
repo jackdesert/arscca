@@ -8,12 +8,20 @@ import pdb
 import redis
 
 class Report:
+
     KEY_PREPEND = 'points-from-'
     NUM_EVENTS_TO_SCORE = 8
     SKIPPED_EVENT_NUMBERS = defaultdict(list)
 
     # SKIPPED EVENTS means the event did not happen
     SKIPPED_EVENT_NUMBERS[2019] = [3, 7, 11]
+    SKIPPED_EVENT_NUMBERS[2020] = [2, 3, 4]
+
+    # Events that happened, but receive no points
+    # You only need to fill this out for the current year,
+    # since that is the only year that requires point calculation
+    NON_POINTS_EVENT_DATES = frozenset(['2019-12-08', '2020-03-07'])
+
 
     def __init__(self, year):
         self.year = year

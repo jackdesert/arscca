@@ -3,6 +3,7 @@ from arscca.models.fond_memory import FondMemory
 from arscca.models.driver import GenericDriver
 from arscca.models.driver import TwoCourseDriver
 from arscca.models.log_splitter import LogSplitter
+from arscca.models.report import Report
 from arscca.models.shared import Shared
 from arscca.models.util import Util
 from collections import defaultdict
@@ -18,7 +19,7 @@ class Dispatcher:
 
     # You only need to fill this out for the current year,
     # since that is the only year that requires point calculation
-    NON_POINTS_EVENT_DATES = frozenset(['2019-12-08'])
+    NON_POINTS_EVENT_DATES = frozenset(['2019-12-08', '2020-03-07'])
 
     PAX_STRING = 'PAX'
 
@@ -39,7 +40,6 @@ class Dispatcher:
         self.drivers = self._log_splitter.build_and_return_drivers()
         self._set_second_half_started_on_drivers()
         self._rank_drivers()
-        self._apply_points()
 
     def _set_second_half_started_on_drivers(self):
         # Penalties for no completed runs in second half
@@ -101,7 +101,10 @@ class Dispatcher:
             memory.write()
 
     def _apply_points(self):
-        if self.date in self.NON_POINTS_EVENT_DATES:
+        '''
+        Apply points for Standings Report
+        '''
+        if self.date in Report.NON_POINTS_EVENT_DATES:
             # Test & Tune, Hangover generally not pointed
             return
 
