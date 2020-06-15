@@ -357,6 +357,7 @@ Which means browserify is generating three builds.
 Backlog
 -------
 
+  * Fix Live page so it shows date based on when uploaded (or axware file created)
   * Fix bug where stale raw file is shown from live page
   * Figure out how to get svg to display with arrows on james' phone
   * Make it so you can swipe between photos on photo uploads page (Daniel's Request)
