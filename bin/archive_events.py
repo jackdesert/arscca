@@ -30,7 +30,11 @@ class TopLevelFetcher:
         self._url = url
         self._year_fetchers = []
 
-    def locate_years(self):
+    def locate_years(self, precise_year=None):
+        '''
+        Locate years on page and call locate_events() for each year.
+        :param precise_year: Integer value that limits years to only that year.
+        '''
         req = loop_get(self._url)
         soup = BeautifulSoup(req.text, 'lxml')
         for h3 in soup('h3'):
@@ -40,9 +44,11 @@ class TopLevelFetcher:
                 year = search[0]
                 href = link['href']
 
-                year_fetcher = YearFetcher(year, href)
-                self._year_fetchers.append(year_fetcher)
-                year_fetcher.locate_events()
+                if (year == precise_year) or precise_year is None:
+                    year_fetcher = YearFetcher(year, href)
+                    self._year_fetchers.append(year_fetcher)
+                    year_fetcher.locate_events()
+
 
 class YearFetcher:
     BASE_URL = 'http://arscca.org'
@@ -196,10 +202,14 @@ class FinalFetcher:
 
 if __name__ == '__main__':
 
+    import sys
+    precise_year = None
+    if len(sys.argv) > 1:
+        precise_year = sys.argv[1]
 
     FinalFetcher.stats()
     top = TopLevelFetcher('http://arscca.org/index.php?option=com_content&view=category&id=8&Itemid=104')
-    top.locate_years()
+    top.locate_years(precise_year)
 
     FinalFetcher.stats()
 
