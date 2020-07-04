@@ -306,6 +306,7 @@ def fetch_event(date, url, live=False):
     event = dict(drivers_json=drivers_json,
                  event_name=dispatcher.event_name,
                  event_date=dispatcher.date,
+                 event_year=dispatcher.date[0:4],
                  source_url=url,
                  helper_props=helper_props,
                  live=live,
