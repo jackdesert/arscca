@@ -116,7 +116,7 @@ will have a greater performance disparity between its
 fastest and slowest car***. But it makes the Camaro driver
 happy, because now he's being beaten by a 1972
 Barracuda---rear-wheel-drive, which for him generates
-friendly competition and comraderie rather than resentment :)
+friendly competition and camaraderie rather than resentment :)
 
 
 ## 4. SCCA Classing & PAX System
@@ -126,7 +126,7 @@ classing & PAX systems used by the SCCA for autocross (Solo
 II) events. Cars are *presumably* grouped both by ability
 and by type. Grouping them by ability leaves the least
 disparity between slow cars and fast cars in a given class.
-In my opinion, grouping them by type generates comraderie
+In my opinion, grouping them by type generates camaraderie
 and friendly competition, but leaves more disparity between
 slow cars and fast cars in a given class.
 
