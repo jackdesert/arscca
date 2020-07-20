@@ -1,0 +1,21 @@
+{% extends 'templates/layout.jinja2' %}
+{% block content %}
+
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        <a href='/opinion'>Opinion</a>
+        ->
+        {{ name }}
+    </div>
+    <div class='space-1rem'></div>
+
+    <div class='limited-width-for-readability'>
+        {{ inner_html | safe }}
+    </div>
+
+</div>
+
+{% endblock content %}
+

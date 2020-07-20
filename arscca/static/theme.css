@@ -471,6 +471,11 @@ pre
   color: #ccc !important;
 }
 
+.limited-width-for-readability
+{
+  width: 43em;
+}
+
 
 /* Order Matters */
 @media (min-width: 767px) {
