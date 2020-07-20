@@ -31,7 +31,7 @@ Greatest Driver of the Day***.
 
 The next week you decide to do it again. The same 100 cars
 show up, which makes your job easier. You already know the
-handicaps! But this week, instead of 1 trophy to give out
+handicaps! But this week, instead of one trophy to give out
 there are ten! You could give out trophies for overall
 places 1 through 10. OR you could break the 100 cars into
 groups of 10 each, and offer a trophy to the winner of each.

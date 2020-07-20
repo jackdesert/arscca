@@ -473,7 +473,7 @@ pre
 
 .limited-width-for-readability
 {
-  width: 43em;
+  max-width: 43em;
 }
 
 
