@@ -16,10 +16,10 @@ class DefaultRallyEvent(BaseEvent):
                       ('2020-04-18', 'RallyX 2',           'Dakota Waters'),
                       ('2020-05-30', 'RallyX 3',           'Phil Rucker'),
                       #('2020-06-27', 'RallyX 4',           'Dakota Waters'),
-                      ('2020-08-29', 'RallyX 5',           'Jack Desert'),
+                      ('2020-08-29', 'RallyX 5',           ''), # Jack
                       ('2020-09-19', 'RallyX 6',           ''),
-                      ('2020-10-24', 'RallyX 7',           'Zach Shaddox'),
-                      ('2020-11-21', 'RallyX 8',           'Nelson Santos'),
+                      ('2020-10-24', 'RallyX 7',           ''), # Shaddox
+                      ('2020-11-21', 'RallyX 8',           ''), # Nelson
                      )
 
     def __init__(self, date, name, chair):
