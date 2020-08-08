@@ -155,8 +155,8 @@ there are two cars in your driveway, you will obviously
 choose the one that has the best chance of winning based on
 the current class & PAX system. If you are smart and/or in
 need of a place to shovel some cash, you may seek to add a
-car to your collection that has a good chance of winning the
-current class & PAX system. As new cars come out each
+car to your collection that has a good chance of winning
+with the current class & PAX system. As new cars come out each
 year, you might need to reconsider what you're driving each
 year in order to keep bettering your odds.
 
