@@ -246,12 +246,13 @@ let initializeDriversTable = (liveBoolean) => {
             return A - B;
         });
     }, bindHeaders = function () {
-        let carClassHeader = document.getElementById('car-class'), bestCombinedHeader = document.getElementById('best-combined'), positionOverallHeader = document.getElementById('primary-rank'), positionPaxHeader = document.getElementById('secondary-rank'), positionClassHeader = document.getElementById('class-rank'), bestCombinedPaxHeader = document.getElementById('best-combined-pax'), driverNameHeader = document.getElementById('driver-name'), carYearHeader = document.getElementById('car-year'), carModelHeader = document.getElementById('car-model'), codriverCarNumberHeader = document.getElementById('codriver-car-number'), carNumberHeader = document.getElementById('car-number'), paxFactorHeader = document.getElementById('pax-factor'), bindings = [
+        let carClassHeader = document.getElementById('car-class'), bestCombinedHeader = document.getElementById('best-combined'), positionOverallHeader = document.getElementById('primary-rank'), positionPercentileHeader = document.getElementById('percentile-rank'), positionPaxHeader = document.getElementById('secondary-rank'), positionClassHeader = document.getElementById('class-rank'), bestCombinedPaxHeader = document.getElementById('best-combined-pax'), driverNameHeader = document.getElementById('driver-name'), carYearHeader = document.getElementById('car-year'), carModelHeader = document.getElementById('car-model'), codriverCarNumberHeader = document.getElementById('codriver-car-number'), carNumberHeader = document.getElementById('car-number'), paxFactorHeader = document.getElementById('pax-factor'), bindings = [
             [carClassHeader, sortByCarClassThenByOverallPosition],
             [carNumberHeader, sortByCarNumber],
             [codriverCarNumberHeader, sortByCodriverCarNumber],
             [bestCombinedHeader, sortByOverallPosition],
             [positionOverallHeader, sortByOverallPosition],
+            [positionPercentileHeader, sortByOverallPosition],
             [positionPaxHeader, sortByPaxPosition],
             [positionClassHeader, sortByClassPositionThenByOverallPosition],
             [driverNameHeader, sortByDriverLastName],

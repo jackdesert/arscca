@@ -313,6 +313,7 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
         var carClassHeader = document.getElementById('car-class'),
             bestCombinedHeader = document.getElementById('best-combined'),
             positionOverallHeader = document.getElementById('primary-rank'),
+            positionPercentileHeader = document.getElementById('percentile-rank'),
             positionPaxHeader = document.getElementById('secondary-rank'),
             positionClassHeader = document.getElementById('class-rank'),
             bestCombinedPaxHeader = document.getElementById('best-combined-pax'),
@@ -322,7 +323,7 @@ var initializeDriversTable = function initializeDriversTable(liveBoolean) {
             codriverCarNumberHeader = document.getElementById('codriver-car-number'),
             carNumberHeader = document.getElementById('car-number'),
             paxFactorHeader = document.getElementById('pax-factor'),
-            bindings = [[carClassHeader, sortByCarClassThenByOverallPosition], [carNumberHeader, sortByCarNumber], [codriverCarNumberHeader, sortByCodriverCarNumber], [bestCombinedHeader, sortByOverallPosition], [positionOverallHeader, sortByOverallPosition], [positionPaxHeader, sortByPaxPosition], [positionClassHeader, sortByClassPositionThenByOverallPosition], [driverNameHeader, sortByDriverLastName], [carYearHeader, sortByCarYearThenByCarModel], [carModelHeader, sortByCarModelThenByOverallPosition], [paxFactorHeader, sortByPaxFactorThenByOverallPosition], [bestCombinedPaxHeader, sortByPaxPosition]];
+            bindings = [[carClassHeader, sortByCarClassThenByOverallPosition], [carNumberHeader, sortByCarNumber], [codriverCarNumberHeader, sortByCodriverCarNumber], [bestCombinedHeader, sortByOverallPosition], [positionOverallHeader, sortByOverallPosition], [positionPercentileHeader, sortByOverallPosition], [positionPaxHeader, sortByPaxPosition], [positionClassHeader, sortByClassPositionThenByOverallPosition], [driverNameHeader, sortByDriverLastName], [carYearHeader, sortByCarYearThenByCarModel], [carModelHeader, sortByCarModelThenByOverallPosition], [paxFactorHeader, sortByPaxFactorThenByOverallPosition], [bestCombinedPaxHeader, sortByPaxPosition]];
         bindings.forEach(function (array) {
             var header = array[0],
                 func = array[1],
