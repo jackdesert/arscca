@@ -14,7 +14,13 @@
     <h1 class='event__name'>
         {{ event_name }}
     </h1>
-    <div class='event__date'>{{ event_date }}</div>
+    {% if live %}
+        <div id='current-revision'>
+            as of ${ timestampAgo() } min ago
+        </div>
+    {% else %}
+        <div class='event__date'>{{ event_date }}</div>
+    {% endif %}
 
     {% if errors %}
         <div class='errors'>
@@ -87,6 +93,7 @@
     </div>
 
     <div class='space-2rem'>&nbsp;</div>
+    <!-- Removing this div so it does not clash with div of same name at top
     {% if live %}
         <div id='current-revision'>
             <h3>Updated ${ timestampAgo() } min ago</h3>
@@ -96,6 +103,7 @@
             </ul>
         </div>
     {% endif %}
+    -->
 
     <h3 class='h3'>Tips</h3>
     <ul>
