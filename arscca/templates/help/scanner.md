@@ -123,6 +123,9 @@ make sure that
 BarCoding -> Dedicated Bar Code Printer
 is selected.
 
+Also make sure the front cover of the printer is in place.
+without the front cover, it doesn't know where one label begins and
+the last one ends.
 
 
 At the moment, printing in bulk causes the text and bar code to be misplaced
@@ -144,6 +147,11 @@ If a label disintegrates inside the printer, and you need to pull it out,
 there is a release mechanism on the left.
 
 
+### 8e. Sheet Feed Labels
+
+When you print a barcode, if a Sheet Field Labels popup asks you for column
+and row, click BarCoding -> Dedicated BarCode Printer. Then the popup will
+go away.
 
 
 
@@ -180,6 +188,8 @@ Select Staging Mode from the toolbar or from the Bar Coding menu.
 Staging Mode means when you scan a barcode, that driver will be added to the bottom of the staging grid.
 
 Registration Mode means when you scan a barcode, that driver will be highlighted in the list of registered drivers. (You can also sort this list by double clicking on any header.)
+
+In order for the scanned driver to be highlighted, you must check *Set Focus on Scanned Entries* in Bar Code Scanner Config.
 
 
 
