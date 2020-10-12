@@ -27,11 +27,11 @@ class BoardMeetingEvent(BaseEvent):
 
     @property
     def venue(self):
-        return "TBD"
+        return 'Teleconference via Jitsi'
 
     @property
     def address(self):
-        return ''
+        return 'https://meet.jit.si/arscca'
 
     @property
     def css_class(self):
