@@ -12,7 +12,7 @@ class BoardMeetingEvent(BaseEvent):
                        '2020-07-01',
                        '2020-08-05',
                        '2020-08-26',
-                       '2020-10-07',
+                       '2020-10-14',
                        '2020-12-02'])
     def __init__(self, date):
         self._date = date
@@ -20,6 +20,10 @@ class BoardMeetingEvent(BaseEvent):
     @property
     def name(self):
         return 'Board Meeting'
+
+    @property
+    def link(self):
+        return 'https://meet.jit.si/arscca'
 
     @property
     def date(self):
@@ -31,7 +35,11 @@ class BoardMeetingEvent(BaseEvent):
 
     @property
     def address(self):
-        return 'https://meet.jit.si/arscca'
+        return ''
+
+    @property
+    def info(self):
+        return '6:30pm'
 
     @property
     def css_class(self):

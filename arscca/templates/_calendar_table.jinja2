@@ -24,9 +24,7 @@
                 {{ event.address }}
             </td class='calendar-event__td'>
             <td class='calendar-event__td'>
-                {% if event.chair %}
-                    Event Chair: {{ event.chair }}
-                {% endif %}
+                {{ event.info }}
             </td>
         </tr>
     {% endfor %}

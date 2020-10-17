@@ -58,6 +58,10 @@ class BaseEvent:
         return ''
 
     @property
+    def info(self):
+        return ''
+
+    @property
     def css_class(self):
         return ''
 
