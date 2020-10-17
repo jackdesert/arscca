@@ -8,6 +8,9 @@
     <h2 class='h2_banner'>Live Results</h2>
     <div class='event__link'><a href='/live'>Live Results</a></div>
 
+    <h2 class='h2_banner'>Calendar</h2>
+    <div class='event__link'><a href='/calendar'>Calendar</a></div>
+
     <h2 class='h2_banner'>Event Photos</h2>
     <div class='event__link'><a href='/photos'>Event Photos</a></div>
 
@@ -18,7 +21,7 @@
     <div class='event__link'><a href='/opinion'>Opinion</a></div>
 
     {% for year, event_dates in event_dates_by_year | dictsort(reverse=True) %}
-        <h2 class='h2_banner'>{{ year }}</h2>
+        <h2 class='h2_banner'>{{ year }} Results</h2>
         <div class='left'>
             {% for event_date, joomla_id, surface, friendly_date in event_dates %}
                 <div class='event__link event__link_{{ surface }}'>
