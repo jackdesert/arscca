@@ -1,3 +1,10 @@
+
+from glob import glob
+from collections import defaultdict
+import json
+import pdb
+import re
+
 from arscca.models.canon import Canon
 from arscca.models.fond_memory import FondMemory
 from arscca.models.driver import GenericDriver
@@ -6,10 +13,7 @@ from arscca.models.log_splitter import LogSplitter
 from arscca.models.report import Report
 from arscca.models.shared import Shared
 from arscca.models.util import Util
-from collections import defaultdict
-import json
-import pdb
-import re
+
 
 class Dispatcher:
 
@@ -30,8 +34,9 @@ class Dispatcher:
         self.live = live # Boolean
         self._point_storage = defaultdict(int)
 
+        html_file = self._html_file_from_date(date)
         # Several things are delegated to LogSplitter
-        self._log_splitter = LogSplitter(date, url, live)
+        self._log_splitter = LogSplitter(date, url, live, local_html_file=html_file)
         # self.drivers will be an array
         # self.event_name will be a string
         # self.data will be a list
@@ -40,6 +45,17 @@ class Dispatcher:
         self.drivers = self._log_splitter.build_and_return_drivers()
         self._set_second_half_started_on_drivers()
         self._rank_drivers()
+
+    def _html_file_from_date(self, date):
+        """
+        Reading from the Archive
+        Because joomla site is down
+        """
+        for fname in glob('archive/*.html'):
+            if date in fname:
+                return fname
+        return None
+
 
     def _set_second_half_started_on_drivers(self):
         # Penalties for no completed runs in second half
