@@ -76,7 +76,8 @@ def report_view(request):
                 car_classes=report.car_classes,
                 event_numbers=report.event_numbers,
                 year=year,
-                slug_and_head_shot_method=Photo.slug_and_head_shot)
+                slug_and_head_shot_method=Photo.slug_and_head_shot,
+                num_events_to_score=Report.NUM_EVENTS_TO_SCORE)
 
 @view_config(route_name='national_event',
              renderer='templates/national_event.jinja2')
