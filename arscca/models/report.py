@@ -10,7 +10,7 @@ import redis
 class Report:
 
     KEY_PREPEND = 'points-from-'
-    NUM_EVENTS_TO_SCORE = 8
+    NUM_EVENTS_TO_SCORE = 10
     SKIPPED_EVENT_NUMBERS = defaultdict(list)
 
     # SKIPPED EVENTS means the event did not happen
