@@ -358,6 +358,13 @@ Here's what each piece does:
 Which means browserify is generating three builds.)
 
 
+Joomla Down
+-----------
+
+See commit 079
+Joomla is down, so now this loads from a local file.
+The filename looks like archive/DATE__000.html.
+
 
 Backlog
 -------
