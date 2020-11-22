@@ -22,11 +22,14 @@ class MSRParser:
     def _load_events(self):
         req = requests.get(self.URL, timeout=10, headers={'User-Agent': 'arscca.org'})
         soup = BeautifulSoup(req.text, 'lxml')
-        for row in soup.find_all('tr', attrs=dict(itemtype='http://schema.org/Event')):
+        for row in soup.find_all('div', attrs=dict(itemtype='http://schema.org/Event')):
             event = MSREvent(row)
             self._events.append(event)
 
 
 
 
+if __name__ == '__main__':
+
+    parser = MSRParser()
 

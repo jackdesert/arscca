@@ -63,7 +63,7 @@ class Presenter:
 
 
 if __name__ == '__main__':
-    presenter = EventPresenter()
+    presenter = Presenter()
     events = presenter.sorted_future_events()
     for event in events:
         print(event.name)
@@ -72,7 +72,6 @@ if __name__ == '__main__':
         print(event.chair)
         print(event.venue)
         print(event.address)
-        print(event.org)
         print(event.link)
         print('\n---\n')
 

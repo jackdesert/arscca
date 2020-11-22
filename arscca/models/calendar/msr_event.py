@@ -21,23 +21,19 @@ class MSREvent(BaseEvent):
 
     @property
     def date(self):
-        return self._soup.find('div', attrs=dict(itemprop='startDate')).attrs['content']
+        return self._soup.find('span', attrs=dict(itemprop='startDate')).attrs['content']
 
     @property
     def venue(self):
-        return self._soup.find('div', 'venue').text
+        return self._soup.find('div', attrs=dict(itemtype='http://schema.org/Place')).find('span', attrs=dict(itemprop='name')).text
 
     @property
     def address(self):
-        return self._soup.find('div', 'address').text
+        return self._soup.find('span', attrs=dict(itemtype='http://schema.org/PostalAddress')).text
 
     @property
     def name(self):
         return self._soup.find('h3', 'title').text
-
-    @property
-    def org(self):
-        return self._soup.find('div', 'org').text
 
     @property
     def link(self):
@@ -55,5 +51,5 @@ class MSREvent(BaseEvent):
 
     def our_region_boolean(self):
         '''Answers the question: "Is this an ARSCCA event?"'''
-        return self.REGION_NAME in self.org
+        return '(ARSCCA)' in self._soup.text
 

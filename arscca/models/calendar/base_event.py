@@ -50,10 +50,6 @@ class BaseEvent:
         return ''
 
     @property
-    def org(self):
-        return ''
-
-    @property
     def link(self):
         return ''
 
