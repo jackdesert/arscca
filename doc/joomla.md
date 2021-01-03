@@ -91,7 +91,14 @@ When creating an article, in the right column change Featured to Yes.
 Redirect www to non-www
 -----------------------
 
-https://hostingmanager.godaddy.com/AccountPanel.aspx?accountUID=aa1c2d99-2f45-4cce-865b-764a067456ee
+From godaddy.com, click Nelson -> My Products.
+Find the webhosting thing called arscca.org (not old.arscca.org)
+Click *Manage*, then click *CPanel Admin*
+Click File Manager.
+Browse to public_html/
+Open .htaccess
+
+To show hidden files, click Settings -> Show Hidden Files.
 
   - click **File Manager** to edit .htaccess
 
@@ -105,8 +112,10 @@ https://hostingmanager.godaddy.com/AccountPanel.aspx?accountUID=aa1c2d99-2f45-4c
 
 Pretty Url
 ----------
+(link)
 
 Add this to htaccess to create a pretty url for /novice
+(See section above on how to access .htaccess)
 
     RewriteRule ^(novice)$ .//index.php?option=com_content&view=article&id=19&Itemid=107
 
@@ -122,6 +131,14 @@ Add this to htaccess to create a pretty url for /novice
     RewriteRule ^(rules)$ ./arscca.org/index.php?option=com_content&view=article&id=18&Itemid=105
     RewriteRule ^(board)$ ./arscca.org/index.php?option=com_content&view=article&id=22&Itemid=115
     RewriteRule ^(contact)$ ./index.php?option=com_content&view=article&id=521
+    RewriteRule ^(stuttgart)$ ./index.php?option=com_content&view=article&id=571
+
+
+Upload images
+-------------
+
+Content -> Media
+
 
 
 Backlog
@@ -136,3 +153,6 @@ Backlog
 - Create a unified front to tell people how to interact: facebook, email board members
 - Figure out where to advertise board meetnings
 - put newsletters on website. At least the most recent one
+
+
+

@@ -1,0 +1,104 @@
+<h2>2021 Calendar</h2>
+Wed Jan 6 Board Meeting 6:30pm. All members welcome.  <a href='https://meet.jit.si/arscca'>(Click here to Join Teleconference)</a>
+<br>
+-
+<br>
+
+March 13 Test n Tune (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+March 14 Event 1 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+-
+<br>
+April 10  Event 2  (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+April 11  Event 3 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+-
+<br>
+May  15  Event 4 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+May  16  Event 5 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+-
+<br>
+Jun 12 Event 6 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+Jun 13 Event 7 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+-
+<br>
+July 10 Event 8 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+July 11 Event 9 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+-
+<br>
+Aug 21 Event 10 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+Aug 22 Event 11 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+-
+<br>
+Sep 25 Event 12 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+Sep 26 Event 13 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+-
+<br>
+Oct 16 Event 14 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+Oct 17 Event 15 (<a href='/stuttgart'>Stuttgart</a>)
+<br>
+-
+<br>
+Dec 5 Hangover (<a href='/stuttgart'>Stuttgart</a>)
+
+<!--<h2><a href='http://uno.arscca.org/live'>Click Here for <b>LIVE RESULTS</b></a></h2>-->
+<!-- This script pulls live calendar data from uno.arscca.org/calendar/plain -->
+<!--
+<div id='calendar-short'><h2>Loading Upcoming Events...</h2></div>
+<script>
+    function ready(fn) {
+        // See http://youmightnotneedjquery.com/
+        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+            fn();
+        } else {
+            document.addEventListener('DOMContentLoaded', fn);
+        }
+    }
+
+    var displayCalendar = function(elemId, short){
+
+        var request = new XMLHttpRequest(),
+            url = 'http://uno.arscca.org/calendar/plain',
+            elem = document.getElementById(elemId)
+
+        if(short){
+            url += '?short=1'
+        }
+
+        request.open('GET', url, true)
+
+        request.onload = function() {
+          if (this.status >= 200 && this.status < 400) {
+            elem.innerHTML = this.response //Success!
+          } else {
+            console.log('We reached our target server, but it returned an error')
+          }
+        }
+
+        request.onerror = function() {
+          console.log('connection error of some sort')
+        }
+
+        request.send()
+
+    }
+
+    ready(function(){
+        displayCalendar('calendar-short', true)
+    })
+</script>
+-->
+
