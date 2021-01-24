@@ -10,15 +10,18 @@ import redis
 Driver.REDIS = redis.StrictRedis(host='localhost', port=6379, db=8, decode_responses=True)
 
 
-def valid_driver(name, barcode=None):
+def valid_driver(name, barcode=None, car_class='STS', number='77'):
     """
     Generate a valid driver (minimal fields)
     """
     return Driver({'First Name': name,
                    'Last Name': 'generated',
-                   'Member #': barcode,})
+                   'Member #': barcode,
+                   'Class': car_class,
+                   'Number': number,
+                   })
 
-class TestgDriver(TestCase):
+class TestDriver(TestCase):
     def setUp(self):
         """
         Clear out redis between tests
@@ -107,9 +110,9 @@ class TestEvent(TestCase):
         self.assertEqual(len(msreg.drivers), 45)
 
     def test_notify_if_duplicate_barcodes_1(self):
-        number = '111222'
-        fred = valid_driver('Fred', number)
-        allison = valid_driver('Allison', number)
+        barcode = '111222'
+        fred = valid_driver('Fred', barcode)
+        allison = valid_driver('Allison', barcode)
         melanie = valid_driver('Melanie', '333444')
         event = Event(None)
         event._drivers = [fred, allison, melanie]
@@ -119,4 +122,18 @@ class TestEvent(TestCase):
         self.assertEqual(fred.messages, {'Duplicate barcode'})
         self.assertEqual(allison.messages, {'Duplicate barcode'})
         self.assertEqual(melanie.messages, set())
+
+    def test_notify_if_duplicate_car_class_and_number_1(self):
+        fred = valid_driver('Fred', car_class='SM', number='5')
+        allison = valid_driver('Allison', car_class='DS', number='5')
+        melanie = valid_driver('Melanie', car_class='DS', number='5')
+
+        event = Event(None)
+        event._drivers = [fred, allison, melanie]
+        count = event.notify_if_duplicate_car_class_and_number()
+
+        self.assertEqual(2, count)
+        self.assertEqual(fred.messages, set())
+        self.assertEqual(allison.messages, {'Duplicate car class & number'})
+        self.assertEqual(melanie.messages, {'Duplicate car class & number'})
 

@@ -8,6 +8,7 @@ Namely, this is used to:
 
 """
 
+from collections import defaultdict
 from copy import copy
 import csv
 import pdb
@@ -25,6 +26,8 @@ class Driver:
     REDIS = Shared.REDIS
     REDIS_KEY = Shared.REDIS_KEY_BARCODES
 
+    CAR_CLASS_COLUMN = 'Class'
+    NUMBER_COLUMN = 'Number'
     BARCODE_COLUMN = 'Member #'
     MESSAGES_COLUMN = 'Messages'
 
@@ -54,6 +57,14 @@ class Driver:
         last_name = self.params['Last Name']
 
         return f'{first_name} {last_name}'
+
+    @property
+    def car_class_and_number(self):
+        car_class = self.params[self.CAR_CLASS_COLUMN]
+        number = self.params[self.NUMBER_COLUMN]
+        return f'{car_class} {number}'
+
+
 
     @property
     def barcode(self):
@@ -160,6 +171,10 @@ class Event:
 
 
     def write_to_file(self, location='/tmp/msreg_augmented.txt'):
+        if self._fieldnames is None:
+            # Initialize drivers and _fieldnames
+            self.drivers
+
         fieldnames_to_use = copy(self._fieldnames)
         fieldnames_to_use.append(Driver.MESSAGES_COLUMN)
 
@@ -168,6 +183,8 @@ class Event:
                 tsv_file, fieldnames=fieldnames_to_use, delimiter=self.TAB
             )
             writer.writeheader()
+
+            drivers = self.drivers
             for driver in self.drivers:
                 writer.writerow(driver.as_dict())
 
@@ -185,6 +202,28 @@ class Event:
         for driver in self.drivers:
             if barcodes.count(driver.barcode) > 1:
                 driver.messages.add('Duplicate barcode')
+                count += 1
+        return count
+
+    def notify_if_duplicate_car_class_and_number(self):
+        """
+        Add a message to each driver with a duplicate car class & number.
+        Returns the total number of affected drivers.
+        For example, if two drivers are both registered as CAMT 25,
+        this method will return the integer 2.
+
+        :return: :int:
+        """
+
+        class_map = defaultdict(list)
+
+        for driver in self.drivers:
+            class_map[driver.car_class_and_number].append(driver.name)
+
+        count = 0
+        for driver in self.drivers:
+            if len(class_map[driver.car_class_and_number]) > 1:
+                driver.messages.add('Duplicate car class & number')
                 count += 1
         return count
 
