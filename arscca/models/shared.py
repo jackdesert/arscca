@@ -18,3 +18,6 @@ class Shared:
 
     CORS_DOMAINS = frozenset(['http://arscca.org'])
 
+    MSREG_RAW_PATH = '/tmp/msreg_raw.txt'
+    MSREG_AUGMENTED_PATH = '/tmp/msreg_augmented.txt'
+

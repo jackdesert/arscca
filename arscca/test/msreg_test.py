@@ -116,7 +116,7 @@ class TestEvent(TestCase):
         melanie = valid_driver('Melanie', '333444')
         event = Event(None)
         event._drivers = [fred, allison, melanie]
-        count = event.notify_if_duplicate_barcodes()
+        count = event._notify_if_duplicate_barcodes()
 
         self.assertEqual(2, count)
         self.assertEqual(fred.messages, {'Duplicate barcode'})
@@ -130,7 +130,7 @@ class TestEvent(TestCase):
 
         event = Event(None)
         event._drivers = [fred, allison, melanie]
-        count = event.notify_if_duplicate_car_class_and_number()
+        count = event._notify_if_duplicate_car_class_and_number()
 
         self.assertEqual(2, count)
         self.assertEqual(fred.messages, set())

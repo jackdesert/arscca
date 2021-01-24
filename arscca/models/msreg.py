@@ -27,6 +27,7 @@ class Driver:
     REDIS_KEY = Shared.REDIS_KEY_BARCODES
 
     CAR_CLASS_COLUMN = 'Class'
+    CAR_MODEL_COLUMN = 'Car Model'
     NUMBER_COLUMN = 'Number'
     BARCODE_COLUMN = 'Member #'
     MESSAGES_COLUMN = 'Messages'
@@ -65,6 +66,9 @@ class Driver:
         return f'{car_class} {number}'
 
 
+    @property
+    def car_model(self):
+        return self.params[self.CAR_MODEL_COLUMN]
 
     @property
     def barcode(self):
@@ -144,7 +148,7 @@ class Event:
 
     __slots__ = ('_input_path', '_fieldnames', '_drivers')
 
-    def __init__(self, input_path):
+    def __init__(self, input_path=Shared.MSREG_RAW_PATH):
         self._input_path = input_path
         self._fieldnames = None
         self._drivers = None
@@ -170,15 +174,15 @@ class Event:
         return output
 
 
-    def write_to_file(self, location='/tmp/msreg_augmented.txt'):
-        if self._fieldnames is None:
-            # Initialize drivers and _fieldnames
-            self.drivers
+    def verify_and_write_to_file(self):
+        self._notify_if_duplicate_barcodes()
+        self._notify_if_duplicate_car_class_and_number()
+
 
         fieldnames_to_use = copy(self._fieldnames)
         fieldnames_to_use.append(Driver.MESSAGES_COLUMN)
 
-        with open(location, 'w', newline='') as tsv_file:
+        with open(Shared.MSREG_AUGMENTED_PATH, 'w', newline='') as tsv_file:
             writer = csv.DictWriter(
                 tsv_file, fieldnames=fieldnames_to_use, delimiter=self.TAB
             )
@@ -188,7 +192,7 @@ class Event:
             for driver in self.drivers:
                 writer.writerow(driver.as_dict())
 
-    def notify_if_duplicate_barcodes(self):
+    def _notify_if_duplicate_barcodes(self):
         """
         Add a message to each driver with a duplicate barcode.
         Returns the total number of affected drivers.
@@ -205,7 +209,7 @@ class Event:
                 count += 1
         return count
 
-    def notify_if_duplicate_car_class_and_number(self):
+    def _notify_if_duplicate_car_class_and_number(self):
         """
         Add a message to each driver with a duplicate car class & number.
         Returns the total number of affected drivers.
@@ -238,5 +242,6 @@ if __name__ == '__main__':
         host='localhost', port=6379, db=9, decode_responses=True
     )
 
-    msreg = Event('arscca/test/msreg/2020-hangover.txt')
-    msreg.write_to_file('/tmp/msreg.txt')
+    #msreg = Event('arscca/test/msreg/2020-hangover.txt')
+    msreg = Event('arscca/test/msreg/2020-hangover-with-dupes.txt')
+    msreg.verify_and_write_to_file()

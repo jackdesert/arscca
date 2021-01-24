@@ -1,0 +1,37 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        Msreg
+    </div>
+
+    <form action='/msreg/upload' method='post' accept-charset='utf-8' enctype='multipart/form-data'>
+
+    <label for='msreg_export'>Choose File</label>
+    <input id='msreg_export' name='msreg_export' type='file' value='' />
+
+    <input type='submit' value='Upload' />
+</form>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Car</th>
+        <th>Number/Class</th>
+        <th>Barcode</th>
+    </tr>
+{% for driver in drivers %}
+    <tr>
+        <td>{{ driver.name }}</td>
+        <td>{{ driver.car_model }}</td>
+        <td>{{ driver.car_class_and_number }}</td>
+        <td>{{ driver.barcode }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+
+{% endblock content %}

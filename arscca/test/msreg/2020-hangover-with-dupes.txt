@@ -1,0 +1,46 @@
+Class	Number	First Name	Last Name	Car Model	Car Color	Registered	Paid	Amnt.	Group	Sponsor	Tire Brand	Method	OLR	Member	Member #	Expires
+AS	6	Nicholas	Mellenthin	2015 Porsche Boxter GTS	Fast	Yes	Yes	30.00		Olvey racing		PrePaid	Yes	Yes	455443	5/31/21
+AS	18	Daniel	Reeder	1997 Nissan Maxima	Green	Yes	Yes	30.00		Jack Desert Racing	Other	PrePaid	Yes	Yes	455443	10/31/21
+BS	69	Joshua	Rodriguez	2016 BMW M4	White	Yes	Yes	50.00			Michelin	PrePaid	Yes	No
+CAMC	75	Daniel	Lee	2002 Ford Mustang	grey	Yes	Yes	30.00				PrePaid	Yes	No
+CAMC	40	Alec	Piazza	2019 Ford Mustang	Oxford white	Yes	Yes	30.00				PrePaid	Yes	No
+CAMT	69	Sean	Aldinger	1969 Chevrolet Camaro	Blue	Yes	Yes	30.00				PrePaid	Yes	Yes	509216	10/31/21
+CAMT	1	William	Ball	1995 Ford Mustang gt	White	Yes	Yes	50.00				PrePaid	Yes	No
+CAMT	123	Mike	Berry	1995 Ford Mustang	Yellow	Yes	Yes	0.00				PrePaid	Yes	Yes	419889	4/30/19
+CAMT	16	Jeff	Fuller	2004 Ford Mustang Mach1	Blue	Yes	Yes	30.00		KAR Performance	Falken	PrePaid	Yes	Yes	526067	1/31/21
+CAMT	0	Brandon	Hirby	1995 Ford Mustang/cobra	grabber blue	Yes	Yes	30.00			Falken	PrePaid	Yes	Yes	635809	7/31/21
+CAMT	32	Ryan	Stansbury	2000 Chevrolet S10	Red	Yes	Yes	30.00		KAR Performance	Cooper	PrePaid	Yes	Yes	529242	2/28/21
+CAMT	23	Chris	Stephens	1995 Ford Mustang GT	Yellow	Yes	Yes	30.00			Other	PrePaid	Yes	Yes	624705	2/28/21
+CS	46	Jordan	Clark	2011 BMW 528i		Yes	Yes	30.00				PrePaid	Yes	No
+CS	1	Michael	Ford	Mazda Mystery		Yes	Yes	30.00		McLarty Mazda		PrePaid	Yes	Yes	486302	5/31/21
+CS	65	Jim	McKay	Pontiac 2008	grey	Yes	Yes	30.00				PrePaid	Yes	Yes	628085	2/28/21
+DS	3	Blake	Alvarado	2019 Hyundai Veloster N	Blue	Yes	Yes	30.00				PrePaid	Yes	Yes	479429	1/31/21
+DS	12	Tommy	Booth	2017 Ford Focus RS	Grey	Yes	Yes	50.00				PrePaid	Yes	No
+DS	63	Brendan	Ferrell	2010 Hyundai Genesis Coupe	Grey	Yes	Yes	30.00		Fallen Motor Works		PrePaid	Yes	Yes	644489	10/31/21
+DS	21	Greg	LaBorde	2020 Chevrolet Camaro		Yes	Yes	30.00				PrePaid	Yes	Yes	542811	9/30/21
+DS	2	Rebecca	LaBorde	2020 Chevrolet Camaro		Yes	Yes	50.00				PrePaid	Yes	No
+DS	13	Brady	Loretz	2019 Hyundai Veloster N	Blue	Yes	Yes	30.00			Bridgestone	PrePaid	Yes	Yes	468309	4/30/21
+DS	31	Jereme	Mason	2020 Ford Focus RS Coupe	Red	Yes	Yes	30.00		WMMFT Racing, Redshift Motorsports		PrePaid	Yes	Yes	424692	9/30/21
+DS	131	Jeffrey	Pierce	2020 Ford Focus RS Coupe	Blood	Yes	Yes	30.00		Redshift, WMMFT, The Store		PrePaid	Yes	Yes	482200	3/31/21
+ES	41	Clark	Benton	2003 Toyota mr2 spyder	silver	Yes	Yes	30.00				PrePaid	Yes	Yes	515598	5/31/21
+ES	6	Bill	Burnham	2001 Mazda miata	black	Yes	Yes	30.00				PrePaid	Yes	Yes	499271	3/31/21
+FS	11	Tony	Carter	2011 BMW 335IS	Red	Yes	Yes	30.00			Bridgestone	PrePaid	Yes	Yes	538387	6/30/21
+FSP	20	Brandon	Burns	2009 Ford Mustang	Black	Yes	Yes	50.00			Federal	PrePaid	Yes	No
+FSP	22	Collin	Chalmers	2009 Ford Mustang	Black	Yes	Yes	50.00			Federal	PrePaid	Yes	No
+FSP	2	Austin	Shurtleff	2009 Ford Mustang	Black	Yes	Yes	50.00			Federal	PrePaid	Yes	No
+HS	80	Michael	Tiangco	2007 Acura TSX	White	Yes	Yes	50.00			Continental	PrePaid	Yes	No
+SMF	47	David	Kay	1989 Honda CRX SI	Blue	Yes	Yes	30.00			Bridgestone	PrePaid	Yes	Yes	628521	2/28/21
+SS	6	Frank	Likert	2018 Porsche 911 GT3		Yes	Yes	30.00		Brandon’s House of Porsches		PrePaid	Yes	Yes	411495	7/31/21
+SS	77	Bernie	Mc Hugh	2009 Chevrolet Corvette ZR1	Red	Yes	Yes	30.00				PrePaid	Yes	No	620971
+SS	9	Brandon	Olvey	2018 Porsche 911 GT3		Yes	Yes	30.00				PrePaid	Yes	Yes	521719	6/30/21
+SSC	199	Layton	Cater	2013 Scion FR-S		Yes	Yes	30.00		www.msastore.com  --Petrel Data Systems -- Volatile Motorsports	Falken	PrePaid	Yes	Yes	488769	6/30/21
+SSC	99	Eric	Davis	2013 Scion FRS	Yes	Yes	Yes	30.00		Crush your enemies, see them driven before you, and hear the lamentation of the women	Falken	PrePaid	Yes	Yes	420937	5/31/21
+SSM	99	Johnathan	Hasty	1999 Chevrolet Corvette	Red	Yes	Yes	50.00		Apocalypse Motorsports	Toyo	PrePaid	Yes	No
+SSM	22	Paul	Soulsby	1993 Toyota MR2 Turbo	Black	Yes	Yes	30.00		TRD, ATS Racing, Driver Motorsports, WMMFT		PrePaid	Yes	Yes	399897	8/31/21
+STS	5	Jack	Desert	1995 Mazda Roy's Miata	Black	Yes	Yes	30.00		Shoestring Motorsports		PrePaid	Yes	Yes	522735	10/31/21
+STS	7	Roy	Gatewood	1995 Mazda MX-5	Black	Yes	Yes	30.00		Shoestring motorsports	Toyo	PrePaid	Yes	Yes	479111	1/31/21
+STU	10	James	Letts	2017 BMW M2	Blue	Yes	Yes	50.00			Michelin	PrePaid	Yes	No
+XSA	60	Kenneth	Poag	2006 Nissan 350Z Touring , 5AT	Silver	Yes	Yes	30.00			Nitto	PrePaid	Yes	No	1969319
+XSB	17	Adam	Cadorette	1972 Datsun 240z	Gray	Yes	Yes	30.00			BFGoodrich	PrePaid	Yes	Yes	439139	2/28/21
+XSB	95	Nelson	Santos	1992 Mazda Miata	Blue	Yes	Yes	30.00		Santos Motorsports		PrePaid	Yes	Yes	341954	7/31/21
+XSB	7	Scott	Silfies	1972 Datsun 240Z	Matte Grey	Yes	Yes	30.00			Dunlop	PrePaid	Yes	Yes	465272	5/31/21
