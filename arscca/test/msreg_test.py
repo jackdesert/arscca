@@ -24,9 +24,24 @@ class TestgDriver(TestCase):
                        'Member #': barcode,})
 
     def test_generate_barcode_1(self):
+        """
+        Verify that generating a barcode sets it equal to FIRST_BARCODE
+        """
         driver = self.valid_driver('Josh')
         driver.generate_barcode()
         self.assertEqual(driver.stored_barcode, Driver.FIRST_BARCODE)
+
+    def test_generate_barcode_2(self):
+        """
+        Successive calls to generate_barcode() increment
+        """
+        driver_1 = self.valid_driver('Josh')
+        driver_1.generate_barcode()
+
+        driver_2 = self.valid_driver('Allison')
+        driver_2.generate_barcode()
+
+        self.assertEqual(int(driver_1.stored_barcode) + 1, int(driver_2.stored_barcode))
 
 class TestEvent(TestCase):
     def test_init_1(self):
