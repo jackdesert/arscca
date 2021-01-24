@@ -68,7 +68,7 @@ class Driver:
 
         :return: :str:
         """
-        return self.REDIS.get(f'{self.REDIS_KEY}-{self.name}')
+        return self.REDIS.hget(self.REDIS_KEY, self.name)
 
     def generate_barcode(self):
         """

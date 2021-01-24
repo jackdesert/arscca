@@ -2,6 +2,8 @@ import re
 import redis
 
 class Shared:
+
+    # Note: arscca.test.msreg_test defines its own redis on localhost
     REDIS = redis.StrictRedis(host='arscca-redis', port=6379, db=1, decode_responses=True)
 
 

@@ -26,6 +26,7 @@ class TestgDriver(TestCase):
     def test_generate_barcode_1(self):
         driver = self.valid_driver('Josh')
         driver.generate_barcode()
+        self.assertEqual(driver.stored_barcode, Driver.FIRST_BARCODE)
 
 class TestEvent(TestCase):
     def test_init_1(self):
