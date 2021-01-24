@@ -1,5 +1,6 @@
 import pdb
 from unittest import TestCase
+from unittest.mock import patch, MagicMock, PropertyMock
 
 from arscca.models.msreg import Driver, Event
 import redis
@@ -22,6 +23,25 @@ class TestgDriver(TestCase):
         return Driver({'First Name': name,
                        'Last Name': 'generated',
                        'Member #': barcode,})
+
+    def test_msreg_barcode_1(self):
+        """
+        Return 6-character barcode verbatim
+        """
+        barcodes = {
+                # Normal
+                '123456': '123456',
+                # Strips spaces
+                ' 123456 ': '123456',
+                # Returns None for any that are the wrong length
+                '1234567': None,
+                '12345': None,
+                }
+        for b_in, b_out in barcodes.items():
+            driver = self.valid_driver('Josh', b_in)
+            self.assertEqual(driver.msreg_barcode, b_out)
+
+
 
     def test_generate_barcode_1(self):
         """
@@ -54,11 +74,33 @@ class TestgDriver(TestCase):
         driver.remove_stored_barcode()
         assert(driver.stored_barcode is None)
 
+    def test_barcode_1(self):
+        """
+        When barcode in msreg, verify that barcode is used
+        """
+        driver = self.valid_driver('Josh', '000000')
+        self.assertEqual(driver.barcode, '000000')
+
+    @patch('arscca.models.msreg.Driver.stored_barcode', PropertyMock(return_value='333333'))
+    def test_barcode_2(self):
+        """
+        When no barcode in msreg, and there is a stored barcode, use the stored barcode
+        """
+        driver = self.valid_driver('Elizabeth')
+        self.assertEqual(driver.barcode, '333333')
+
+    @patch('arscca.models.msreg.Driver.generate_barcode', MagicMock(return_value='222222'))
+    def test_barcode_3(self):
+        """
+        When no barcode in msreg and no stored_barcode, generate a barcode
+        """
+        driver = self.valid_driver('Elizabeth')
+        self.assertEqual(driver.barcode, '222222')
+
 
 class TestEvent(TestCase):
     def test_init_1(self):
 
-        msreg = Msreg('arscca/test/msreg/2020-hangover.txt')
-        pdb.set_trace()
-        self.assertEqual(len(msreg.drivers), 5)
+        msreg = Event('arscca/test/msreg/2020-hangover.txt')
+        self.assertEqual(len(msreg.drivers), 45)
 

@@ -4,8 +4,10 @@ Namely, this is used to fill in missing barcodes for non-SCCA-member
 and to run sanity checks like no duplicate barcodes and  no duplicate car numbers
 """
 
+from copy import copy
 import csv
 import pdb
+
 
 from arscca.models.shared import Shared
 
@@ -18,6 +20,8 @@ class Driver:
     REDIS = Shared.REDIS
     REDIS_KEY = Shared.REDIS_KEY_BARCODES
 
+    BARCODE_COLUMN = 'Member #'
+
     # First barcode is easy to pronounce and easy for humans to visually scan
     FIRST_BARCODE = '111200'
 
@@ -26,6 +30,11 @@ class Driver:
     def __init__(self, params):
         self.params = params
         self.message = None
+
+    def as_dict(self):
+        output = copy(self.params)
+        output[self.BARCODE_COLUMN] = self.barcode
+        return output
 
     @property
     def name(self):
@@ -55,11 +64,26 @@ class Driver:
     @property
     def msreg_barcode(self):
         """
-        The msreg barcode (member number) as downloaded
+        The msreg barcode (member number) as downloaded.
 
-        :return: :str:
+        Returns None if the barcode is shorter or longer than 6 characters after stripping.
+        That way any garbage values will be replaced by a barcode that we generate.
+
+
+        :return: :str: or :None:
         """
-        return self.params['Member #'] or None
+        value = self.params[self.BARCODE_COLUMN]
+        if not isinstance(value, str):
+            # Non-strings return here
+            return None
+
+        value = value.strip()
+        if len(value) == 6:
+            return value
+
+        # Strings shorter or longer than 6 characters
+        return None
+
 
     @property
     def stored_barcode(self):
@@ -100,10 +124,13 @@ class Event:
     Class representing an event exported from motorsportreg (msreg)
     """
 
-    __slots__ = ('input_path',)
+    TAB = '\t'
+
+    __slots__ = ('input_path', 'fieldnames')
 
     def __init__(self, input_path):
         self.input_path = input_path
+        self.fieldnames = None
 
     @property
     def drivers(self):
@@ -112,10 +139,10 @@ class Event:
         """
         output = []
         with open(self.input_path, newline='') as tsv_file:
-            reader = csv.DictReader(tsv_file, delimiter='\t')
-            pdb.set_trace()
+            reader = csv.DictReader(tsv_file, delimiter=self.TAB)
+            self.fieldnames = reader.fieldnames
             for line in reader:
-                driver = MsregDriver(line)
+                driver = Driver(line)
                 output.append(driver)
         output.sort(key=lambda x: x.name)
         return output
@@ -127,9 +154,22 @@ class Event:
         for driver in self.drivers:
             print(f'{driver.name}: {driver.barcode}')
 
+    def write_to_file(self, location='/tmp/msreg_augmented.txt'):
+        with open(location, 'w', newline='') as tsv_file:
+            writer = csv.DictWriter(tsv_file, fieldnames=self.fieldnames, delimiter=self.TAB)
+            writer.writeheader()
+            for driver in self.drivers:
+                writer.writerow(driver.as_dict())
+
 
 
 
 if __name__ == '__main__':
-    msreg = Msreg('arscca/test/msreg/2020-hangover.txt')
-    msreg.barcodes()
+
+    # Use local redis for inspection
+    import redis
+    Driver.REDIS = redis.StrictRedis(host='localhost', port=6379, db=9, decode_responses=True)
+
+    msreg = Event('arscca/test/msreg/2020-hangover.txt')
+    print(msreg.barcodes())
+    msreg.write_to_file()
