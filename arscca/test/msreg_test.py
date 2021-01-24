@@ -9,6 +9,15 @@ import redis
 # Specify database on localhost for testing (with a different db index)
 Driver.REDIS = redis.StrictRedis(host='localhost', port=6379, db=8, decode_responses=True)
 
+
+def valid_driver(name, barcode=None):
+    """
+    Generate a valid driver (minimal fields)
+    """
+    return Driver({'First Name': name,
+                   'Last Name': 'generated',
+                   'Member #': barcode,})
+
 class TestgDriver(TestCase):
     def setUp(self):
         """
@@ -16,13 +25,6 @@ class TestgDriver(TestCase):
         """
         Driver.REDIS.flushdb()
 
-    def valid_driver(self, name, barcode=None):
-        """
-        Generate a valid driver (minimal fields)
-        """
-        return Driver({'First Name': name,
-                       'Last Name': 'generated',
-                       'Member #': barcode,})
 
     def test_msreg_barcode_1(self):
         """
@@ -38,7 +40,7 @@ class TestgDriver(TestCase):
                 '12345': None,
                 }
         for b_in, b_out in barcodes.items():
-            driver = self.valid_driver('Josh', b_in)
+            driver = valid_driver('Josh', b_in)
             self.assertEqual(driver.msreg_barcode, b_out)
 
 
@@ -47,7 +49,7 @@ class TestgDriver(TestCase):
         """
         Verify that generating a barcode sets it equal to FIRST_BARCODE
         """
-        driver = self.valid_driver('Josh')
+        driver = valid_driver('Josh')
         driver.generate_barcode()
         self.assertEqual(driver.stored_barcode, Driver.FIRST_BARCODE)
 
@@ -55,10 +57,10 @@ class TestgDriver(TestCase):
         """
         Successive calls to generate_barcode() increment
         """
-        driver_1 = self.valid_driver('Josh')
+        driver_1 = valid_driver('Josh')
         driver_1.generate_barcode()
 
-        driver_2 = self.valid_driver('Allison')
+        driver_2 = valid_driver('Allison')
         driver_2.generate_barcode()
 
         self.assertEqual(int(driver_1.stored_barcode) + 1, int(driver_2.stored_barcode))
@@ -67,7 +69,7 @@ class TestgDriver(TestCase):
         """
         Verify that barcode is removed from redis
         """
-        driver = self.valid_driver('Josh')
+        driver = valid_driver('Josh')
         driver.generate_barcode()
 
         assert isinstance(driver.stored_barcode, str)
@@ -78,7 +80,7 @@ class TestgDriver(TestCase):
         """
         When barcode in msreg, verify that barcode is used
         """
-        driver = self.valid_driver('Josh', '000000')
+        driver = valid_driver('Josh', '000000')
         self.assertEqual(driver.barcode, '000000')
 
     @patch('arscca.models.msreg.Driver.stored_barcode', PropertyMock(return_value='333333'))
@@ -86,7 +88,7 @@ class TestgDriver(TestCase):
         """
         When no barcode in msreg, and there is a stored barcode, use the stored barcode
         """
-        driver = self.valid_driver('Elizabeth')
+        driver = valid_driver('Elizabeth')
         self.assertEqual(driver.barcode, '333333')
 
     @patch('arscca.models.msreg.Driver.generate_barcode', MagicMock(return_value='222222'))
@@ -94,7 +96,7 @@ class TestgDriver(TestCase):
         """
         When no barcode in msreg and no stored_barcode, generate a barcode
         """
-        driver = self.valid_driver('Elizabeth')
+        driver = valid_driver('Elizabeth')
         self.assertEqual(driver.barcode, '222222')
 
 
@@ -103,4 +105,18 @@ class TestEvent(TestCase):
 
         msreg = Event('arscca/test/msreg/2020-hangover.txt')
         self.assertEqual(len(msreg.drivers), 45)
+
+    def test_notify_if_duplicate_barcodes_1(self):
+        number = '111222'
+        fred = valid_driver('Fred', number)
+        allison = valid_driver('Allison', number)
+        melanie = valid_driver('Melanie', '333444')
+        event = Event(None)
+        event._drivers = [fred, allison, melanie]
+        count = event.notify_if_duplicate_barcodes()
+
+        self.assertEqual(2, count)
+        self.assertEqual(fred.messages, {'Duplicate barcode'})
+        self.assertEqual(allison.messages, {'Duplicate barcode'})
+        self.assertEqual(melanie.messages, set())
 
