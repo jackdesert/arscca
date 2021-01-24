@@ -1,0 +1,60 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+<div class="content">
+    <div class='crumb'>
+        <a href='/' class='crumb__link'>Home</a>
+        ->
+        Msreg Barcode Checker
+    </div>
+
+
+<h1>Msreg Barcode Checker</h1>
+
+
+<ol>
+    <li>Export registrations from msreg in TAB separated value format</li>
+    <li>Click "Choose File" below to upload the msreg file</li>
+    <li>This page will display the drivers you uploaded. Fake member numbers will have been assigned to any drivers without a barcode in msreg. (Format of a fake number is <b>111xxx</b>.</li>
+    <li>Check the <b>Warnings</b> column to see if any anomalies were detected in msreg file.
+    <li>Click the download button at the bottom</li>
+    <li>Import the file you download into AxWare</li>
+</ol>
+
+
+<h2>{{ raw_filename }}</h2>
+Uploaded {{ minutes_ago }}
+<form action='/msreg/upload' method='post' accept-charset='utf-8' enctype='multipart/form-data'>
+    <input id='msreg_export' name='msreg_export' type='file' value='hi' onchange='this.form.submit()' />
+</form>
+
+<div class='space-1rem' ></div>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Car</th>
+        <th>Number/Class</th>
+        <th>Barcode</th>
+        <th>Warnings</th>
+    </tr>
+{% for driver in drivers %}
+    <tr>
+        <td>{{ driver.name }}</td>
+        <td>{{ driver.car_model }}</td>
+        <td>{{ driver.car_class_and_number }}</td>
+        <td>{{ driver.barcode }}</td>
+        <td style='color: red;font-weight: bold;'>
+            {% if driver.messages %}
+                {{ '; '.join(driver.messages) }}
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+
+<a href='/msreg/{{ augmented_filename }}'>
+    <button type='button'>Download</button>
+</a>
+
+{% endblock content %}
