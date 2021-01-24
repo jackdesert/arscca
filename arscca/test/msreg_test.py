@@ -43,6 +43,18 @@ class TestgDriver(TestCase):
 
         self.assertEqual(int(driver_1.stored_barcode) + 1, int(driver_2.stored_barcode))
 
+    def test_remove_stored_barcode(self):
+        """
+        Verify that barcode is removed from redis
+        """
+        driver = self.valid_driver('Josh')
+        driver.generate_barcode()
+
+        assert isinstance(driver.stored_barcode, str)
+        driver.remove_stored_barcode()
+        assert(driver.stored_barcode is None)
+
+
 class TestEvent(TestCase):
     def test_init_1(self):
 
