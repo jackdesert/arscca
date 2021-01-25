@@ -10,7 +10,9 @@ Namely, this is used to:
 
 from collections import defaultdict
 from copy import copy
+from datetime import datetime
 import csv
+import os
 import pdb
 
 
@@ -145,6 +147,7 @@ class Event:
     """
 
     TAB = '\t'
+    SECONDS_PER_MINUTE = 60
 
     __slots__ = ('_input_path', '_fieldnames', '_drivers')
 
@@ -158,6 +161,14 @@ class Event:
         if self._drivers is None:
             self._drivers = self._fetch_drivers()
         return self._drivers
+
+    @property
+    def minutes_ago(self):
+        unix_tstamp = os.path.getmtime(Shared.MSREG_RAW_PATH)
+        tstamp = datetime.fromtimestamp(unix_tstamp)
+        delta_seconds = (datetime.now() - tstamp).total_seconds()
+        delta_minutes = delta_seconds / self.SECONDS_PER_MINUTE
+        return round(delta_minutes, 1)
 
     def _fetch_drivers(self):
         """

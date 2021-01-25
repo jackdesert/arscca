@@ -18,10 +18,13 @@ def msreg_view(request):
     try:
         event = Event()
         drivers = event.drivers
+        minutes_ago = f'{event.minutes_ago} minutes ago'
     except FileNotFoundError:
         drivers = []
+        minutes_ago = ''
 
-    return dict(drivers=drivers)
+
+    return dict(drivers=drivers, minutes_ago=minutes_ago)
 
 @view_config(route_name='msreg_upload')
 def msreg_upload_view(request):
@@ -56,10 +59,9 @@ def msreg_upload_view(request):
 
 @view_config(route_name='msreg_download')
 def msreg_download_view(request):
-    try:
-        return FileResponse(Shared.MSREG_AUGMENTED_PATH)
-    except FileNotFoundError:
-        return dict(error=f'File not found: "{Shared.MSREG_AUGMENTED_PATH}"')
+    event = Event()
+    event.verify_and_write_to_file()
+    return FileResponse(Shared.MSREG_AUGMENTED_PATH, content_type='application/force-download')
 
 
 
