@@ -16,6 +16,7 @@ import os
 import pdb
 
 
+from arscca.models.pax import Pax
 from arscca.models.shared import Shared
 
 
@@ -63,10 +64,12 @@ class Driver:
 
     @property
     def car_class_and_number(self):
-        car_class = self.params[self.CAR_CLASS_COLUMN]
         number = self.params[self.NUMBER_COLUMN]
-        return f'{car_class} {number}'
+        return f'{self.car_class} {number}'
 
+    @property
+    def car_class(self):
+        return self.params[self.CAR_CLASS_COLUMN]
 
     @property
     def car_model(self):
@@ -82,7 +85,7 @@ class Driver:
 
         if self.msreg_barcode and self.stored_barcode:
             # Set a message for later
-            self.messages.add(f'Barcode changed in Msreg to "{self.msreg_barcode}"')
+            self.messages.add(f'Print a new barcode for {self.name} because barcode updated in msreg to "{self.msreg_barcode}"')
             self.remove_stored_barcode()
         return self.msreg_barcode or self.stored_barcode or self.generate_barcode()
 
@@ -161,6 +164,7 @@ class Event:
         if self._drivers is None:
             self._drivers = self._fetch_drivers_and_verify()
             self._notify_if_duplicate_barcodes()
+            self._notify_if_no_pax_entry_for_class()
             self._notify_if_duplicate_car_class_and_number()
 
         return self._drivers
@@ -244,6 +248,17 @@ class Event:
                 count += 1
         return count
 
+
+    def _notify_if_no_pax_entry_for_class(self):
+        """
+        Adds a message to each driver with a class not listed in arscca.models.pax.Pax
+        """
+        year = datetime.now().year
+        for driver in self.drivers:
+            try:
+                pax_factor = Pax.factor(year, driver.car_class)
+            except KeyError:
+                driver.messages.add(f'Unknown car class: {driver.car_class}')
 
 
 if __name__ == '__main__':
