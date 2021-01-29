@@ -106,7 +106,7 @@ class Driver:
             return value
 
         # Strings shorter or longer than 6 characters
-        self.messages.add(f'msreg gave barcode "{value}" so generating new')
+        self.messages.add(f'Generated new because msreg gave barcode "{value}"')
         return None
 
     @property
@@ -159,7 +159,10 @@ class Event:
     @property
     def drivers(self):
         if self._drivers is None:
-            self._drivers = self._fetch_drivers()
+            self._drivers = self._fetch_drivers_and_verify()
+            self._notify_if_duplicate_barcodes()
+            self._notify_if_duplicate_car_class_and_number()
+
         return self._drivers
 
     @property
@@ -170,13 +173,16 @@ class Event:
         delta_minutes = delta_seconds / self.SECONDS_PER_MINUTE
         return round(delta_minutes, 1)
 
-    def _fetch_drivers(self):
+    def _fetch_drivers_and_verify(self):
         """
         Drivers from event
         """
         output = []
         with open(self._input_path, newline='') as tsv_file:
             reader = csv.DictReader(tsv_file, delimiter=self.TAB)
+            # Simple check to make sure this is a TSV file
+            if len(reader.fieldnames) < 2:
+                return []
             self._fieldnames = reader.fieldnames
             for line in reader:
                 driver = Driver(line)
@@ -185,11 +191,7 @@ class Event:
         return output
 
 
-    def verify_and_write_to_file(self):
-        self._notify_if_duplicate_barcodes()
-        self._notify_if_duplicate_car_class_and_number()
-
-
+    def write_to_file(self):
         fieldnames_to_use = copy(self._fieldnames)
         fieldnames_to_use.append(Driver.MESSAGES_COLUMN)
 

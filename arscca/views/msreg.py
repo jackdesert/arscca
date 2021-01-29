@@ -9,6 +9,8 @@ from pyramid.view import view_config
 from arscca.models.msreg import Event
 from arscca.models.shared import Shared
 
+PERIOD = '.'
+
 
 
 @view_config(route_name='msreg',
@@ -23,8 +25,15 @@ def msreg_view(request):
         drivers = []
         minutes_ago = ''
 
+    raw_filename = Shared.REDIS.get(Shared.REDIS_KEY_BARCODE_FILENAME)
+    augmented_filename = 'drivers-with-augmented-barcodes.txt'
+    if raw_filename and PERIOD in raw_filename:
+        base, ext = raw_filename.rsplit(PERIOD, 1)
+        augmented_filename = f'{base}-augmented.{ext}'
+    elif raw_filename:
+        augmented_filename = f'{raw_filename}-augmented.txt'
 
-    return dict(drivers=drivers, minutes_ago=minutes_ago)
+    return dict(drivers=drivers, minutes_ago=minutes_ago, raw_filename=raw_filename, augmented_filename=augmented_filename)
 
 @view_config(route_name='msreg_upload')
 def msreg_upload_view(request):
@@ -35,6 +44,7 @@ def msreg_upload_view(request):
     export = request.POST['msreg_export']
     # name of the file
     filename = export.filename
+    Shared.REDIS.set(Shared.REDIS_KEY_BARCODE_FILENAME, filename)
 
     # contents
     input_file = export.file

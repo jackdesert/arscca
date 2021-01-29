@@ -13,6 +13,7 @@ class Shared:
     REDIS_KEY_LIVE_EVENT_RUN_GROUPS = 'live-event-run-groups'
     REDIS_KEY_S3_PHOTOS = 's3-photos'
     REDIS_KEY_BARCODES = 'barcodes'
+    REDIS_KEY_BARCODE_FILENAME = 'barcode-filename'
 
     NOT_JUST_WHITESPACE_REGEX = re.compile(r'[^\s]')
 

@@ -3,7 +3,7 @@ AS	6	Nicholas	Mellenthin	2015 Porsche Boxter GTS	Fast	Yes	Yes	30.00		Olvey racin
 AS	18	Daniel	Reeder	1997 Nissan Maxima	Green	Yes	Yes	30.00		Jack Desert Racing	Other	PrePaid	Yes	Yes	455443	10/31/21
 BS	69	Joshua	Rodriguez	2016 BMW M4	White	Yes	Yes	50.00			Michelin	PrePaid	Yes	No
 CAMC	75	Daniel	Lee	2002 Ford Mustang	grey	Yes	Yes	30.00				PrePaid	Yes	No
-CAMC	40	Alec	Piazza	2019 Ford Mustang	Oxford white	Yes	Yes	30.00				PrePaid	Yes	No
+CAMT	69	Alec	Piazza	2019 Ford Mustang	Oxford white	Yes	Yes	30.00				PrePaid	Yes	No
 CAMT	69	Sean	Aldinger	1969 Chevrolet Camaro	Blue	Yes	Yes	30.00				PrePaid	Yes	Yes	509216	10/31/21
 CAMT	1	William	Ball	1995 Ford Mustang gt	White	Yes	Yes	50.00				PrePaid	Yes	No
 CAMT	123	Mike	Berry	1995 Ford Mustang	Yellow	Yes	Yes	0.00				PrePaid	Yes	Yes	419889	4/30/19
