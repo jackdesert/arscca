@@ -67,7 +67,7 @@ def events_slash_view(request):
 @view_config(route_name='report',
              renderer='templates/report.jinja2')
 def report_view(request):
-    year = 2020
+    year = 2021
     report = Report(year)
     events, totals = report.events_and_totals()
 
