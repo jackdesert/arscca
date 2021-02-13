@@ -611,6 +611,9 @@ class Pax:
     # http://solotime.info/pax/rtp2021.html
     # (Hyphens removed)
     FACTORS_2021 = MappingProxyType(dict(
+                        # Including STM so we can use 2019 results to demo /live
+                        STM   = 0.833,
+
                         AM   = 1.000,
                         AS   = 0.821,
                         ASP  = 0.849,

@@ -1,19 +1,17 @@
-# Builtins
 from datetime import date as Date
 from datetime import datetime
 from threading import Lock
 import json
 import logging
+import os
 import pdb
 import re
 
-# Third Party
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.view import view_config
 import redis
 
-# Local
 from arscca.models.dispatcher import Dispatcher
 from arscca.models.fond_memory import FondMemory
 from arscca.models.histogram import Histogram
@@ -42,6 +40,10 @@ LOG = logging.getLogger(__name__)
 @view_config(route_name='index',
              renderer='templates/index.jinja2')
 def home_view(request):
+    if os.getenv('ARSCCA_STREAMLINE'):
+        # The streamlined view is intended to support Live Results and its dependencies
+        return HTTPFound(location='/live')
+
     photos = Photo.all()
 
     event_dates_by_year = PublishedEvent.dates_by_year()

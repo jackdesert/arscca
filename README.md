@@ -117,6 +117,18 @@ Production Deploy
 
 Set the ARSCCA_SLACK_HOOK in config/environment.txt
 
+
+Streamlined Server
+------------------
+
+A streamlined server redirects from the home page to /live.
+Most features of the website remain viable if you have links to them,
+but the focus remains on live results.
+
+To use this in streamlined mode, set the ARSCCA_STREAMLINE environment variable to
+anything you want.
+
+
 National Events
 ---------------
 
