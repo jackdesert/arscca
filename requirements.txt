@@ -20,7 +20,7 @@ importlib-metadata==1.5.0
 Jinja2==2.11.1
 jmespath==0.9.5
 kiwisolver==1.1.0
-lxml==4.5.0
+lxml==4.6.2
 Mako==1.1.2
 Markdown==3.2.1
 markdown2==2.3.8
@@ -31,7 +31,7 @@ numpy==1.18.1
 packaging==20.3
 PasteDeploy==2.1.0
 pbr==5.4.4
-Pillow==7.0.0
+Pillow==7.1.0
 plaster==1.0
 plaster-pastedeploy==0.7
 Plim==0.9.12
