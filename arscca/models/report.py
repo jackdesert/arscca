@@ -46,6 +46,9 @@ class Report:
     @property
     def car_classes(self):
         klasses = self._car_classes.copy()
+        if not klasses:
+            # Return gracefully if no events yet
+            return []
         klasses.remove('PAX')
         output = ['PAX']
         for klass in sorted(klasses):
