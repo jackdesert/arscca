@@ -98,14 +98,6 @@ Getting Started (Manually)
 
     env/bin/pip install -e ".[testing]"
 
-- Run your project's tests.
-
-    env/bin/pytest
-
-- Run selected tests:
-
-    env/bin/pytest -k 'SomeClass and not some_string'
-
 
 - Run your project.
 
@@ -115,7 +107,7 @@ Getting Started (Manually)
 Production Deploy
 -----------------
 
-Set the ARSCCA_SLACK_HOOK in config/environment.txt
+Set the ARSCCA_SLACK_HOOK in ~/.bashrc
 
 
 Streamlined Server
@@ -125,13 +117,13 @@ A streamlined server redirects from the home page to /live.
 Most features of the website remain viable if you have links to them,
 but the focus remains on live results.
 
-To use this in streamlined mode, set the ARSCCA_STREAMLINE environment variable to
+To use this in streamlined mode, set the ARSCCA_STREAMLINE environment variable (in ~/.bashrc) to
 anything you want.
 
 ARSCCA_AXWARE_CAPABLE
 ---------------------
 
-Set this environment variable in config/environment.txt to a comma-separated list of driver slugs
+Set this environment variable in ~/.bashrc to a comma-separated list of driver slugs
 to indicate which drivers (in run groups) are trained / willing to run AxWare.
 
     ARSCCA_AXWARE_CAPABLE=john_lenin,paul_mccartney
@@ -270,7 +262,7 @@ Debugging Live
 
 ### Make sure Tests Pass
 
-    env/bin/pytest
+    env/bin/pytest arscca/test
 
 ### Make sure event in question parses
 
