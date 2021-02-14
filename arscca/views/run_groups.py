@@ -13,28 +13,29 @@ from pyramid.view import view_config
 REDIS = Shared.REDIS
 
 
+def _run_group_data():
+    redis_data_json = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT_RUN_GROUPS)
+    redis_data = {}
+    if redis_data_json:
+        redis_data = json.loads(redis_data_json)
+
+    slugs = str(os.getenv('ARSCCA_AXWARE_CAPABLE'))
+    redis_data['axware_capable_slugs'] = slugs.split(',')
+    return redis_data
 
 
 # These two views are almost identical
 @view_config(route_name='run_groups',
              renderer='templates/run_groups.jinja2')
 def run_groups_view(request):
-    redis_data_json = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT_RUN_GROUPS)
-    redis_data = {}
-    if redis_data_json:
-        redis_data = json.loads(redis_data_json)
-    return redis_data
+    return _run_group_data()
 
 @view_config(route_name='admin_run_groups',
              renderer='templates/run_groups.jinja2')
 def admin_run_groups_view(request):
-    redis_data_json = REDIS.get(Shared.REDIS_KEY_LIVE_EVENT_RUN_GROUPS)
-    redis_data = {}
-    if redis_data_json:
-        redis_data = json.loads(redis_data_json)
-
-    redis_data['admin'] = True
-    return redis_data
+    data = _run_group_data()
+    data['admin'] = True
+    return data
 
 
 
@@ -61,12 +62,7 @@ def admin_generate_run_groups_view(request):
 
     run_groups, counter = Util.randomize_run_groups(data)
 
-    axware_capable_slugs = []
-    if _slugs := os.getenv('ARSCCA_AXWARE_CAPABLE'):
-        axware_capable_slugs = _slugs.split(',')
-
     redis_data = dict(run_groups=run_groups,
-                      axware_capable_slugs=axware_capable_slugs,
                       counter=counter,
                       num_drivers=len(drivers))
 

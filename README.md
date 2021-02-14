@@ -104,10 +104,20 @@ Getting Started (Manually)
     env/bin/pserve development.ini
 
 
+Setting Environment Variables
+-----------------------------
+
+For an env var to work with docker compose, make sure it is included in docker-compose.yml,
+and add it to .env (without quotes)
+
+For an env var to work with a manual container, set it inside the container before running pserve.
+
+
+
 Production Deploy
 -----------------
 
-Set the ARSCCA_SLACK_HOOK in ~/.bashrc
+Set ARSCCA_SLACK_HOOK
 
 
 Streamlined Server
@@ -117,16 +127,20 @@ A streamlined server redirects from the home page to /live.
 Most features of the website remain viable if you have links to them,
 but the focus remains on live results.
 
-To use this in streamlined mode, set the ARSCCA_STREAMLINE environment variable (in ~/.bashrc) to
-anything you want.
+To use this in streamlined mode, set ARSCCA_STREAMLINE
+
 
 ARSCCA_AXWARE_CAPABLE
 ---------------------
 
-Set this environment variable in ~/.bashrc to a comma-separated list of driver slugs
+Set this environment variable to a comma-separated list of driver slugs
 to indicate which drivers (in run groups) are trained / willing to run AxWare.
 
     ARSCCA_AXWARE_CAPABLE=john_lenin,paul_mccartney
+
+(To test this in development, set it explicitly from inside the container:)
+
+    ARSCCA_AXWARE_CAPABLE=john_lenin,paul_mccartney pserve development.ini --reload
 
 ### Current List
 
@@ -135,6 +149,10 @@ Jereme Mason (RRR)
 Andy Chason (RRR)
 
 Jeff Fuller ???
+
+ARSCCA_AXWARE_CAPABLE=ben_walker,thomas_lipham,nick_mellenthin,brady_loretz,jack_desert,tom_penfound,andy_chason,jereme_mason,greg_laborde,blake_alvarado
+
+Interested: Corey Pettet
 
 
 
