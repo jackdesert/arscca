@@ -128,6 +128,23 @@ but the focus remains on live results.
 To use this in streamlined mode, set the ARSCCA_STREAMLINE environment variable to
 anything you want.
 
+ARSCCA_AXWARE_CAPABLE
+---------------------
+
+Set this environment variable in config/environment.txt to a comma-separated list of driver slugs
+to indicate which drivers (in run groups) are trained / willing to run AxWare.
+
+    ARSCCA_AXWARE_CAPABLE=john_lenin,paul_mccartney
+
+### Current List
+
+Greg Laborde (RRR)
+Jereme Mason (RRR)
+Andy Chason (RRR)
+
+Jeff Fuller ???
+
+
 
 National Events
 ---------------
@@ -376,6 +393,7 @@ Joomla Down
 See commit 079
 Joomla is down, so now this loads from a local file.
 The filename looks like archive/DATE__000.html.
+
 
 
 Backlog

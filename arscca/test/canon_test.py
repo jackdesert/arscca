@@ -9,7 +9,8 @@ class CanonTests(unittest.TestCase):
         data = {'Hi There'    : 'hi_there',
                 ' Bona Fide ' : 'bona_fide',
                 'Mr. Robinson': 'mr_robinson',
-                'mr_tee'      : 'mr_tee'}
+                'mr_tee'      : 'mr_tee',
+                'Corey Pettet': 'corey_pettet',}
 
         for name_or_slug, expected_slug in data.items():
             slug = Canon(name_or_slug).slug

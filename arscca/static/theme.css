@@ -334,6 +334,11 @@ tr.selected.tr_stripe
   background: red;
 }
 
+.run-group__skill-icon
+{
+  width: 2rem;
+}
+
 span.spoof
 {
   font-size: 5rem;

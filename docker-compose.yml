@@ -20,6 +20,7 @@ services:
       - TZ
       - ARSCCA_SLACK_HOOK
       - ARSCCA_STREAMLINE
+      - ARSCCA_AXWARE_CAPABLE
 
   arscca-twisted:
     build: /home/ubuntu/arscca-twisted/

@@ -55,8 +55,14 @@
             {% for car_class, driver_names in group | dictsort %}
                 <div class='run-group__car-class'>{{ car_class }}</div>
                 <ul>
-                {% for name in driver_names | sort %}
-                    <li class='run-group__driver-name'>{{ name }}</li>
+                {% for name, slug in driver_names | sort %}
+                    <li class='run-group__driver-name'>
+                        {{ name }}
+                        {% if slug in axware_capable_slugs %}
+                        <img class='run-group__skill-icon' src='{{ request.static_path('arscca:static/images/laptop_icon.png') }}'></img>
+                        {% endif %}
+
+                    </li>
                 {% endfor %}
                 </ul>
             {% endfor %}
