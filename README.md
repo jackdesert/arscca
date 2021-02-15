@@ -192,6 +192,17 @@ In a pinch: tom_penfound,nelson_santos,jack_desert
 Available to train: Corey Pettet
 
 
+Logging
+-------
+
+arscca-pyramid is using pyramid_exclog to log exceptions to /tmp/arscca-pyramid.log
+(See loggers configured in production.ini and __init__.py.
+
+arscca-twisted is using twisted.python.log to log all STDOUT (and exceptions) to /tmp/arscca-twisted.log
+
+When running docker-compose these paths are mounted in the host at /tmp
+
+    tail -f /tmp/arscca*.log
 
 National Events
 ---------------

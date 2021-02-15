@@ -12,6 +12,9 @@ services:
       - type: bind
         source: /home/arscca/
         target: /home/arscca/
+      - type: bind
+        source: /tmp/arscca-pyramid.log
+        target: /tmp/arscca-pyramid.log
     links:
       - arscca-redis
     ports:
@@ -33,6 +36,9 @@ services:
       - type: bind
         source: /home/arscca/
         target: /home/arscca/
+      - type: bind
+        source: /tmp/arscca-twisted.log
+        target: /tmp/arscca-twisted.log
     links:
       - arscca-redis
     ports:

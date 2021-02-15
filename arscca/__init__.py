@@ -67,5 +67,7 @@ def main(global_config, **settings):
 
 
     config.scan()
+    config.include('pyramid_exclog')
     return config.make_wsgi_app()
+
 
