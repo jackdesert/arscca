@@ -108,7 +108,7 @@ Setting Environment Variables
 -----------------------------
 
 For an env var to work with docker compose, make sure it is included in docker-compose.yml,
-and add it to .env (without quotes)
+and add it to .env (without quotes). *Stop docker-compose and restart it.*
 
 For an env var to work with a manual container, set it inside the container before running pserve.
 
@@ -144,15 +144,52 @@ to indicate which drivers (in run groups) are trained / willing to run AxWare.
 
 ### Current List
 
-Greg Laborde (RRR)
-Jereme Mason (RRR)
-Andy Chason (RRR)
+ARKANSAS:
+  Ben Walker
+  Blake Alvarado
+  Brady Loretz (busy?)
+  Nick Mellenthin
+  Thomas Lipham
+
+
+MID-SOUTH:
+  Talliesin Penfound (Mid-South / Expert)
+
+RED RIVER REGION:
+  Greg Laborde (RRR)
+  Jereme Mason (RRR)
+
+MISSISSIPPI:
+  Cody Berrey
+  Enrique Martinez
+  JD Huffington
+  Mike Orzel
+  Taylor George (Mississippi)
+
+### In a Pinch
+
+Tom Penfound (Mid-south)
+Nelson Santos (ARSCCA)
+Andy Chason (RRR) (somewhat)
+Jack Desert (ARSCCA)
+
+
+### Available to Train
+
+Corey Pettet (ARSCCA)
+
+
+Tom Penfound (Mid-south / in a pinch)
 
 Jeff Fuller ???
 
-ARSCCA_AXWARE_CAPABLE=ben_walker,thomas_lipham,nick_mellenthin,brady_loretz,jack_desert,tom_penfound,andy_chason,jereme_mason,greg_laborde,blake_alvarado
+ARSCCA_AXWARE_CAPABLE=ben_walker,blake_alvarado,brady_loretz,nick_mellenthin,thomas_lipham,talliesin_penfound,greg_laborde,jereme_mason,cody_berrey,enrique_martinez,jd_huffington,mike_orzel,taylor_george
 
-Interested: Corey Pettet
+ARSCCA_AXWARE_PINCH=tom_penfound,nelson_santos,jack_desert,andy_chason
+
+In a pinch: tom_penfound,nelson_santos,jack_desert
+
+Available to train: Corey Pettet
 
 
 

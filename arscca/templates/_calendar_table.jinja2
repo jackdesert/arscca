@@ -19,12 +19,18 @@
                 </div>
             </td>
             <td class='calendar-event__td'>
-                {{ event.venue }}
-                <br>
-                {{ event.address }}
+                {% if event.stuttgart %}
+                    <a href='//arscca.org/stuttgart'>Stuttgart Municipal</a>
+                {% elif event.jitsi %}
+                    <a href='//meet.jit.si/arscca'>Jitsi Teleconference</a>
+                {% else %}
+                    {{ event.venue }}
+                    <br>
+                    {{ event.address }}
+                {% endif %}
             </td class='calendar-event__td'>
             <td class='calendar-event__td'>
-                {{ event.info }}
+                {{ event.info | safe }}
             </td>
         </tr>
     {% endfor %}

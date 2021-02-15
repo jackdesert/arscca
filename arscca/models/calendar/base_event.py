@@ -29,13 +29,20 @@ class BaseEvent:
 
     @property
     def date_formatted(self):
-        '''If self.date is a date with format YYYY-MM-DD,
-        returns a formatted date using FRIENDLY_DATE_FORMAT.
-        Otherwise returns an empty string'''
-        if self.DATE_REGEX.match(self.date):
-            date_obj = datetime.strptime(self.date, self.STANDARD_DATE_FORMAT)
-            return date_obj.strftime(self.FRIENDLY_DATE_FORMAT)
+        '''Returns either a formatted date using FRIENDLY_DATE_FORMAT.
+        or an empty string'''
+        obj = self._date_obj()
+        if obj is not None:
+            return obj.strftime(self.FRIENDLY_DATE_FORMAT)
         return ''
+
+    def _date_obj(self):
+        '''If self.date is a date with format YYYY-MM-DD,
+        returns date object
+        Otherwise returns None'''
+        if self.DATE_REGEX.match(self.date):
+            return datetime.strptime(self.date, self.STANDARD_DATE_FORMAT)
+        return None
 
     @property
     def venue(self):

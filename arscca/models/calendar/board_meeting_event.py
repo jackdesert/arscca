@@ -5,15 +5,15 @@ class BoardMeetingEvent(BaseEvent):
     '''Board Meetings, etc'''
 
     # First wednesday of each month, except September is bumped to last week in August
-    DATES = frozenset(['2020-03-04',
-                       '2020-04-01',
-                       '2020-05-06',
-                       '2020-06-03',
-                       '2020-07-01',
-                       '2020-08-05',
-                       '2020-08-26',
-                       '2020-10-14',
-                       '2020-12-02'])
+    DATES = frozenset(['2021-03-03',
+                       '2021-04-07',
+                       '2021-05-05',
+                       '2021-06-02',
+                       '2021-07-07',
+                       '2021-08-04',
+                       '2021-09-01',
+                       '2021-10-06',
+                       '2021-12-02'])
     def __init__(self, date):
         self._date = date
 
@@ -21,9 +21,6 @@ class BoardMeetingEvent(BaseEvent):
     def name(self):
         return 'Board Meeting'
 
-    @property
-    def link(self):
-        return 'https://meet.jit.si/arscca'
 
     @property
     def date(self):
@@ -55,6 +52,9 @@ class BoardMeetingEvent(BaseEvent):
             events.append(event)
         return events
 
+    @property
+    def jitsi(self):
+        return True
 
 
 
