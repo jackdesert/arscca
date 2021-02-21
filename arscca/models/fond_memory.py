@@ -5,6 +5,7 @@ from arscca.models.shared import Shared
 from collections import defaultdict
 from datetime import datetime
 
+
 class FondMemory:
 
     REDIS = Shared.REDIS
@@ -17,8 +18,7 @@ class FondMemory:
         self._event_date = event_date
 
     def write(self):
-        self.REDIS.set(self.__redis_key,
-                       json.dumps(self.__data))
+        self.REDIS.set(self.__redis_key, json.dumps(self.__data))
 
         # Add the event date to a redis set
         self.REDIS.sadd(self.REDIS_KEY_EVENT_DATES, self._event_date)
@@ -42,9 +42,11 @@ class FondMemory:
         else:
             pr = None
 
-        payload = {'event_date': self._event_date, # This is duplicated in the key
-                   'car_model': self._driver.car_model,
-                   'percentile_rank': pr}
+        payload = {
+            'event_date': self._event_date,  # This is duplicated in the key
+            'car_model': self._driver.car_model,
+            'percentile_rank': pr,
+        }
         return payload
 
     @classmethod
@@ -106,8 +108,6 @@ class FondMemory:
             for key, value in sorted(data.items()):
                 ff.write(f'{key.ljust(20)} {str(value).rjust(3)}\n')
 
-
-
     # Event names are stored so they can be used on the front page
     @classmethod
     def store_event_name(cls, date, event_name):
@@ -119,12 +119,9 @@ class FondMemory:
         return cls.REDIS.hgetall(cls.REDIS_KEY_EVENT_NAMES)
 
 
-
 if __name__ == '__main__':
     FondMemory.all_driver_names()
     keys = FondMemory._all_keys_for_driver('jack_desert')
     print(keys)
 
     FondMemory.all_for_driver('jack_desert')
-
-

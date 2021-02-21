@@ -11,12 +11,29 @@ from operator import itemgetter
 
 class Histogram:
 
-    POSSIBLE_BIN_WIDTHS = (1, 2, 4, 5, 10, 20, 25, 40, 50, 60, 75, 100,
-                           120, 125, 150, 175, 200, 250, 300)
+    POSSIBLE_BIN_WIDTHS = (
+        1,
+        2,
+        4,
+        5,
+        10,
+        20,
+        25,
+        40,
+        50,
+        60,
+        75,
+        100,
+        120,
+        125,
+        150,
+        175,
+        200,
+        250,
+        300,
+    )
     DEFAULT_BIN_WIDTH = 2
     WRITE_DIR = 'arscca/static/histograms'
-
-
 
     def __init__(self, drivers, dynamic_bin_width=False):
         # WARNING: drivers is a mutable list; don't change it
@@ -42,7 +59,6 @@ class Histogram:
         plt.axes().xaxis.set_major_locator(ticker.MultipleLocator(bin_width * 2))
         plt.savefig(self.filename)
         plt.clf()
-
 
     # This method is a class method to facilitate easy testing
     @classmethod
@@ -143,9 +159,9 @@ class Histogram:
         return (values, conformed_count)
 
 
-
 if __name__ == '__main__':
     from arscca.models.parser import Parser
+
     date = '2019-03-24'
     url = Parser.URLS[date]
 
@@ -155,4 +171,3 @@ if __name__ == '__main__':
     histogram = Histogram(parser.drivers)
     histogram.plot()
     print(histogram.filename)
-

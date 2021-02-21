@@ -5,7 +5,7 @@ from arscca.models.shared import Shared
 from collections import defaultdict
 from datetime import datetime
 from datetime import date
-from uuid import uuid4 # random uuid
+from uuid import uuid4  # random uuid
 import boto3
 import hashlib
 import json
@@ -17,8 +17,7 @@ import shutil
 import zipfile
 
 
-
-#sudo apt install libpng-dev zlib1g-dev
+# sudo apt install libpng-dev zlib1g-dev
 
 
 class SingleImage:
@@ -40,9 +39,11 @@ class SingleImage:
     with open('config/aws_credentials.json', 'r') as ff:
         __CREDS = json.loads(ff.read())
 
-    S3 = boto3.client('s3',
-                      aws_access_key_id=__CREDS['access_key_id'],
-                      aws_secret_access_key=__CREDS['secret_access_key'])
+    S3 = boto3.client(
+        's3',
+        aws_access_key_id=__CREDS['access_key_id'],
+        aws_secret_access_key=__CREDS['secret_access_key'],
+    )
     S3_BUCKET = __CREDS['s3_bucket']
 
     def __init__(self, filename, ip):
@@ -96,10 +97,9 @@ class SingleImage:
         im.close()
 
         print(f'Uploading {self._filename} as {self._md5}')
-        self.S3.upload_file(self._filename,
-                            self.S3_BUCKET,
-                            self._s3_key_medium,
-                            ExtraArgs=extra_args)
+        self.S3.upload_file(
+            self._filename, self.S3_BUCKET, self._s3_key_medium, ExtraArgs=extra_args
+        )
 
         self._write_key_to_redis(uploaded_at)
 
@@ -107,12 +107,13 @@ class SingleImage:
 
         return True
 
-
     def _compute_s3_key_medium(self, snap_date, snapped):
         # Ideally we have the snap date from exif metadata (snapped)
         # Otherwise, we used the prepend "guessed" to differentiate
         prepend = 'snapped' if snapped else 'guessed'
-        self._s3_key_medium = f'{prepend}-{snap_date}{self.SPLITTER}{self._md5}{self.EXTENSION_MEDIUM}'
+        self._s3_key_medium = (
+            f'{prepend}-{snap_date}{self.SPLITTER}{self._md5}{self.EXTENSION_MEDIUM}'
+        )
 
     # test_key is only passed in during automated tests
     def _write_key_to_redis(self, uploaded_at, test_key=None):
@@ -126,31 +127,28 @@ class SingleImage:
         md5 = digest.hexdigest()
         self._md5 = md5
 
-
     def _unlink(self, filename):
         pathlib.Path(filename).unlink()
 
     @property
     def _medium_temp_filename(self):
-        return self._filename.replace(self.EXTENSION_ORIGINAL,
-                                      self.EXTENSION_MEDIUM)
+        return self._filename.replace(self.EXTENSION_ORIGINAL, self.EXTENSION_MEDIUM)
 
     @classmethod
     def redis_keys_grouped_and_sorted(cls, group_and_sort_by_upload_date=False):
-        '''Retuns S3 photo keys grouped by date
+        """Retuns S3 photo keys grouped by date
         Sample Output:
 
         [
             ('2018-02-05', 'Feb 5, 2018', ['key-6', 'key-5', 'key-4']),
             ('2018-02-04', 'Feb 4, 2018', ['key-3', 'key-2', 'key-1']),
         ]
-        '''
+        """
 
         cursor = 0
         data = []
         while True:
-            cursor, items = Shared.REDIS.hscan(Shared.REDIS_KEY_S3_PHOTOS,
-                                               cursor)
+            cursor, items = Shared.REDIS.hscan(Shared.REDIS_KEY_S3_PHOTOS, cursor)
             for key_with_snap_date_and_md5, upload_timestamp in items.items():
                 if group_and_sort_by_upload_date:
                     sort_string = upload_timestamp
@@ -165,8 +163,6 @@ class SingleImage:
             if cursor == 0:
                 break
 
-
-
         output_dict = defaultdict(list)
 
         # Data will be sorted by first item (sort string),
@@ -176,16 +172,13 @@ class SingleImage:
 
         output_list = sorted(output_dict.items(), reverse=True)
 
-
         output = []
 
         for date, keys in output_list:
             friendly_date = datetime.strptime(date, '%Y-%m-%d').strftime('%B %e, %Y')
             output.append((date, friendly_date, keys))
 
-
         return output
-
 
 
 class Upload:
@@ -201,7 +194,6 @@ class Upload:
         self._ip = ip
         self._extract_dir = f'{self.UPLOADS_DIR}/{uuid4()}'
 
-
     def process(self):
         self._write_to_uploads_dir()
         self._unzip()
@@ -209,18 +201,15 @@ class Upload:
 
         return md5s
 
-
     @property
     def _zip_filename(self):
         return f'{self._extract_dir}.zip'
-
 
     def _write_to_uploads_dir(self):
         pathlib.Path(self.UPLOADS_DIR).mkdir(exist_ok=True)
 
         with open(self._zip_filename, 'wb') as writer:
             writer.write(self._field_storage.value)
-
 
     def _unzip(self):
         try:
@@ -231,7 +220,6 @@ class Upload:
             # Otherwise copy to directory
             pathlib.Path(self._extract_dir).mkdir()
             pathlib.Path(self._zip_filename).rename(f'{self._extract_dir}/image_file')
-
 
     def _process_images(self):
         filenames = []
@@ -253,7 +241,6 @@ class Upload:
         # Sort these to make tests repeatable
         return sorted(md5s)
 
-
     def _unlink(self):
         zipfile_path = pathlib.Path(self._zip_filename)
         if zipfile_path.is_file():
@@ -264,7 +251,6 @@ class Upload:
         # Using shutil.rmtree because we don't know how many levels
         # deep a user will nest their files
         shutil.rmtree(self._extract_dir)
-
 
 
 if __name__ == '__main__':

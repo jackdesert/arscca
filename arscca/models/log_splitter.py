@@ -26,8 +26,6 @@ import requests
 #
 
 
-
-
 class LogSplitter:
 
     FIRST_RUN_COLUMN_HEADER_REGEX = re.compile(r'Times|Runs|Run 1')
@@ -37,11 +35,10 @@ class LogSplitter:
     DATE_REGEX = re.compile(r'(\d\d)-(\d\d)-(\d\d\d\d)')
     PRIMARY_PUBLISHED_SCORE_COLUMN_REGEX = re.compile(r'Total')
 
-
     def __init__(self, date, url, live, local_html_file=None):
         self.date = date
         self.url = url
-        self.live = live # Boolean
+        self.live = live  # Boolean
 
         # pass in a local_html_file for testing
         self._local_html_file = local_html_file
@@ -64,7 +61,6 @@ class LogSplitter:
         self._choose_driver_type()
         return self._build_drivers_from_row_groups()
 
-
     @property
     def event_helper(self):
         if self.driver_type == RallyDriver:
@@ -73,7 +69,6 @@ class LogSplitter:
             return OneCourseEventHelper
         elif self.driver_type == TwoCourseDriver:
             return TwoCourseEventHelper
-
 
     def _load_soup(self):
         if self.live:
@@ -93,18 +88,18 @@ class LogSplitter:
         if 'RallyX Mode' in self._soup.text:
             self.driver_type = RallyDriver
 
-
         if self.live:
             self.event_name = f'Live Results {self.date}'
         else:
             # First h2 has title
             self.event_name = self._soup.find('h2').text.strip().replace('Final', '')
 
-
     def _load_results_table(self):
 
         # First table has the event name and date
-        date_table = self._soup('table')[0] # Failure here means file is empty; check twisted
+        date_table = self._soup('table')[
+            0
+        ]  # Failure here means file is empty; check twisted
         date_string = date_table('th')[0].text
         self.event_date = self.format_date(date_string)
 
@@ -125,10 +120,11 @@ class LogSplitter:
                     # so make sure you trip first_run_column on the
                     # first occurrenct
                     text = th.text.strip()
-                    if (self._first_run_column == None) and self.FIRST_RUN_COLUMN_HEADER_REGEX.match(text):
+                    if (
+                        self._first_run_column == None
+                    ) and self.FIRST_RUN_COLUMN_HEADER_REGEX.match(text):
                         # Set the first run column
                         self._first_run_column = index
-
 
                     if self.PRIMARY_PUBLISHED_SCORE_COLUMN_REGEX.match(text):
                         self._primary_published_score_column = index
@@ -140,7 +136,9 @@ class LogSplitter:
                 self._results_table = table
                 return
 
-        raise RuntimeError('No table found indicating both first run column and primary published score column')
+        raise RuntimeError(
+            'No table found indicating both first run column and primary published score column'
+        )
 
     def _load_row_groups(self):
         # Rows are grouped so that we always start with a primary row
@@ -205,11 +203,13 @@ class LogSplitter:
                 # but no useful row available
                 row_2 = tuple(['' for item in row_1])
 
-            driver = self.driver_type(year,
-                                      row_1,
-                                      row_2,
-                                      self._first_run_column,
-                                      self._primary_published_score_column)
+            driver = self.driver_type(
+                year,
+                row_1,
+                row_2,
+                self._first_run_column,
+                self._primary_published_score_column,
+            )
             drivers.append(driver)
 
         return drivers
@@ -219,9 +219,9 @@ class LogSplitter:
         if not matches:
             return string
         month = int(matches[1])
-        day   = int(matches[2])
-        year  = int(matches[3])
-        date  = Date(year, month, day)
+        day = int(matches[2])
+        year = int(matches[3])
+        date = Date(year, month, day)
         return date.strftime('%B %-d, %Y')
 
     def _start_row(self, row):
@@ -254,4 +254,3 @@ class LogSplitter:
                 return True
 
         return False
-

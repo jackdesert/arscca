@@ -7,23 +7,24 @@ from decimal import InvalidOperation
 from .pax import Pax
 from .photo import Photo
 
+
 class GenericDriver:
-    DNF_REGEX     = re.compile(r'(dnf)|(dns)|(dsq)', re.IGNORECASE)
+    DNF_REGEX = re.compile(r'(dnf)|(dns)|(dsq)', re.IGNORECASE)
     TIME_AND_PENALTY_REGEX = re.compile(r'([0-9.]+)(\+(\d)(/(\d))?)?')
-    INF           = Decimal('inf')
+    INF = Decimal('inf')
 
     PYLON_PENALTY_IN_SECONDS = 2
     MISSED_GATE_PENALTY_IN_SECONDS = 10
 
-
-    def __init__(self, year, row_1, row_2, first_run_column, published_primary_score_column):
+    def __init__(
+        self, year, row_1, row_2, first_run_column, published_primary_score_column
+    ):
         self.year = year
         self._row_1 = row_1
         self._row_2 = row_2
         self._first_run_column = first_run_column
         self._published_primary_score_column = published_primary_score_column
         # See Parser.parse() for a list of instance variables stored on Driver
-
 
     @property
     def car_class(self):
@@ -53,14 +54,12 @@ class GenericDriver:
     def published_primary_score(self):
         return self._row_1[self._published_primary_score_column]
 
-
     def pax_factor(self):
         return Pax.factor(self.year, self.car_class)
 
     def car_class_sortable(self):
         # This is defined as a method only so it can be used to sort a list of drivers
         return self.car_class
-
 
     def _penalty_from_pylons(self, num_pylons):
         # Sometimes the official results have something like '25.625+ '
@@ -81,11 +80,11 @@ class GenericDriver:
         search = self.TIME_AND_PENALTY_REGEX.search(string)
         if search:
             time = Decimal(search[1])
-            num_pylons = search[3] # Will be None or str
+            num_pylons = search[3]  # Will be None or str
             num_gates = search[5]  # Will be None or str
 
             pylon_penalty = self._penalty_from_pylons(num_pylons)
-            gate_penalty  = self._penalty_from_gates(num_gates)
+            gate_penalty = self._penalty_from_gates(num_gates)
         else:
             raise RuntimeError(f'Unable to parse time_from_string("{string}")')
 
@@ -98,12 +97,16 @@ class GenericDriver:
             return min(times)
 
     def _runs_upper(self):
-        return self._row_1[self._first_run_column : self._published_primary_score_column]
+        return self._row_1[
+            self._first_run_column : self._published_primary_score_column
+        ]
 
     def _runs_lower(self):
         if not self._row_2:
             return tuple()
-        return self._row_2[self._first_run_column : self._published_primary_score_column]
+        return self._row_2[
+            self._first_run_column : self._published_primary_score_column
+        ]
 
     def runs(self):
         return self._runs_upper() + self._runs_lower()
@@ -120,14 +123,6 @@ class GenericDriver:
             if Shared.NOT_JUST_WHITESPACE_REGEX.search(run):
                 count += 1
         return count
-
-
-
-
-
-
-
-
 
     def error_in_published(self):
         calculated = self.primary_score()
@@ -150,13 +145,15 @@ class GenericDriver:
                 if not str(calculated) == self.published_primary_score.strip():
                     raise AssertionError
         except AssertionError:
-            try: pub = float(self.published_primary_score)
-            except ValueError: pub = self.published_primary_score
+            try:
+                pub = float(self.published_primary_score)
+            except ValueError:
+                pub = self.published_primary_score
 
             print(msg)
-            return dict(driver_name=self.name,
-                        calculated=float(calculated),
-                        published=pub)
+            return dict(
+                driver_name=self.name, calculated=float(calculated), published=pub
+            )
         except InvalidOperation as exc:
             # We end up here when attempting to parse Decimal('dns')
             print(msg)
@@ -193,20 +190,22 @@ class GenericDriver:
         del props['_row_1']
         del props['_row_2']
 
-        props.update(id = self.id,
-                     name = self.name,
-                     car_class = self.car_class,
-                     car_model = self.car_model,
-                     car_number = self.car_number,
-                     primary_score = str(self.primary_score()),
-                     secondary_score = str(self.secondary_score()),
-                     published_primary_score = str(self.published_primary_score),
-                     # Note that [1,2][0:None] returns [1,2]
-                     runs_upper = self._runs_upper()[0:max_runs_upper],
-                     runs_lower = self._runs_lower()[0:max_runs_lower],
-                     pax_factor = str(self.pax_factor()),
-                     slug = slug_and_head_shot.get('slug') or '',
-                     headshot = slug_and_head_shot.get('head_shot') or '')
+        props.update(
+            id=self.id,
+            name=self.name,
+            car_class=self.car_class,
+            car_model=self.car_model,
+            car_number=self.car_number,
+            primary_score=str(self.primary_score()),
+            secondary_score=str(self.secondary_score()),
+            published_primary_score=str(self.published_primary_score),
+            # Note that [1,2][0:None] returns [1,2]
+            runs_upper=self._runs_upper()[0:max_runs_upper],
+            runs_lower=self._runs_lower()[0:max_runs_lower],
+            pax_factor=str(self.pax_factor()),
+            slug=slug_and_head_shot.get('slug') or '',
+            headshot=slug_and_head_shot.get('head_shot') or '',
+        )
         return props
 
     def primary_score(self):
@@ -214,8 +213,6 @@ class GenericDriver:
 
     def secondary_score(self):
         raise NotImplementedError
-
-
 
     def best_run(self):
         # This method is only useful to OneCourseDrivers and RallyDrivers
@@ -225,9 +222,8 @@ class GenericDriver:
         runs = self.runs()
         return self._best_of_n(runs) or self.INF
 
+
 class TwoCourseDriver(GenericDriver):
-
-
     def primary_score(self):
         return self.best_combined()
 
@@ -255,14 +251,13 @@ class TwoCourseDriver(GenericDriver):
         else:
             return fastest.quantize(Decimal('.001'))
 
-class OneCourseDriver(GenericDriver):
 
+class OneCourseDriver(GenericDriver):
     def primary_score(self):
         return self.best_run()
 
     def secondary_score(self):
         return self.best_run_pax()
-
 
     def best_run_pax(self):
         best = self.best_run() * self.pax_factor()
@@ -271,9 +266,8 @@ class OneCourseDriver(GenericDriver):
         else:
             return best.quantize(Decimal('.001'))
 
+
 class RallyDriver(GenericDriver):
-
-
     def cumulative(self):
         runs = [run for run in self.runs() if run.strip()]
         score = sum([self.time_from_string(run) for run in runs])

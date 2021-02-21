@@ -1,19 +1,19 @@
 import pdb
 
-class LiveEventPresenter:
 
+class LiveEventPresenter:
     @classmethod
     def diff(cls, previous_drivers, drivers):
         pd_dict = dict([(driver['name'], driver) for driver in previous_drivers])
-        d_dict  = dict([(driver['name'], driver) for driver in          drivers])
+        d_dict = dict([(driver['name'], driver) for driver in drivers])
 
         pd_names = set(pd_dict.keys())
-        d_names  = set( d_dict.keys())
+        d_names = set(d_dict.keys())
 
         # "Common" meaning found both in previous_drivers and in drivers
-        common_names  = pd_names.intersection(d_names)
+        common_names = pd_names.intersection(d_names)
         deleted_names = pd_names.difference(d_names)
-        added_names   = d_names.difference(pd_names)
+        added_names = d_names.difference(pd_names)
 
         updates = []
 
@@ -34,10 +34,8 @@ class LiveEventPresenter:
             driver = d_dict[name]
             updates.append(driver)
 
-        output = dict(create=list(added_names),
-                      destroy=list(deleted_names),
-                      update=updates)
+        output = dict(
+            create=list(added_names), destroy=list(deleted_names), update=updates
+        )
 
         return output
-
-

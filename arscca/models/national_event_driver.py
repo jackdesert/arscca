@@ -2,6 +2,7 @@ import csv
 import pdb
 import re
 
+
 class NationalEventDriver:
 
     YEAR_REGEX = re.compile(r'\d{4}')
@@ -10,28 +11,27 @@ class NationalEventDriver:
         self.data = tuple(data)
         self.id = None
 
-
     def _keys(self):
         return (
-                'primary_rank',
-                'secondary_rank',
-                'name',
-                'car_number',
-                'codriver_car_number',
-                'car_class',
-                'class_rank',
-                'car_year',
-                'car_model',
-                'best_combined',
-                'pax_factor',
-                'best_combined_pax',
-                'run_1',
-                'run_2',
-                'run_3',
-                'run_4',
-                'run_5',
-                'run_6',
-               )
+            'primary_rank',
+            'secondary_rank',
+            'name',
+            'car_number',
+            'codriver_car_number',
+            'car_class',
+            'class_rank',
+            'car_year',
+            'car_model',
+            'best_combined',
+            'pax_factor',
+            'best_combined_pax',
+            'run_1',
+            'run_2',
+            'run_3',
+            'run_4',
+            'run_5',
+            'run_6',
+        )
 
     def as_dict(self):
         output = dict(id=self.id)
@@ -41,8 +41,6 @@ class NationalEventDriver:
             output[key] = values.pop()
 
         return output
-
-
 
     @classmethod
     def all(cls, year):
@@ -66,9 +64,9 @@ class NationalEventDriver:
         return drivers[1:]
 
 
-
 if __name__ == '__main__':
     import sys
+
     year = sys.argv[1]
     drivers = NationalEventDriver.all(year)
     for driver in drivers:

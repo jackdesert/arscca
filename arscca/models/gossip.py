@@ -3,6 +3,7 @@ import os
 import pdb
 import re
 
+
 class Gossip:
     class PlimExtensionError(Exception):
         '''Raised when a gossip file doesn not end in .plim'''
@@ -33,11 +34,7 @@ class Gossip:
             yield gossip
 
 
-
-
-
 if __name__ == '__main__':
     # Verify that all gossip files render without error
     for gossip in Gossip.all():
         print(gossip.html(True))
-
