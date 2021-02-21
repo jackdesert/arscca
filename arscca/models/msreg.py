@@ -24,6 +24,7 @@ class Driver:
     """
     A driver registered for an event
     """
+
     COMMA_AND_SPACE = ', '
 
     REDIS = Shared.REDIS
@@ -85,7 +86,9 @@ class Driver:
 
         if self.msreg_barcode and self.stored_barcode:
             # Set a message for later
-            self.messages.add(f'Print a new barcode for {self.name} because barcode updated in msreg to "{self.msreg_barcode}"')
+            self.messages.add(
+                f'Print a new barcode for {self.name} because barcode updated in msreg to "{self.msreg_barcode}"'
+            )
             self.remove_stored_barcode()
         return self.msreg_barcode or self.stored_barcode or self.generate_barcode()
 
@@ -194,7 +197,6 @@ class Event:
         output.sort(key=lambda x: x.name)
         return output
 
-
     def write_to_file(self):
         fieldnames_to_use = copy(self._fieldnames)
         fieldnames_to_use.append(Driver.MESSAGES_COLUMN)
@@ -248,7 +250,6 @@ class Event:
                 count += 1
         return count
 
-
     def _notify_if_no_pax_entry_for_class(self):
         """
         Adds a message to each driver with a class not listed in arscca.models.pax.Pax
@@ -270,6 +271,6 @@ if __name__ == '__main__':
         host='localhost', port=6379, db=9, decode_responses=True
     )
 
-    #msreg = Event('arscca/test/msreg/2020-hangover.txt')
+    # msreg = Event('arscca/test/msreg/2020-hangover.txt')
     msreg = Event('arscca/test/msreg/2020-hangover-with-dupes.txt')
     msreg.verify_and_write_to_file()

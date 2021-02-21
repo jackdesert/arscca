@@ -12,6 +12,7 @@ import re
 from markdown import Markdown
 import requests
 
+
 class Util:
 
     SLACK_HOOK_ENV_KEY = 'ARSCCA_SLACK_HOOK'
@@ -25,7 +26,6 @@ class Util:
 
     with open('config/user_passwords.json', 'r') as ff:
         __USER_PASSWORDS = json.loads(ff.read())
-
 
     @classmethod
     def range_with_skipped_values(cls, num_values, skipped_values):
@@ -47,16 +47,13 @@ class Util:
 
         return output
 
-
     @classmethod
     def post_to_slack(cls, text, username=DEFAULT_SLACK_USERNAME):
         if not cls.SLACK_HOOK:
             print('NOT POSTING TO SLACK because no URL provided')
             return False
 
-        payload = {'text': text,
-                   'username': username,
-                   'icon_emoji': ':ghost:'}
+        payload = {'text': text, 'username': username, 'icon_emoji': ':ghost:'}
 
         # Using a short timeout because this is a blocking call
         requests.post(cls.SLACK_HOOK, json=payload, timeout=1)
@@ -89,7 +86,6 @@ class Util:
                 counter[index] += len(driver_names)
 
         return output, tuple(counter)
-
 
     @classmethod
     def _attempt_randomize_run_groups(cls, data):
@@ -131,7 +127,6 @@ class Util:
     def user_password_auth(cls, password):
         return password in cls.__USER_PASSWORDS
 
-
     @classmethod
     def from_arkansas(cls, request):
         ip = request.headers.get('X-Real-Ip')
@@ -152,14 +147,12 @@ class Util:
         headers = {'User-Agent': 'arscca-pyramid'}
         url = f'https://ipapi.co/{ip}/json'
 
-
         # Wrap this in a lock so multiple concurrent requests
         # from the same IP address (like a web scraper)
         # will only require one API call
         with cls._IP_LOCK:
             if region := cls._IP_ADDRESSES.get(ip):
                 return region
-
 
             # TODO handle timeout exceptions
             data = requests.get(url, timeout=5, headers=headers).json()
@@ -170,7 +163,7 @@ class Util:
 
     @classmethod
     def html_from_markdown(cls, markdown_string, context={}):
-        '''
+        """
         A simple templating tool.
         First keys from context are substituted using jinja2-style syntax.
         ARGUMENTS:
@@ -185,7 +178,7 @@ class Util:
            >>> context = dict(name='Charlie')
            >>> Util.html_from_markdown(markdown_string, context)
            '<h1>Hello Charlie</h1>'
-        '''
+        """
 
         for key, value in context.items():
             prep_a = r'\{\{\s*KEY\s*\}\}'
@@ -199,13 +192,14 @@ class Util:
 
 if __name__ == '__main__':
     import doctest
+
     doctest.testmod()
 
-    #pdb.set_trace()
-    #ip = '99.99.252.41'
-    #url = f'https://ipapi.co/{ip}/json'
+    # pdb.set_trace()
+    # ip = '99.99.252.41'
+    # url = f'https://ipapi.co/{ip}/json'
 
-    #data = requests.get(url, timeout=5, headers=headers).json()
-    #body.json().get('region')
-    #pdb.set_trace()
-    #1
+    # data = requests.get(url, timeout=5, headers=headers).json()
+    # body.json().get('region')
+    # pdb.set_trace()
+    # 1

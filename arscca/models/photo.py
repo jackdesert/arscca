@@ -5,6 +5,7 @@ import pdb
 import re
 import threading
 
+
 class Photo:
     class SlugError(Exception):
         '''Photo filename_without_ext must not have a .jpg extension'''
@@ -13,9 +14,11 @@ class Photo:
     MEDIUM = 'medium'
 
     DIRS = MappingProxyType(
-            { 'small': '/static/images/driver_photos/small',
-              'medium': '/static/images/driver_photos/medium',
-            })
+        {
+            'small': '/static/images/driver_photos/small',
+            'medium': '/static/images/driver_photos/medium',
+        }
+    )
 
     TORSO_SUFFIX_REGEX = re.compile(r'_torso(\.jpg)?$')
     CAR_SUFFIX_REGEX = re.compile(r'_car_?\d*(\.jpg)?$')
@@ -97,7 +100,6 @@ class Photo:
             return {}
         return dict(slug=slug, head_shot=head_shot)
 
-
     @classmethod
     def _head_shots_memoized(cls):
         cls._initialize_head_shots()
@@ -114,7 +116,6 @@ class Photo:
                 return
             for photo in cls.all():
                 cls.HEAD_SHOTS[photo.driver_slug] = photo.path(cls.SMALL)
-
 
     # __eq__ is defined so we can easily test whether two Photo objects are the same
     def __eq__(self, other):
@@ -133,4 +134,3 @@ if __name__ == '__main__':
     barb = Photo.slug_and_head_shot('Barb Eldredge')
     pdb.set_trace()
     a = 5
-

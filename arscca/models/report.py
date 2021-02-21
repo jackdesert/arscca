@@ -7,6 +7,7 @@ import json
 import pdb
 import redis
 
+
 class Report:
 
     KEY_PREPEND = 'points-from-'
@@ -24,7 +25,6 @@ class Report:
     # You only need to fill this out for the current year,
     # since that is the only year that requires point calculation
     NON_POINTS_EVENT_DATES = frozenset(['2019-12-08', '2020-03-07'])
-
 
     def __init__(self, year):
         self.year = year
@@ -72,7 +72,9 @@ class Report:
         keys = set()
         cursor = 0
         while True:
-            cursor, items = Shared.REDIS.scan(cursor=cursor, match=self._redis_key_prepend)
+            cursor, items = Shared.REDIS.scan(
+                cursor=cursor, match=self._redis_key_prepend
+            )
             for item in items:
                 keys.add(item)
             if cursor == 0:
@@ -104,11 +106,11 @@ class Report:
 
     def _sum_best_n(self, scores):
         scores = sorted(scores, reverse=True)
-        scores_to_use = [score for score, _ in zip(scores, range(self.NUM_EVENTS_TO_SCORE))]
+        scores_to_use = [
+            score for score, _ in zip(scores, range(self.NUM_EVENTS_TO_SCORE))
+        ]
         summed = sum(scores_to_use)
         return summed
-
-
 
 
 if __name__ == '__main__':
@@ -117,5 +119,3 @@ if __name__ == '__main__':
     events, totals = rep.events_and_totals()
     pdb.set_trace()
     1
-
-

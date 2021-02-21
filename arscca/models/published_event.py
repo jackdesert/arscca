@@ -5,6 +5,7 @@ from threading import Lock
 import pdb
 import re
 
+
 class PublishedEvent:
     # URL_BASE + id maps to the location of FINAL results
     # Required params: ['com_content', 'view', 'id']
@@ -20,9 +21,8 @@ class PublishedEvent:
     # to joomla ids (where official results are stored)
     __DATES_BY_YEAR = defaultdict(list)
 
-
     def __init__(self, date):
-        self._date =  date
+        self._date = date
 
     @property
     def url(self):
@@ -72,15 +72,12 @@ class PublishedEvent:
         return date_obj.strftime('%b&nbsp;%d')
 
 
-
-
-
 if __name__ == '__main__':
     import requests
+
     HOST = 'http://localhost:6543'
     # HOST = 'http://arscca.jackdesert.com'
     dates = PublishedEvent.dates_by_year()
-
 
     for date, joomla_id in PublishedEvent.DATES_BY_YEAR.items():
         url = f'{HOST}/events/{date}?cb=1'

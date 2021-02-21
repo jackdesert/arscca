@@ -1,4 +1,3 @@
-
 from glob import glob
 from collections import defaultdict
 import json
@@ -17,7 +16,6 @@ from arscca.models.util import Util
 
 class Dispatcher:
 
-
     # This filename ends in jinja2 because it is used as a view template
     LIVE_FILENAME = '/home/arscca/arscca-live.jinja2'
 
@@ -27,11 +25,10 @@ class Dispatcher:
 
     PAX_STRING = 'PAX'
 
-
     def __init__(self, date, url, live):
         self.date = date
         self.url = url
-        self.live = live # Boolean
+        self.live = live  # Boolean
         self._point_storage = defaultdict(int)
 
         html_file = self._html_file_from_date(date)
@@ -55,7 +52,6 @@ class Dispatcher:
             if date in fname:
                 return fname
         return None
-
 
     def _set_second_half_started_on_drivers(self):
         # Penalties for no completed runs in second half
@@ -109,7 +105,6 @@ class Dispatcher:
             rank += 1
             last_car_class = driver.car_class
 
-
     def _create_fond_memories(self):
         FondMemory.store_event_name(self.date, self.event_name)
         for driver in self.drivers:
@@ -117,9 +112,9 @@ class Dispatcher:
             memory.write()
 
     def _apply_points(self):
-        '''
+        """
         Apply points for Standings Report
-        '''
+        """
         if self.date in Report.NON_POINTS_EVENT_DATES:
             # Test & Tune, Hangover generally not pointed
             return
@@ -139,7 +134,9 @@ class Dispatcher:
             car_class_points = self._point(car_class)
             if car_class_points > 0:
                 data[car_class][canonical_driver_name] = car_class_points
-            print(f'{canonical_driver_name} awarded {pax_points} pax points and {car_class_points} {car_class} points')
+            print(
+                f'{canonical_driver_name} awarded {pax_points} pax points and {car_class_points} {car_class} points'
+            )
         Shared.REDIS.set(f'points-from-{self.date}', json.dumps(data))
 
     def _point(self, pax_or_car_class):
