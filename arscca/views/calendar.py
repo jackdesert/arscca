@@ -24,7 +24,7 @@ def calendar_slash_view(request):
 def calendar_plain_view(request):
     origin = request.headers.get('Origin')
     if origin in Shared.CORS_DOMAINS:
-        # Set CORS headers for cross-domain usage
+        # Set CORS headers for cross-domain usage because arscca.org displays this content
         request.response.headers['Access-Control-Allow-Origin'] = origin
 
     short = bool(request.params.get('short'))

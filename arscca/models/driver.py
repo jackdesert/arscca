@@ -161,7 +161,6 @@ class GenericDriver:
             # We end up here when attempting to parse Decimal('dns')
             print(msg)
             print(f'ERROR parsing scores for {self.name}')
-            pdb.set_trace()
             raise exc
 
     def __repr__(self):
