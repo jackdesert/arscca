@@ -1,7 +1,12 @@
-import pdb
+"""
+These helpers are used in the views
+"""
 
 
 class TwoCourseEventHelper:
+    """
+    For two course drivers
+    """
 
     COMBINED_SCORING = (
         'Score is computed by adding best morning run to the best afternoon run.',
@@ -13,9 +18,18 @@ class TwoCourseEventHelper:
 
     PAX_SCORING = 'PAX Score is Score * PAX Factor'
 
-    PENALTY_SCORING = 'Two seconds are added for each pylon. That is, 29.723+1 is counted as 31.723 seconds.'
+    # This is a string
+    PENALTY_SCORING = (
+        'Two seconds are added for each pylon. '
+        'That is, 29.723+1 is counted as 31.723 seconds.'
+    )
 
-    PERCENTILE_SCORING = 'Position (Percentile) is the percentage of scoring drivers who were faster than you. See <a href="https://en.wikipedia.org/wiki/Percentile_rank">Percentile Rank.</a>'
+    # This is a string
+    PERCENTILE_SCORING = (
+        'Position (Percentile) is the percentage of scoring '
+        'drivers who were faster than you. See '
+        '<a href="https://en.wikipedia.org/wiki/Percentile_rank">Percentile Rank.</a>'
+    )
 
     PRIMARY_SCORE_LABEL = 'Score*'
     SECONDARY_SCORE_LABEL = 'PAX SCORE*'
@@ -35,6 +49,9 @@ class TwoCourseEventHelper:
 
     @classmethod
     def has_pax(cls):
+        """
+        Autocross events have PAX. Rallycross does not.
+        """
         return True
 
     @classmethod
@@ -48,10 +65,16 @@ class TwoCourseEventHelper:
 
     @classmethod
     def dynamic_bin_width(cls):
+        """
+        The bin width to use in the histogram
+        """
         return cls.DYNAMIC_BIN_WIDTH
 
     @classmethod
     def properties(cls):
+        """
+        All the things needed to flesh out the html
+        """
         return dict(
             scoring=cls.scoring(),
             has_pax=cls.has_pax(),
@@ -64,6 +87,9 @@ class TwoCourseEventHelper:
 
 
 class OneCourseEventHelper(TwoCourseEventHelper):
+    """
+    For one course drivers
+    """
 
     SEGREGATE_RUNS = False
     DYNAMIC_BIN_WIDTH = False
@@ -83,6 +109,9 @@ class OneCourseEventHelper(TwoCourseEventHelper):
 
 
 class RallyEventHelper(TwoCourseEventHelper):
+    """
+    For rally drivers
+    """
 
     PRIMARY_SCORE_LABEL = 'Cumulative Score'
     SECONDARY_SCORE_LABEL = 'Best Run*'
@@ -93,6 +122,9 @@ class RallyEventHelper(TwoCourseEventHelper):
 
     @classmethod
     def has_pax(cls):
+        """
+        Autocross events have PAX. Rallycross does not.
+        """
         return False
 
     @classmethod
