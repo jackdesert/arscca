@@ -30,12 +30,6 @@ class FondMemory:
         return key
 
     @property
-    def __redis_key_events_per_year(self):
-        year = self._event_date[0:4]
-        key = f'{self.REDIS_KEY_PREPEND_EVENTS_PER_YEAR}--{driver_slug}--{self._event_date}'
-        return key
-
-    @property
     def __data(self):
         if hasattr(self._driver, 'percentile_rank'):
             pr = self._driver.percentile_rank

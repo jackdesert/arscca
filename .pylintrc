@@ -1,0 +1,10 @@
+[MESSAGES CONTROL]
+
+disable=
+    # Allows TODO and FIX statements
+    #fixme,
+
+good-names=
+    id,
+
+

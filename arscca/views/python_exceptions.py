@@ -57,4 +57,3 @@ def exception_view(request):
     # Use this method to verify that your slack notifier is working
     # This will raise an exception
     1 / 0
-    return nothing

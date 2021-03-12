@@ -254,4 +254,4 @@ class Upload:
 
 
 if __name__ == '__main__':
-    print(SingleImage.redis_keys_sorted())
+    print(SingleImage.redis_keys_grouped_and_sorted())

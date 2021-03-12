@@ -79,7 +79,7 @@ if __name__ == '__main__':
     # HOST = 'http://arscca.jackdesert.com'
     dates = PublishedEvent.dates_by_year()
 
-    for date, joomla_id in PublishedEvent.DATES_BY_YEAR.items():
+    for date, joomla_id in PublishedEvent.dates_by_year().items():
         url = f'{HOST}/events/{date}?cb=1'
         print(f'Parsing {date}')
 

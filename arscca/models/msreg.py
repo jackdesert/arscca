@@ -273,4 +273,4 @@ if __name__ == '__main__':
 
     # msreg = Event('arscca/test/msreg/2020-hangover.txt')
     msreg = Event('arscca/test/msreg/2020-hangover-with-dupes.txt')
-    msreg.verify_and_write_to_file()
+    msreg.write_to_file()

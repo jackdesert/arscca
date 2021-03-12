@@ -70,7 +70,7 @@ def msreg_upload_view(request):
 @view_config(route_name='msreg_download')
 def msreg_download_view(request):
     event = Event()
-    event.verify_and_write_to_file()
+    event.write_to_file()
     return FileResponse(Shared.MSREG_AUGMENTED_PATH, content_type='application/force-download')
 
 

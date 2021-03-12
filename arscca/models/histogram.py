@@ -160,14 +160,13 @@ class Histogram:
 
 
 if __name__ == '__main__':
-    from arscca.models.parser import Parser
+    from arscca.models.dispatcher import Dispatcher
+    date = '2021-03-14'
+    url = ''
+    live = False
+    dispatcher = Dispatcher(date, url, live)
+    dispatcher.compile()
 
-    date = '2019-03-24'
-    url = Parser.URLS[date]
-
-    parser = Parser(date, url)
-    parser.parse()
-
-    histogram = Histogram(parser.drivers)
+    histogram = Histogram(dispatcher.drivers)
     histogram.plot()
     print(histogram.filename)

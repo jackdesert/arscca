@@ -139,5 +139,6 @@ class RallyEventHelper(TwoCourseEventHelper):
 if __name__ == '__main__':
     helper = RallyEventHelper
     props = helper.properties()
+    import pdb
     pdb.set_trace()
     1
