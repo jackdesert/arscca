@@ -19,7 +19,7 @@ import requests
 class AxwarePublisher:
     SITE = 'http://arscca.org/administrator'
     USERNAME = 'jackdesert'
-    YEAR = 2020
+    YEAR = 2021
 
     NEW_CATEGORY_PAGE = 'index.php?option=com_categories&task=category.add&extension=com_content'
     NEW_ARTICLE_PAGE = 'index.php?option=com_content&task=article.add'
@@ -81,6 +81,9 @@ class AxwarePublisher:
         time.sleep(1)
 
     def _create_event_category(self):
+        """
+        An example category is "2021 Solo II Event 14"
+        """
         print(f'\nCreating event category:\n  {self._event_full_name}')
 
         self._driver.get(f'{self.SITE}/{self.NEW_CATEGORY_PAGE}')

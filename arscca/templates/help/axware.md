@@ -88,3 +88,27 @@ by who's fastest.
 Timing -> Start Announcer Window.
 
 This opens another screen.
+
+## Double Scan (Move Entries Up)
+
+If you double scan someone such that they are in there twice, right click on the second
+row with their name and select "Move entries up one row".
+
+Alternatively, click the "UP" button right in the row of the second scan.
+
+Watch out---sometimes AxWare also swallows a recorded time also. (This happens to me if I
+"move entries up one row" multiple times)
+
+## Missed Scan (Move Entries Down)
+
+If one driver did not get scanned, you can "insert" them by right clicking on the driver AFTER them and select "Move entries down one row". Now there is a space to manually enter the car and class.
+
+
+Alternatively, click the "DOWN" button right in the row of the driver after them.
+
+Logs
+----
+
+If you want AxWare to log to the filesystem (so hopefully you can see the logs after restarting):
+
+Setup -> Options -> Automatically Log Status Messages to Files

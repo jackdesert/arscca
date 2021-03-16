@@ -7,7 +7,7 @@ do
   for D in `find bin/archive -type f | sort`
   do
     echo "copying $D to $TARGET_PATH"
-    rsync -av $D arscca@arscca.jackdesert.com:arscca-live.jinja2
+    rsync -av $D arscca@uno.arscca.org:arscca-live.jinja2
     sleep 3
   done
 done
