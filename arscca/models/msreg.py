@@ -207,7 +207,6 @@ class Event:
             )
             writer.writeheader()
 
-            drivers = self.drivers
             for driver in self.drivers:
                 writer.writerow(driver.as_dict())
 
@@ -257,7 +256,8 @@ class Event:
         year = datetime.now().year
         for driver in self.drivers:
             try:
-                pax_factor = Pax.factor(year, driver.car_class)
+                # pylint: disable=unused_variable
+                unused_pax_factor = Pax.factor(year, driver.car_class)
             except KeyError:
                 driver.messages.add(f'Unknown car class: {driver.car_class}')
 

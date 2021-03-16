@@ -20,6 +20,7 @@ def msreg_view(request):
     try:
         event = Event()
         drivers = event.drivers
+        event.write_to_file()
         minutes_ago = f'{event.minutes_ago} minutes ago'
     except FileNotFoundError:
         drivers = []
@@ -69,8 +70,6 @@ def msreg_upload_view(request):
 
 @view_config(route_name='msreg_download')
 def msreg_download_view(request):
-    event = Event()
-    event.write_to_file()
     return FileResponse(Shared.MSREG_AUGMENTED_PATH, content_type='application/force-download')
 
 
