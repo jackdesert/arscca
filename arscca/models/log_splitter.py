@@ -90,9 +90,17 @@ class LogSplitter:
 
         if self.live:
             self.event_name = f'Live Results {self.date}'
-        else:
-            # First h2 has title
-            self.event_name = self._soup.find('h2').text.strip().replace('Final', '')
+            return
+
+        # Before December 2020, the h2 had title
+        h2 = self._soup.find('h2')
+        if h2:
+            self.event_name = h2.text.strip().replace('Final', '')
+            return
+
+        # Then the layout of joomla was changed (for the better!)
+        dd = self._soup.find('dd', 'category-name')
+        self.event_name = dd.find('a').text
 
     def _load_results_table(self):
 
