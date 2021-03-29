@@ -38,7 +38,7 @@ Plim==0.9.12
 pluggy==0.13.1
 py==1.8.1
 PyExecJS==1.5.1
-Pygments==2.6.1
+Pygments==2.7.4
 pyparsing==2.4.6
 pyramid==1.10.4
 pyramid-debugtoolbar==4.6.1
