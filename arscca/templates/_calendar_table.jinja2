@@ -3,8 +3,8 @@
     <tr>
         <th class='calendar-event__th'>Date</th>
         <th class='calendar-event__th'>Event</th>
-        <th class='calendar-event__th'>Location</th>
         <th class='calendar-event__th'>Information</th>
+        <th class='calendar-event__th'>Location</th>
     </tr>
     {% for event in events %}
         <tr class='calendar-event__tr calendar-event__tr_{{ event.css_class }}'>
@@ -19,6 +19,9 @@
                 </div>
             </td>
             <td class='calendar-event__td'>
+                {{ event.info | safe }}
+            </td>
+            <td class='calendar-event__td'>
                 {% if event.stuttgart %}
                     <a href='//arscca.org/stuttgart'>Stuttgart Municipal</a>
                 {% elif event.jitsi %}
@@ -29,9 +32,6 @@
                     {{ event.address }}
                 {% endif %}
             </td class='calendar-event__td'>
-            <td class='calendar-event__td'>
-                {{ event.info | safe }}
-            </td>
         </tr>
     {% endfor %}
 </table>
