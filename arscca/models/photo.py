@@ -127,6 +127,7 @@ class Photo:
 if __name__ == '__main__':
     # When adding new photos, note that the hyperlinks will not show up
     # at /live until new data is pushed
+    # Also, be sure to `git add` the new photos
     photos = Photo.all()
     one = photos[0]
     one.path('small')
