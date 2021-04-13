@@ -112,3 +112,19 @@ Logs
 If you want AxWare to log to the filesystem (so hopefully you can see the logs after restarting):
 
 Setup -> Options -> Automatically Log Status Messages to Files
+
+
+Ghost Entries
+-------------
+
+There is a bug in axware such that if you put in a time for driver X, then delete it,
+that time will still show up in results until driver X gets another time in the system.
+
+The problem is when the time you put in is a low number (such is the case when testing
+the timing lights.) Then the ghost shows up as being the top time UNTIL that driver gets an actual
+run in the system.
+
+One solution is to mark your timing system tests as "reruns" instead of deleting them.
+Another solution is to manually edit the time to be a large number before deleting it.
+
+
