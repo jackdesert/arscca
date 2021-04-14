@@ -127,12 +127,20 @@ class GenericDriver:
         return time + pylon_penalty + gate_penalty
 
 
-    def _best_of_n(self, runs):
+    def _best_of_n(self, runs, index=False):
+        """
+        When index is False, returns the best time.
+        When index is True, returns the index of the best time.
+        """
         runs_to_use = [rr for rr in runs if rr.strip()]
         times = [self.time_from_string(rr) for rr in runs_to_use]
-        if times:
-            return min(times)
-        return None
+        if not times:
+            return None
+        minimum = min(times)
+
+        if index:
+            return times.index(minimum)
+        return minimum
 
     def _runs_upper(self):
         """
@@ -278,6 +286,14 @@ class GenericDriver:
             slug=slug_and_head_shot.get('slug') or '',
             headshot=slug_and_head_shot.get('head_shot') or '',
         )
+
+        if hasattr(self, 'best_am_index'):
+            props.update(runs_upper_best_index=self.best_am_index(),
+                         runs_lower_best_index=self.best_pm_index(),
+            )
+        else:
+            props.update(runs_upper_best_index=self.best_run(index=True))
+
         return props
 
     def primary_score(self):
@@ -294,7 +310,7 @@ class GenericDriver:
         """
         raise NotImplementedError
 
-    def best_run(self):
+    def best_run(self, index=False):
         """
         This method is only useful to OneCourseDrivers and RallyDrivers
         """
@@ -302,8 +318,11 @@ class GenericDriver:
             raise NotImplementedError
 
         runs = self.runs()
-        return self._best_of_n(runs) or self.INF
-
+        best_or_index = self._best_of_n(runs, index=index) or self.INF
+        if index and best_or_index is self.INF:
+            # Return -1 to indicate no matching index
+            return -1
+        return best_or_index
 
 # pragma pylint: disable=missing-function-docstring
 class TwoCourseDriver(GenericDriver):
@@ -316,6 +335,20 @@ class TwoCourseDriver(GenericDriver):
 
     def secondary_score(self):
         return self.best_combined_pax()
+
+    def best_am_index(self):
+        """
+        Returns the index of the best am run.
+        This is used for bolding in the jinja template
+        """
+        return self._best_of_n(self._runs_upper(), index=True)
+
+    def best_pm_index(self):
+        """
+        Returns the index of the best pm run.
+        This is used for bolding in the jinja template
+        """
+        return self._best_of_n(self._runs_lower(), index=True)
 
     def best_am(self):
         return self._best_of_n(self._runs_upper())

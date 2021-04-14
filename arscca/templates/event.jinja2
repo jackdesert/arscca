@@ -61,6 +61,7 @@
             </thead>
             <tbody id='drivers-tbody'>
                 {% set pm_run_klass = 'pm-run' if helper_props.get('segregate_runs') else '' %}
+                {% set pm_run_klass_best = 'pm-run best' if helper_props.get('segregate_runs') else '' %}
                 <tr v-for='(driver, row_index) in drivers' v-if='visible(driver.id)' v-bind:id='driver.id' v-bind:class='rowKlass(driver.id, row_index)' v-on:click='highlightRow(driver.id)'>
                     <td class='primary-rank'>${ driver.primary_rank }</td>
                     <td class='secondary-rank'>${ driver.secondary_rank }</td>
@@ -84,8 +85,8 @@
                         <td class='pax-factor'>${ driver.pax_factor }</td>
                     {% endif %}
                     <td class='best-combined-pax'>${ replaceInfinity(driver.secondary_score) }</td>
-                    <td v-for='run in driver.runs_upper' class='am-run'>${ run }</td>
-                    <td v-for='run in driver.runs_lower' class='{{ pm_run_klass }}'>${ run }</td>
+                    <td v-for='run, index in driver.runs_upper' :class="driver.runs_upper_best_index == index ? 'am-run best' : 'am-run'">${ run }</td>
+                    <td v-for='run, index in driver.runs_lower' :class="driver.runs_lower_best_index == index ? '{{ pm_run_klass_best }}' : '{{ pm_run_klass }}'">${ run }</td>
                 </tr>
             </tbody>
         </table>
