@@ -128,6 +128,8 @@ if __name__ == '__main__':
     # When adding new photos, note that the hyperlinks will not show up
     # at /live until new data is pushed
     # Also, be sure to `git add` the new photos
+    # Also, be sure to add `cb=1` at the end of the url for cachebusting
+    # And finally, it seems like browser caching is happening....
     photos = Photo.all()
     one = photos[0]
     one.path('small')
