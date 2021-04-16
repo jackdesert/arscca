@@ -197,7 +197,8 @@ td.am-run + td.am-run, td.pm-run + td.pm-run
 td.am-run.best, td.pm-run.best
 {
   /* 400 or 500 gives some contrast without overpowering */
-  font-weight: 400;
+  /* Black asked for bolder though, so running 600 */
+  font-weight: 600;
 }
 
 tr:hover
