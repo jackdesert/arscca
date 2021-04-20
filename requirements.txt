@@ -36,7 +36,7 @@ plaster==1.0
 plaster-pastedeploy==0.7
 Plim==0.9.12
 pluggy==0.13.1
-py==1.8.1
+py==1.10.0
 PyExecJS==1.5.1
 Pygments==2.6.1
 pyparsing==2.4.6
