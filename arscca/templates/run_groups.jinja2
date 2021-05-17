@@ -34,8 +34,16 @@
             </form>
         {% endif %}
 
-    <h2 class='run-group__h2'>Help</h2>
-    <div>If you expected something different than {{ num_drivers }} total drivers, press the <b>Standings</b> button in AxWare to push drivers to cloud. Then clear run groups and generate them again.</div>
+        <h2 class='run-group__h2'>Tips</h2>
+        <ol>
+        <li>
+            If you expected something different than {{ num_drivers }} total drivers,
+            press the <b>Standings</b> button in AxWare to push drivers to cloud.
+            Then clear run groups and generate them again.
+        </li>
+        <li>Check that there are one or two <b>computer workers</b> available in each run group</li>
+        <li><b>Scan a water bottle barcode</b> to verify that strict barcode scanning is in place. A popup window will tell you barcode is not recognized.</li>
+        </ol>
 
     {% else %}
         {% if run_groups %}
