@@ -128,3 +128,13 @@ One solution is to mark your timing system tests as "reruns" instead of deleting
 Another solution is to manually edit the time to be a large number before deleting it.
 
 
+Generate Raw AxWare Results for Posting to arscca.org
+-----------------------------------------------------
+
+In AxWare, Click Reports -> Generate All Reports.
+
+A window will open with the reports in it. While this window is still open,
+open Windows File Explorer and browse to the Announcer folder. copy the four
+files that start with *event-n_* to a thumb drive. Then close the reports.
+
+
