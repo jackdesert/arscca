@@ -58,7 +58,7 @@ class LogSplitter:
         self._num_rows_per_driver = self._infer_num_rows_per_driver()
 
         self._set_event_details()
-        self._choose_driver_type()
+        self._set_driver_type()
         return self._build_drivers_from_row_groups()
 
     @property
@@ -85,9 +85,6 @@ class LogSplitter:
         self._soup = BeautifulSoup(html, 'html.parser')
 
     def _set_event_details(self):
-        if 'RallyX Mode' in self._soup.text:
-            self.driver_type = RallyDriver
-
         if self.live:
             self.event_name = f'Live Results {self.date}'
             return
@@ -172,11 +169,16 @@ class LogSplitter:
                 groups[-1].append(row)
         self._row_groups = groups
 
-    def _choose_driver_type(self):
-        # This method decides which parser to use for the event
-        if self.driver_type == RallyDriver:
-            # This was set in a previous method based on html on the page
+    def _set_driver_type(self):
+        if (
+                # 2021 events appear to show links to classes (checking here for Stock AWD)
+                self._soup.find('a', href='#SA')
+                # Previous years had a nifty piece buried in the html
+                or '** RallyX Mode ' in self._soup.text
+            ):
+            self.driver_type = RallyDriver
             return
+
 
         d1 = 'D1'
         d2 = 'D2'
@@ -186,9 +188,9 @@ class LogSplitter:
             if not rg[0].index(d1) == rg[1].index(d2):
                 raise AssertionError
             self.driver_type = TwoCourseDriver
+            return
 
-        else:
-            self.driver_type = OneCourseDriver
+        self.driver_type = OneCourseDriver
 
     def _infer_num_rows_per_driver(self):
         for group in self._row_groups:
