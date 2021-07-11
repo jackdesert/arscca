@@ -5,6 +5,8 @@ from threading import Lock
 import pdb
 import re
 
+from arscca.models.shared import Shared
+
 
 class PublishedEvent:
     # URL_BASE + id maps to the location of FINAL results
@@ -13,7 +15,6 @@ class PublishedEvent:
     LOCK = Lock()
     FILENAME_REGEX = re.compile(r'/(.+)__(.+)\.html')
 
-    DIRT_SURFACE_REGEX = re.compile(r'RallyX Mode')
     DIRT_SURFACE = 'dirt'
     TARMAC_SURFACE = 'tarmac'
 
@@ -59,7 +60,7 @@ class PublishedEvent:
     def _surface(cls, filename):
         with open(filename, 'r') as ff:
             html = ff.read()
-        if cls.DIRT_SURFACE_REGEX.search(html):
+        if Shared.RALLYX_REGEX.search(html):
             return cls.DIRT_SURFACE
 
         return cls.TARMAC_SURFACE

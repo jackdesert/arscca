@@ -27,3 +27,7 @@ class Shared:
 
     MSREG_RAW_PATH = '/tmp/msreg_raw.txt'
     MSREG_AUGMENTED_PATH = '/tmp/msreg_augmented.txt'
+
+    # 2021 Events show links to classes. for example, #SA is stock all wheel drive
+    # Previous to 2021 there was a bit of html that said "RallyX Mode"
+    RALLYX_REGEX = re.compile(r'(\*\* RallyX Mode )|( href="#SA">)|(<title>.*RallyX.*</title>)')

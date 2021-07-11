@@ -170,12 +170,7 @@ class LogSplitter:
         self._row_groups = groups
 
     def _set_driver_type(self):
-        if (
-                # 2021 events appear to show links to classes (checking here for Stock AWD)
-                self._soup.find('a', href='#SA')
-                # Previous years had a nifty piece buried in the html
-                or '** RallyX Mode ' in self._soup.text
-            ):
+        if Shared.RALLYX_REGEX.search(str(self._soup)):
             self.driver_type = RallyDriver
             return
 
