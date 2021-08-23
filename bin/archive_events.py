@@ -102,6 +102,8 @@ class FinalFetcher:
 
     # Matching on html comment:
     #    <!-- Date Created: Sun Jun 16 21:37:29 2019 -->
+    # Note this is the date the report was generated, not the day of the event.
+    # (This is only used as a backup in case MONTH_FIRST_DATE_REGEX is not found)
     DATE_IN_COMMENTS_REGEX = re.compile('Date Created: \S{3} (\S{3}) (\d{1,2}).*(\d{4})')
 
     OUTPUT_DIR = 'archive'
