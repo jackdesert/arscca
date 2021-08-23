@@ -7,6 +7,8 @@ import requests
 
 class MSRParser:
     '''Class for parsing events from motorportreg and turning them into html'''
+
+    # Note events disappear from msreg before midnight! (Probably based on end time/date)
     URL = 'https://www.motorsportreg.com/calendar/?country=US&radius=120&lat=34.80&lng=-92.24&loc=North+Little+Rock%2C+AR'
 
     def __init__(self):
