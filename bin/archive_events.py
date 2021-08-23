@@ -200,6 +200,8 @@ class FinalFetcher:
         duplicate_dates = [date for date, count in dates.items() if count > 1]
         duplicate_joomla_ids = [jid for jid, count in joomla_ids.items() if count > 1]
         print(f'duplicate dates: {duplicate_dates}')
+        if duplicate_dates:
+            print('To fix duplicated dates, manually edit the "Created At" comment in joomla, then run this again')
         print(f'duplicate joomla_ids: {duplicate_joomla_ids}')
 
 if __name__ == '__main__':
