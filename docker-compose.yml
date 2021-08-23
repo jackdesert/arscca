@@ -20,10 +20,12 @@ services:
     ports:
       - '6543:6543'
     environment:
+      # These are set in .env
       - TZ
       - ARSCCA_SLACK_HOOK
       - ARSCCA_STREAMLINE
       - ARSCCA_AXWARE_CAPABLE
+      - ARSCCA_SAFETY_CAPABLE
 
   arscca-twisted:
     build: /home/ubuntu/arscca-twisted/
