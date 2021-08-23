@@ -133,7 +133,7 @@ To use this in streamlined mode, set ARSCCA_STREAMLINE
 ARSCCA_AXWARE_CAPABLE
 ---------------------
 
-Set this environment variable to a comma-separated list of driver slugs
+Set this environment variable (in .env) to a comma-separated list of driver slugs
 to indicate which drivers (in run groups) are trained / willing to run AxWare.
 
     ARSCCA_AXWARE_CAPABLE=john_lenin,paul_mccartney

@@ -19,8 +19,12 @@ def _run_group_data():
     if redis_data_json:
         redis_data = json.loads(redis_data_json)
 
-    slugs = str(os.getenv('ARSCCA_AXWARE_CAPABLE'))
-    redis_data['axware_capable_slugs'] = slugs.split(',')
+    ac_slugs = str(os.getenv('ARSCCA_AXWARE_CAPABLE'))
+    redis_data['axware_capable_slugs'] = ac_slugs.split(',')
+
+    sc_slugs = str(os.getenv('ARSCCA_SAFETY_CAPABLE'))
+    redis_data['safety_capable_slugs'] = sc_slugs.split(',')
+
     return redis_data
 
 

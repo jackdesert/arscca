@@ -67,7 +67,11 @@
                     <li class='run-group__driver-name'>
                         {{ name }}
                         {% if slug in axware_capable_slugs %}
-                        <img class='run-group__skill-icon' src='{{ request.static_path('arscca:static/images/laptop_icon.png') }}'></img>
+                            <img class='run-group__skill-icon' src='{{ request.static_path('arscca:static/images/laptop_icon.png') }}'></img>
+                        {% endif %}
+
+                        {% if slug in safety_capable_slugs %}
+                            <img class='run-group__skill-icon' src='{{ request.static_path('arscca:static/images/orange_vest_icon.png') }}'></img>
                         {% endif %}
 
                     </li>
