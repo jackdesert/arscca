@@ -8,6 +8,7 @@ import json
 from arscca.models.canon import Canon
 from arscca.models.driver import GenericDriver
 from arscca.models.driver import TwoCourseDriver
+from arscca.models.driver import RallyDriver
 from arscca.models.fond_memory import FondMemory
 from arscca.models.log_splitter import LogSplitter
 from arscca.models.report import Report
@@ -130,6 +131,10 @@ class Dispatcher:
         """
         if self.date in Report.NON_POINTS_EVENT_DATES:
             # Test & Tune, Hangover generally not pointed
+            return
+
+        if self._log_splitter.driver_type == RallyDriver:
+            # No Points for Rally Events
             return
 
         data = defaultdict(dict)
