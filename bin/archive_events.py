@@ -37,7 +37,7 @@ class TopLevelFetcher:
         '''
         req = loop_get(self._url)
         soup = BeautifulSoup(req.text, 'lxml')
-        for h3 in soup('h3'):
+        for h3 in reversed(soup('h3')):
             for link in h3('a'):
                 search = self.YEAR_REGEX.search(link.text)
                 assert search
@@ -64,7 +64,7 @@ class YearFetcher:
         req = loop_get(url)
         soup = BeautifulSoup(req.text, 'lxml')
         found = False
-        for h3 in soup('h3'):
+        for h3 in reversed(soup('h3')):
             found = True
             for link in h3('a'):
                 href = link['href']
