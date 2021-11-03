@@ -458,6 +458,8 @@ Adding a New Event
 
 Each year, create a new category like "2025 Results" which has as its parent "Results"
 
+Also update models.report.Report.NUM_EVENTS_TO_SCORE
+
 Also update bin/axware_publisher.py to use the new year.
 
 
