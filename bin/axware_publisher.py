@@ -19,7 +19,7 @@ import requests
 class AxwarePublisher:
     SITE = 'http://arscca.org/administrator'
     USERNAME = 'jackdesert'
-    YEAR = 2021
+    YEAR = 2022
 
     NEW_CATEGORY_PAGE = 'index.php?option=com_categories&task=category.add&extension=com_content'
     NEW_ARTICLE_PAGE = 'index.php?option=com_content&task=article.add'
@@ -82,7 +82,7 @@ class AxwarePublisher:
 
     def _create_event_category(self):
         """
-        An example category is "2021 Solo II Event 14"
+        An example category is "2022 Solo II Event 14"
         """
         print(f'\nCreating event category:\n  {self._event_full_name}')
 
