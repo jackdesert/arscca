@@ -5,15 +5,17 @@ class BoardMeetingEvent(BaseEvent):
     '''Board Meetings, etc'''
 
     # First wednesday of each month, except September is bumped to last week in August
-    DATES = frozenset(['2021-03-03',
-                       '2021-04-07',
-                       '2021-05-05',
-                       '2021-06-02',
-                       '2021-07-07',
-                       '2021-08-04',
-                       '2021-09-01',
-                       '2021-10-06',
-                       '2021-12-02'])
+    DATES = frozenset(['2022-02-02',
+                       '2022-03-02',
+                       '2022-04-06',
+                       '2022-05-04',
+                       '2022-06-01',
+                       '2022-07-06',
+                       '2022-08-03',
+                       '2022-09-07',
+                       '2022-10-05',
+                       '2022-11-02',
+                       '2022-12-07'])
     def __init__(self, date):
         self._date = date
 
