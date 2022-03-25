@@ -698,6 +698,66 @@ class Pax:
         )
     )
 
+    # Pax data from
+    # http://solotime.info/pax/rtp2022.html
+    # (Hyphens removed)
+    FACTORS_2022 = MappingProxyType(
+        dict(
+            # Including STM so we can use 2019 results to demo /live
+            STM=0.833,
+
+            SS=0.830,
+            SSP=0.853,
+            XP=0.885,
+            AM=1.000,
+            AS=0.821,
+            ASP=0.849,
+            BP=0.867,
+            BM=0.988,
+            BS=0.818,
+            BSP=0.852,
+            CP=0.854,
+            CM=0.895,
+            CS=0.810,
+            CSP=0.864,
+            DP=0.865,
+            DM=0.898,
+            DS=0.807,
+            DSP=0.844,
+            EP=0.850,
+            EM=0.909,
+            ES=0.792,
+            ESP=0.840,
+            FP=0.874,
+            FM=0.908,
+            FS=0.814,
+            FSP=0.824,
+            HCR=0.815,
+            FSAE=0.989,
+            GS=0.794,
+            HS=0.786,
+            SSR=0.846,
+            SMF=0.845,
+            KM=0.931,
+            HCS=0.793,
+            SM=0.868,
+            CAMT=0.816,
+            SSM=0.883,
+            SSC=0.809,
+            CAMC=0.819,
+            CAMS=0.838,
+            STH=0.812,
+            STS=0.813,
+            XSA=0.842,
+            STX=0.817,
+            XSB=0.851,
+            STR=0.828,
+            EV=0.835,
+            STU=0.829,
+            SST=0.841,
+        )
+    )
+
     @classmethod
     def factor(cls, year, car_class):
         if not Shared.NOT_JUST_WHITESPACE_REGEX.search(car_class):
