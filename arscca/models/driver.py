@@ -21,6 +21,8 @@ class GenericDriver:
 
     PYLON_PENALTY_IN_SECONDS = 2
     MISSED_GATE_PENALTY_IN_SECONDS = 10
+    SINGLE_QUOTE = "'"
+    LEFT_QUOTE = '’'
 
     # pylint: disable=too-many-arguments
     def __init__(
@@ -59,8 +61,21 @@ class GenericDriver:
         """
         The model of the car. Example: '2005 Ford Mustang'
         """
-        return self._row_1[4]
+        return self._sanitize(self._row_1[4])
 
+    def _sanitize(self, text):
+        """
+        Sanitize the output so it works with json
+        """
+        # Because of the way we transfer JSON to the html page:
+        # {{ some_json }}
+        # when that json contains an inner single quote, it breaks:
+        # ' some stuff \' some more stuff '
+        # (the outer singles quotes drop off, but the middle remains)
+        # therefore we change inner single quotes to left quotes
+        if text is None:
+            return None
+        return text.replace(self.SINGLE_QUOTE, self.LEFT_QUOTE)
     @property
     def id(self):
         """
