@@ -90,18 +90,18 @@ class OneCourseEventHelper(TwoCourseEventHelper):
     """
     For one course drivers
     """
-
+    PRIMARY_SCORE_LABEL = 'Cumulative Score'
+    SECONDARY_SCORE_LABEL = 'Best Run*'
     SEGREGATE_RUNS = False
-    DYNAMIC_BIN_WIDTH = False
+
+    SECONDARY_RANK_LABEL = 'Position (Best&nbsp;Run)'
+    DYNAMIC_BIN_WIDTH = True
+
 
     @classmethod
     def scoring(cls):
-        return [
-            cls.BEST_TIME_SCORING,
-            cls.PENALTY_SCORING,
-            cls.PAX_SCORING,
-            cls.PERCENTILE_SCORING,
-        ]
+        return [cls.CUMULATIVE_SCORING, cls.PENALTY_SCORING, cls.PAX_SCORING, cls.PERCENTILE_SCORING]
+
 
     @classmethod
     def segregate_runs(cls):
