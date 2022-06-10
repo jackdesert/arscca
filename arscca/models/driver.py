@@ -390,18 +390,19 @@ class OneCourseDriver(GenericDriver):
     """
     A one course driver is used in "best run of the day" events
     """
+
+    def cumulative(self):
+        runs = [run for run in self.runs() if run.strip()]
+        score = sum([self.time_from_string(run) for run in runs])
+        if not score:
+            return self.INF
+        return score
+
     def primary_score(self):
-        return self.best_run()
+        return self.cumulative()
 
     def secondary_score(self):
-        return self.best_run_pax()
-
-    def best_run_pax(self):
-        best = self.best_run() * self.pax_factor()
-        if best == self.INF:
-            return best
-        return best.quantize(Decimal('.001'))
-
+        return self.best_run()
 
 class RallyDriver(GenericDriver):
     """
