@@ -15,8 +15,16 @@ class TwoCourseEventHelper:
     BEST_TIME_SCORING = "Governor's Cup score is best time of the day."
 
     CUMULATIVE_SCORING = 'Cumulative score is the cumulative total of all runs'
+    ASPHALT_RALLY_CUMULATIVE_SCORING = 'Cumulative score is the cumulative total of all runs. In this case, using the raw value from AxWare instead of computing it.'
 
     PAX_SCORING = 'PAX Score is Score * PAX Factor'
+
+    # This is a string
+    ASPHALT_RALLY_PENALTY_SCORING = (
+        'Two seconds are added for each downed pylon. '
+        'Ten seconds are added for each missed gate. '
+        'Lots of time added if you do not complete the run.'
+    )
 
     # This is a string
     PENALTY_SCORING = (
@@ -55,7 +63,10 @@ class TwoCourseEventHelper:
         return True
 
     @classmethod
-    def scoring(cls):
+    def scoring_list_items(cls):
+        """
+        Which documents to reference in showing people how scoring is done at the bottom of the page
+        """
         return [
             cls.COMBINED_SCORING,
             cls.PENALTY_SCORING,
@@ -76,7 +87,7 @@ class TwoCourseEventHelper:
         All the things needed to flesh out the html
         """
         return dict(
-            scoring=cls.scoring(),
+            scoring=cls.scoring_list_items(),
             has_pax=cls.has_pax(),
             primary_score_label=cls.PRIMARY_SCORE_LABEL,
             secondary_score_label=cls.SECONDARY_SCORE_LABEL,
@@ -85,6 +96,26 @@ class TwoCourseEventHelper:
             secondary_rank_label=cls.SECONDARY_RANK_LABEL,
         )
 
+
+class AsphaltRallyEventHelper(TwoCourseEventHelper):
+    """
+    For one course drivers
+    """
+    PRIMARY_SCORE_LABEL = 'Cumulative Score'
+    SECONDARY_SCORE_LABEL = 'PAX Score*'
+    SEGREGATE_RUNS = False
+
+    SECONDARY_RANK_LABEL = 'Position (Best&nbsp;Run)'
+    DYNAMIC_BIN_WIDTH = True
+
+
+    @classmethod
+    def scoring_list_items(cls):
+        return [cls.ASPHALT_RALLY_CUMULATIVE_SCORING, cls.ASPHALT_RALLY_PENALTY_SCORING, cls.PAX_SCORING, cls.PERCENTILE_SCORING]
+
+    @classmethod
+    def segregate_runs(cls):
+        return False
 
 class OneCourseEventHelper(TwoCourseEventHelper):
     """
@@ -95,7 +126,7 @@ class OneCourseEventHelper(TwoCourseEventHelper):
     DYNAMIC_BIN_WIDTH = False
 
     @classmethod
-    def scoring(cls):
+    def scoring_list_items(cls):
         return [
             cls.BEST_TIME_SCORING,
             cls.PENALTY_SCORING,
@@ -128,7 +159,7 @@ class RallyEventHelper(TwoCourseEventHelper):
         return False
 
     @classmethod
-    def scoring(cls):
+    def scoring_list_items(cls):
         return [cls.CUMULATIVE_SCORING, cls.PENALTY_SCORING, cls.PERCENTILE_SCORING]
 
     @classmethod
