@@ -385,10 +385,10 @@ class TwoCourseDriver(GenericDriver):
             return fastest
         return fastest.quantize(Decimal('.001'))
 
-
-class OneCourseDriver(GenericDriver):
+class AsphaltRallyDriver(GenericDriver):
     """
-    A one course driver is used in "best run of the day" events
+    Cumulative Scoring with PAX
+    For the one day a year that Asphalt drivers want to experience rallyx scoring
     """
 
     def cumulative(self):
@@ -403,6 +403,23 @@ class OneCourseDriver(GenericDriver):
 
     def secondary_score(self):
         return self.best_run()
+
+class OneCourseDriver(GenericDriver):
+    """
+    A one course driver is used in "best run of the day" events
+    """
+    def primary_score(self):
+        return self.best_run()
+
+    def secondary_score(self):
+        return self.best_run_pax()
+
+    def best_run_pax(self):
+        best = self.best_run() * self.pax_factor()
+        if best == self.INF:
+            return best
+        return best.quantize(Decimal('.001'))
+
 
 class RallyDriver(GenericDriver):
     """

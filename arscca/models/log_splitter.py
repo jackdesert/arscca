@@ -1,6 +1,8 @@
+from arscca.models.driver import AsphaltRallyDriver
 from arscca.models.driver import OneCourseDriver
 from arscca.models.driver import RallyDriver
 from arscca.models.driver import TwoCourseDriver
+from arscca.models.event_helper import AsphaltRallyEventHelper
 from arscca.models.event_helper import OneCourseEventHelper
 from arscca.models.event_helper import RallyEventHelper
 from arscca.models.event_helper import TwoCourseEventHelper
@@ -65,10 +67,13 @@ class LogSplitter:
     def event_helper(self):
         if self.driver_type == RallyDriver:
             return RallyEventHelper
+        elif self.driver_type == AsphaltRallyDriver:
+            return AsphaltRallyEventHelper
         elif self.driver_type == OneCourseDriver:
             return OneCourseEventHelper
         elif self.driver_type == TwoCourseDriver:
             return TwoCourseEventHelper
+        raise RuntimeError('Incorrect Driver Type')
 
     def _load_soup(self):
         if self.live:
@@ -170,6 +175,13 @@ class LogSplitter:
         self._row_groups = groups
 
     def _set_driver_type(self):
+
+
+        if Shared.ASPHALT_RALLY_REGEX.search(str(self._soup)):
+            # Note set up the event as single day if you want asphalt rally scoring
+            self.driver_type = AsphaltRallyDriver
+            return
+
         if Shared.RALLYX_REGEX.search(str(self._soup)):
             self.driver_type = RallyDriver
             return

@@ -31,3 +31,4 @@ class Shared:
     # 2021 Events show links to classes. for example, #SA is stock all wheel drive
     # Previous to 2021 there was a bit of html that said "RallyX Mode"
     RALLYX_REGEX = re.compile(r'(\*\* RallyX Mode )|( href="#SA">)|(<title>.*RallyX.*</title>)')
+    ASPHALT_RALLY_REGEX = re.compile(r'cumulative-scoring')

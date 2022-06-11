@@ -86,7 +86,7 @@ class TwoCourseEventHelper:
         )
 
 
-class OneCourseEventHelper(TwoCourseEventHelper):
+class AsphaltRallyEventHelper(TwoCourseEventHelper):
     """
     For one course drivers
     """
@@ -102,6 +102,27 @@ class OneCourseEventHelper(TwoCourseEventHelper):
     def scoring(cls):
         return [cls.CUMULATIVE_SCORING, cls.PENALTY_SCORING, cls.PAX_SCORING, cls.PERCENTILE_SCORING]
 
+
+    @classmethod
+    def segregate_runs(cls):
+        return False
+
+class OneCourseEventHelper(TwoCourseEventHelper):
+    """
+    For one course drivers
+    """
+
+    SEGREGATE_RUNS = False
+    DYNAMIC_BIN_WIDTH = False
+
+    @classmethod
+    def scoring(cls):
+        return [
+            cls.BEST_TIME_SCORING,
+            cls.PENALTY_SCORING,
+            cls.PAX_SCORING,
+            cls.PERCENTILE_SCORING,
+        ]
 
     @classmethod
     def segregate_runs(cls):
