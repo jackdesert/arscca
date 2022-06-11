@@ -2,8 +2,7 @@
 Drivers for different event types
 """
 import re
-from decimal import Decimal
-from decimal import InvalidOperation
+from decimal import Decimal, InvalidOperation
 
 from arscca.models.canon import Canon
 from arscca.models.shared import Shared
@@ -391,18 +390,21 @@ class AsphaltRallyDriver(GenericDriver):
     For the one day a year that Asphalt drivers want to experience rallyx scoring
     """
 
-    def cumulative(self):
-        runs = [run for run in self.runs() if run.strip()]
-        score = sum([self.time_from_string(run) for run in runs])
-        if not score:
-            return self.INF
-        return score
-
     def primary_score(self):
-        return self.cumulative()
+        """
+        Use published score because that is an easy? way to get
+        penalties from missed gates
+        """
+        if self.published_primary_score == 'dns':
+            return self.INF
+        return Decimal(self.published_primary_score)
 
     def secondary_score(self):
-        return self.best_run()
+        try:
+            return self.primary_score().quantize(Decimal('.001'))
+        except InvalidOperation:
+            return self.primary_score()
+
 
 class OneCourseDriver(GenericDriver):
     """
