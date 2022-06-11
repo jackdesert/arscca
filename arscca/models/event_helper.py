@@ -63,7 +63,7 @@ class TwoCourseEventHelper:
         return True
 
     @classmethod
-    def scoring(cls):
+    def scoring_list_items(cls):
         """
         Which documents to reference in showing people how scoring is done at the bottom of the page
         """
@@ -87,7 +87,7 @@ class TwoCourseEventHelper:
         All the things needed to flesh out the html
         """
         return dict(
-            scoring=cls.scoring(),
+            scoring=cls.scoring_list_items(),
             has_pax=cls.has_pax(),
             primary_score_label=cls.PRIMARY_SCORE_LABEL,
             secondary_score_label=cls.SECONDARY_SCORE_LABEL,
@@ -110,7 +110,7 @@ class AsphaltRallyEventHelper(TwoCourseEventHelper):
 
 
     @classmethod
-    def scoring(cls):
+    def scoring_list_items(cls):
         return [cls.ASPHALT_RALLY_CUMULATIVE_SCORING, cls.ASPHALT_RALLY_PENALTY_SCORING, cls.PAX_SCORING, cls.PERCENTILE_SCORING]
 
     @classmethod
@@ -126,7 +126,7 @@ class OneCourseEventHelper(TwoCourseEventHelper):
     DYNAMIC_BIN_WIDTH = False
 
     @classmethod
-    def scoring(cls):
+    def scoring_list_items(cls):
         return [
             cls.BEST_TIME_SCORING,
             cls.PENALTY_SCORING,
@@ -159,7 +159,7 @@ class RallyEventHelper(TwoCourseEventHelper):
         return False
 
     @classmethod
-    def scoring(cls):
+    def scoring_list_items(cls):
         return [cls.CUMULATIVE_SCORING, cls.PENALTY_SCORING, cls.PERCENTILE_SCORING]
 
     @classmethod
