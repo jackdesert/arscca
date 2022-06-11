@@ -15,8 +15,16 @@ class TwoCourseEventHelper:
     BEST_TIME_SCORING = "Governor's Cup score is best time of the day."
 
     CUMULATIVE_SCORING = 'Cumulative score is the cumulative total of all runs'
+    ASPHALT_RALLY_CUMULATIVE_SCORING = 'Cumulative score is the cumulative total of all runs. In this case, using the raw value from AxWare instead of computing it.'
 
     PAX_SCORING = 'PAX Score is Score * PAX Factor'
+
+    # This is a string
+    ASPHALT_RALLY_PENALTY_SCORING = (
+        'Two seconds are added for each downed pylon. '
+        'Ten seconds are added for each missed gate. '
+        'Lots of time added if you do not complete the run.'
+    )
 
     # This is a string
     PENALTY_SCORING = (
@@ -56,6 +64,9 @@ class TwoCourseEventHelper:
 
     @classmethod
     def scoring(cls):
+        """
+        Which documents to reference in showing people how scoring is done at the bottom of the page
+        """
         return [
             cls.COMBINED_SCORING,
             cls.PENALTY_SCORING,
@@ -91,7 +102,7 @@ class AsphaltRallyEventHelper(TwoCourseEventHelper):
     For one course drivers
     """
     PRIMARY_SCORE_LABEL = 'Cumulative Score'
-    SECONDARY_SCORE_LABEL = 'Best Run*'
+    SECONDARY_SCORE_LABEL = 'PAX Score*'
     SEGREGATE_RUNS = False
 
     SECONDARY_RANK_LABEL = 'Position (Best&nbsp;Run)'
@@ -100,8 +111,7 @@ class AsphaltRallyEventHelper(TwoCourseEventHelper):
 
     @classmethod
     def scoring(cls):
-        return [cls.CUMULATIVE_SCORING, cls.PENALTY_SCORING, cls.PAX_SCORING, cls.PERCENTILE_SCORING]
-
+        return [cls.ASPHALT_RALLY_CUMULATIVE_SCORING, cls.ASPHALT_RALLY_PENALTY_SCORING, cls.PAX_SCORING, cls.PERCENTILE_SCORING]
 
     @classmethod
     def segregate_runs(cls):

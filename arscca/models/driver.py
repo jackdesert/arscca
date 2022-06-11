@@ -401,9 +401,9 @@ class AsphaltRallyDriver(GenericDriver):
 
     def secondary_score(self):
         try:
-            return self.primary_score().quantize(Decimal('.001'))
+            return (self.primary_score() * self.pax_factor()).quantize(Decimal('.001'))
         except InvalidOperation:
-            return self.primary_score()
+            return self.INF
 
 
 class OneCourseDriver(GenericDriver):
