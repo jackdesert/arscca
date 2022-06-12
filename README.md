@@ -344,6 +344,16 @@ If the event you are debugging requires anything other than the StandardParser,
 make sure you specify that today's date use either the SingleDayParser
 or the RallyParser.
 
+AsphaltRallyDriver (Cumulative Scoring)
+---------------------------------------
+
+Put "cumulative-scoring" in the event title so it will trigger this driver type.
+Also tell AxWare to use rallyx scoring.
+Also tell AxWare it is a single day event.
+Note when using cumulative scoring, this project uses the raw score from axware
+directly instead of adding up all the penalties itself. This seemed easier than
+getting it to parse missed gates.
+
 
 Event Types
 -----------
