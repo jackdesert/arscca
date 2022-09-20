@@ -159,6 +159,7 @@ class Canon:
             'ryan_stempke': 'ryan_stampke',
             'zaxh_tucker': 'zach_tucker',
             'peyton_edwards': 'payton_edwards',
+            'chris_stevens': 'chris_stephens',
             # QUESTIONS?
             # bill_holt / bill_hoak
             # 'gary_nufen': 'gary_newford', # spelling?
