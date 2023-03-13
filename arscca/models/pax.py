@@ -758,6 +758,58 @@ class Pax:
         )
     )
 
+    FACTORS_2023 = MappingProxyType(
+        dict(
+            AM=1.000,
+            AS=0.823,
+            BM=0.980,
+            BS=0.818,
+            CAMC=0.827,
+            CAMS=0.845,
+            CAMT=0.819,
+            CM=0.896,
+            CP=0.858,
+            CS=0.811,
+            CSP=0.860,
+            DM=0.898,
+            DP=0.865,
+            DS=0.808,
+            DSP=0.844,
+            EM=0.911,
+            EP=0.856,
+            ES=0.792,
+            ESP=0.840,
+            EVX=0.832,
+            FM=0.914,
+            FP=0.877,
+            FS=0.813,
+            FSAE=0.981,
+            FSP=0.828,
+            GS=0.794,
+            HCR=0.815,
+            HCS=0.793,
+            HS=0.786,
+            KM=0.933,
+            SM=0.868,
+            SMF=0.847,
+            SS=0.833,
+            SSC=0.807,
+            SSM=0.879,
+            SSP=0.855,
+            SSR=0.846,
+            SST=0.837,
+            STH=0.812,
+            STR=0.831,
+            STS=0.814,
+            STU=0.830,
+            STX=0.817,
+            XA=0.842,
+            XB=0.848,
+            XP=0.884,
+            XS=0.851,
+            )
+        )
+
     @classmethod
     def factor(cls, year, car_class):
         if not Shared.NOT_JUST_WHITESPACE_REGEX.search(car_class):

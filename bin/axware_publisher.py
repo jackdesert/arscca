@@ -19,7 +19,7 @@ import requests
 class AxwarePublisher:
     SITE = 'http://arscca.org/administrator'
     USERNAME = 'jackdesert'
-    YEAR = 2022
+    YEAR = 2023
 
     NEW_CATEGORY_PAGE = 'index.php?option=com_categories&task=category.add&extension=com_content'
     NEW_ARTICLE_PAGE = 'index.php?option=com_content&task=article.add'

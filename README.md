@@ -466,9 +466,11 @@ Adding a New Event
 
 ### New Year
 
-Each year, create a new category like "2025 Results" which has as its parent "Results"
+In Joomla, Each year, create a new category like "2025 Results" which has as its parent "Results"
 
 Also update models.report.Report.NUM_EVENTS_TO_SCORE
+
+Also update views.py, in the report view, to use the new year.
 
 Also update bin/axware_publisher.py to use the new year.
 

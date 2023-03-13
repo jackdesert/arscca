@@ -24,7 +24,7 @@ class Report:
     # Events that happened, but receive no points
     # You only need to fill this out for the current year,
     # since that is the only year that requires point calculation
-    NON_POINTS_EVENT_DATES = frozenset(['2019-12-08', '2020-03-07'])
+    NON_POINTS_EVENT_DATES = frozenset(['2019-12-08', '2020-03-07', '2023-03-18'])
 
     def __init__(self, year):
         self.year = year
