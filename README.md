@@ -474,6 +474,8 @@ Also update views.py, in the report view, to use the new year.
 
 Also update bin/axware_publisher.py to use the new year.
 
+Also update templates/index.jinja2 to only display the trophy for the current year
+
 
 Backlog
 -------
