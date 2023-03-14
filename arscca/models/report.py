@@ -14,7 +14,7 @@ class Report:
 
     # Each year you must update how many events to drop
     # (But shown here in the inclusive)
-    NUM_EVENTS_TO_SCORE = 12
+    NUM_EVENTS_TO_SCORE = 8
     SKIPPED_EVENT_NUMBERS = defaultdict(list)
 
     # SKIPPED EVENTS means the event did not happen
