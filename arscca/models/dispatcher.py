@@ -152,9 +152,9 @@ class Dispatcher:
             car_class_points = self._point(car_class)
             if car_class_points > 0:
                 data[car_class][dname] = car_class_points
-            print(
-                f'{dname} awarded {pax_points} (pax), {car_class_points} ({car_class})'
-            )
+            #print(
+            #    f'{dname} awarded {pax_points} (pax), {car_class_points} ({car_class})'
+            #)
         Shared.REDIS.set(f'points-from-{self.date}', json.dumps(data))
 
     def _point(self, pax_or_car_class):
