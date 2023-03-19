@@ -22,20 +22,6 @@
         <div class='event__date'>{{ event_date }}</div>
     {% endif %}
 
-    {% if errors %}
-        <div class='errors'>
-            <h3>Warning</h3>
-            {% for error in errors %}
-                <div class='error'>
-                    {{ error.driver_name }} has calculated score of
-                    {{ error.calculated }}, but
-                    <a href='{{ source_url }}'>arscca.org</a>
-                    shows {{ error.published }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
     <div id='drivers-table-holder'>
         <input type='button' v-on:click='toggleSolo' value='Solo' v-bind:class='soloButtonKlass()'></input>
         <table>
@@ -105,6 +91,21 @@
         </div>
     {% endif %}
     -->
+
+    {% if errors %}
+        <div class='errors'>
+            <h3>Warning</h3>
+            {% for error in errors %}
+                <div class='error'>
+                    {{ error.driver_name }} has calculated score of
+                    {{ error.calculated }}, but
+                    <a href='{{ source_url }}'>axware</a>
+                    shows {{ error.published }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     Connection: <span id='connection-state'></span>
 
     <h3 class='h3'>Tips</h3>
