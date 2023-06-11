@@ -2,14 +2,27 @@
 This module pulls events from arscca.org and writes them
 to disk inside this repository.
 '''
+import ipdb
 
 from bs4 import BeautifulSoup
 from bs4 import Comment
 from collections import defaultdict
 from datetime import datetime
+from pathlib import Path
 import pdb
 import re
 import requests
+
+PARENT_DIR = 'Parent Directory'
+BASE_URL = 'http://arscca.org/event_results'
+
+class FinalEventNotFound(Exception):
+    """
+    Raised when "final" event not found on page where event expected
+    """
+
+def _td_with_class_indexcolname(soup):
+    return soup('td', 'indexcolname')
 
 def loop_get(url):
     # This function retries your requests.get if it times out
@@ -35,10 +48,15 @@ class TopLevelFetcher:
         Locate years on page and call locate_events() for each year.
         :param precise_year: Integer value that limits years to only that year.
         '''
+        print('TopLevelFetcher.locate_years')
         req = loop_get(self._url)
         soup = BeautifulSoup(req.text, 'lxml')
-        for h3 in reversed(soup('h3')):
-            for link in h3('a'):
+        # Find td elements with class indexcolname
+        # Used to be reversed
+        for td in _td_with_class_indexcolname(soup):
+            for link in td('a'):
+                if link.text == PARENT_DIR:
+                    continue
                 search = self.YEAR_REGEX.search(link.text)
                 assert search
                 year = search[0]
@@ -51,7 +69,6 @@ class TopLevelFetcher:
 
 
 class YearFetcher:
-    BASE_URL = 'http://arscca.org'
 
     def __init__(self, year, path):
         self._year = year
@@ -59,14 +76,17 @@ class YearFetcher:
         self._event_fetchers = []
 
     def locate_events(self):
-        url = f'{self.BASE_URL}/{self._path}'
+        print('YearFetcher.locate_events')
+        url = f'{BASE_URL}/{self._path}'
 
         req = loop_get(url)
         soup = BeautifulSoup(req.text, 'lxml')
         found = False
-        for h3 in reversed(soup('h3')):
+        for td in _td_with_class_indexcolname(soup):
             found = True
-            for link in h3('a'):
+            for link in td('a'):
+                if link.text == PARENT_DIR:
+                    continue
                 href = link['href']
                 event_fetcher = EventFetcher(self._year, href)
                 self._event_fetchers.append(event_fetcher)
@@ -83,21 +103,30 @@ class EventFetcher:
         self._final_fetchers = []
 
     def locate_results(self):
-        url = f'{self.BASE_URL}/{self._path}'
+        print('EventFetcher.locate_results')
+        url = f'{BASE_URL}/{self._year}/{self._path}'
+        print(url)
 
         req = loop_get(url)
         soup = BeautifulSoup(req.text, 'lxml')
         # Some years use list-title, other years use item-title
-        for td in soup('td', ['list-title', 'item-title']):
+        for td in _td_with_class_indexcolname(soup):
             for link in td('a'):
-                if 'Final' in link.text:
+                if link.text.strip().endswith('_fin_.htm'):
                     href = link['href']
-                    final_fetcher = FinalFetcher(self._year, href)
+                    event_url = f'{url}/{href}'
+                    final_fetcher = FinalFetcher(year=self._year, event_name=self._path, event_url=event_url)
                     self._final_fetchers.append(final_fetcher)
                     final_fetcher.archive_event()
+                    return
+        msg = f'No event found at url {url}'
+        raise FinalEventNotFound(msg)
 
+# XXX Rename to EventFetcher (the other is EventFinder or EventLocator)
 class FinalFetcher:
-    BASE_URL = 'http://arscca.org'
+    """
+    Takes a single event and writes it to disk
+    """
     MONTH_FIRST_DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
 
     # Matching on html comment:
@@ -110,16 +139,20 @@ class FinalFetcher:
     FRIENDLY_DATE_FORMAT = '%b %d %Y'
     STANDARD_DATE_FORMAT = '%Y-%m-%d'
 
-    JOOMLA_ID_REGEX = re.compile('(\?|&)id=(\d+)(:|&|$)')
+    NON_SLUG_CHARS_REGEX = re.compile(r'[^a-zA-Z0-9-_]')
+
     CRLF = '\r\n'
     LF = '\n'
 
     # Keep a log of all events fetched
     LOG = []
 
-    def __init__(self, year, path):
+    __slots__ = ('_year', '_event_url', '_event_name', '_date', '_html',)
+    def __init__(self, *, year, event_name, event_url):
         self._year = year
-        self._path = path
+        self._event_url = event_url
+        # Make sure event name has no spaces
+        self._event_name = self.NON_SLUG_CHARS_REGEX.sub('-', event_name.strip('/'))
         self._date = None
         self._html = None
 
@@ -141,25 +174,20 @@ class FinalFetcher:
 
         with open(self._filename, 'w') as ff:
             ff.write(self._html)
-        self.LOG.append((self._date, self._joomla_id))
+        self.LOG.append((self._date, self._event_name))
 
 
     @property
     def _filename(self):
+        dir_ = f'{self.OUTPUT_DIR}/{self._year}'
+        # Ensure dir_ exists
+        Path(dir_).mkdir(exist_ok=True)
         assert self._date
 
-        return f'{self.OUTPUT_DIR}/{self._date}__{self._joomla_id}.html'
-
-    @property
-    def _joomla_id(self):
-        search = self.JOOMLA_ID_REGEX.search(self._path)
-        assert search
-        return search[2]
+        return f'{dir_}/{self._date}__{self._event_name}.html'
 
     def _store_html_and_date(self):
-        url = f'{self.BASE_URL}/{self._path}'
-
-        req = loop_get(url)
+        req = loop_get(self._event_url)
 
         self._html = req.text.replace(self.CRLF, self.LF)
 
@@ -212,7 +240,7 @@ if __name__ == '__main__':
         precise_year = sys.argv[1]
 
     FinalFetcher.stats()
-    top = TopLevelFetcher('http://arscca.org/index.php?option=com_content&view=category&id=8&Itemid=104')
+    top = TopLevelFetcher(f'{BASE_URL}#iframe-buster')
     top.locate_years(precise_year)
 
     FinalFetcher.stats()
