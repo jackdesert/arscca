@@ -5,20 +5,19 @@
 
     <div class='crumb'>Home</div>
 
-    <h2 class='h2_banner'>Live Results</h2>
-    <div class='event__link'><a href='/live'>Live Results</a></div>
-
-    <h2 class='h2_banner'>Calendar</h2>
+    <h2 class='h2_banner'>Links</h2>
+    <div class='event__link'><a href='/live'>✨Live Results✨</a></div>
     <div class='event__link'><a href='/calendar'>Calendar</a></div>
+    <div class='event__link'><a href='/help'>Help Topics</a></div>
+    <div class='event__link'><a href='/drivers'>Driver Photos</a></div>
 
+
+    <!--
     <h2 class='h2_banner'>Event Photos</h2>
     <div class='event__link'><a href='/photos'>Event Photos</a></div>
+    -->
 
-    <h2 class='h2_banner'>Help Topics</h2>
-    <div class='event__link'><a href='/help'>Help Topics</a></div>
 
-    <h2 class='h2_banner'>Opinion</h2>
-    <div class='event__link'><a href='/opinion'>Opinion</a></div>
 
     {% for year, event_dates in event_dates_by_year | dictsort(reverse=True) %}
         <h2 class='h2_banner'>{{ year }} Results</h2>
@@ -44,10 +43,12 @@
     {% endfor %}
 
 
-
+    <!--
     {% include '_driver_photos.jinja2' %}
+    -->
 
 
+    <!--
     <div class='about-section'>
         <h2 class='h2_banner'>About</h2>
         <p>The unOFFICIAL Guide is just that---unofficial.</p>
@@ -57,6 +58,7 @@
             and reformatted for convenient sorting by whichever column you choose.
         </p>
     </div>
+    -->
 
 </div>
 {% endblock content %}

@@ -44,12 +44,12 @@ def home_view(request):
         # The streamlined view is intended to support Live Results and its dependencies
         return HTTPFound(location='/live')
 
-    photos = Photo.all()
+    #photos = Photo.all()
 
     event_dates_by_year = PublishedEvent.dates_by_year()
     event_names = FondMemory.event_names()
 
-    return dict(photos=photos,
+    return dict(photos=[],
                 event_dates_by_year=event_dates_by_year,
                 event_names=event_names)
 

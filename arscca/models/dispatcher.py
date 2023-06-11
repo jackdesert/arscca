@@ -21,7 +21,7 @@ class Dispatcher:
     The controller that kicks this off
     """
 
-    ARCHIVE_GLOB = 'archive/*.html'
+    ARCHIVE_GLOB = 'archive/**/*.html'
 
     # This filename ends in jinja2 because it is used as a view template
     LIVE_FILENAME = '/home/arscca/arscca-live.jinja2'

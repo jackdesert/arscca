@@ -49,7 +49,6 @@ class LogSplitter:
         self._results_table = None
         self._first_run_column = None
         self._primary_published_score_column = None
-        self._event_name = None
         self._data = None
         self._num_rows_per_driver = None
 
@@ -59,7 +58,6 @@ class LogSplitter:
         self._load_row_groups()
         self._num_rows_per_driver = self._infer_num_rows_per_driver()
 
-        self._set_event_details()
         self._set_driver_type()
         return self._build_drivers_from_row_groups()
 
@@ -75,34 +73,25 @@ class LogSplitter:
             return TwoCourseEventHelper
         raise RuntimeError('Incorrect Driver Type')
 
+    @property
+    def event_name(self):
+        if self.live:
+            self.event_name = f'Live Results {self.date}'
+        return self._local_html_file.split('__', 1)[1].split('.')[0]
+
     def _load_soup(self):
         if self.live:
             with open(self.LIVE_FILENAME, 'r') as ff:
                 html = ff.read()
-        elif self._local_html_file:
-            # This path is used with the test suite
-            with open(self._local_html_file, 'r') as ff:
-                html = ff.read()
-        else:
-            rr = requests.get(self.url, allow_redirects=False, timeout=10)
-            html = rr.text
+
+        # This path is used with the test suite
+        with open(self._local_html_file) as ff:
+            html = ff.read()
+
+        # We no longer support calling requests.get() from upstream server inline
 
         self._soup = BeautifulSoup(html, 'html.parser')
 
-    def _set_event_details(self):
-        if self.live:
-            self.event_name = f'Live Results {self.date}'
-            return
-
-        # Before December 2020, the h2 had title
-        h2 = self._soup.find('h2')
-        if h2:
-            self.event_name = h2.text.strip().replace('Final', '')
-            return
-
-        # Then the layout of joomla was changed (for the better!)
-        dd = self._soup.find('dd', 'category-name')
-        self.event_name = dd.find('a').text
 
     def _load_results_table(self):
 

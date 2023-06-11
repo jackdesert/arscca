@@ -11,6 +11,8 @@ Getting Started (Docker)
 
 These commands will start build the docker image and run it in a container.
 
+First make sure your home directory is executable by all.
+
     cd /path/to/repo
     sudo docker-compose build
     sudo docker-compose up
@@ -23,6 +25,8 @@ For production use:
 
 Docker with Manual Containers
 -----------------------------
+
+First make sure your home directory is executable by all. Then:
 
     sudo docker network create arscca-network
 
@@ -45,6 +49,8 @@ Docker with Manual Containers
     # Run a new container with arscca-pyramid
     # Note `bash` is specified as the command to run.
     # From there you can run
+    #   pip install -e .
+    # and
     #   pserve development.ini --reload
     docker run  -it  \
                 --rm \

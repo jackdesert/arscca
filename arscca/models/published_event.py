@@ -11,9 +11,9 @@ from arscca.models.shared import Shared
 class PublishedEvent:
     # URL_BASE + id maps to the location of FINAL results
     # Required params: ['com_content', 'view', 'id']
-    URL_BASE = 'http://arscca.org/index.php?option=com_content&view=article&id='
+    URL_BASE = 'http://arscca.org/event_results'
     LOCK = Lock()
-    FILENAME_REGEX = re.compile(r'/(.+)__(.+)\.html')
+    FILENAME_REGEX = re.compile(r'/(\d{4})/(.+)__(.+)\.html')
 
     DIRT_SURFACE = 'dirt'
     TARMAC_SURFACE = 'tarmac'
@@ -30,26 +30,25 @@ class PublishedEvent:
         year = self._date[0:4]
         events = self.dates_by_year().get(year)
         if events:
-            for date, joomla_id, _, __ in events:
+            for date, event_name, _, __ in events:
                 if date == self._date:
-                    return f'{self.URL_BASE}{joomla_id}'
-        return None
+                    return f'{self.URL_BASE}/{year}/{event_name}/'
+        raise ValueError(f'No event found for year {year} and date {self._date}')
 
     @classmethod
     def dates_by_year(cls):
+        # XXX we are memoizing this, but we want to stop memoizing so we
+        # can have an automated process load events hourly
         with cls.LOCK:
             if cls.__DATES_BY_YEAR:
                 return cls.__DATES_BY_YEAR
 
             output = defaultdict(list)
-            for filename in glob('archive/*.html'):
-                search = cls.FILENAME_REGEX.search(filename)
-                date = search[1]
-                joomla_id = int(search[2])
-                year = date[0:4]
+            for filename in glob('archive/**/*.html'):
+                year, date, event_name = cls.FILENAME_REGEX.search(filename).groups()
                 surface = cls._surface(filename)
                 friendly_date = cls._friendly_date(date)
-                output[year].append((date, joomla_id, surface, friendly_date))
+                output[year].append((date, event_name, surface, friendly_date))
 
             for year, events in sorted(output.items(), reverse=True):
                 cls.__DATES_BY_YEAR[year] = sorted(events, reverse=True)
@@ -80,7 +79,7 @@ if __name__ == '__main__':
     # HOST = 'http://arscca.jackdesert.com'
     dates = PublishedEvent.dates_by_year()
 
-    for date, joomla_id in PublishedEvent.dates_by_year().items():
+    for date, event_name in PublishedEvent.dates_by_year().items():
         url = f'{HOST}/events/{date}?cb=1'
         print(f'Parsing {date}')
 
