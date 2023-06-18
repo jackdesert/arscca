@@ -41,7 +41,7 @@ class PublishedEvent:
 
         output = defaultdict(list)
         for year, events in sorted(intermediate.items(), reverse=True):
-            output = sorted(events, reverse=True)
+            output[year] = sorted(events, reverse=True)
 
         return output
 
