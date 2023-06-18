@@ -2,8 +2,6 @@
 This module pulls events from arscca.org and writes them
 to disk inside this repository.
 '''
-import ipdb
-
 from bs4 import BeautifulSoup
 from bs4 import Comment
 from collections import defaultdict
