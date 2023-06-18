@@ -1,8 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
 from glob import glob
-from threading import Lock
-import pdb
 import re
 
 from arscca.models.shared import Shared
@@ -12,15 +10,11 @@ class PublishedEvent:
     # URL_BASE + id maps to the location of FINAL results
     # Required params: ['com_content', 'view', 'id']
     URL_BASE = 'http://arscca.org/event_results'
-    LOCK = Lock()
     FILENAME_REGEX = re.compile(r'/(\d{4})/(.+)__(.+)\.html')
 
     DIRT_SURFACE = 'dirt'
     TARMAC_SURFACE = 'tarmac'
 
-    # DATES maps event dates (used to build url in pyramid)
-    # to joomla ids (where official results are stored)
-    __DATES_BY_YEAR = defaultdict(list)
 
     def __init__(self, date):
         self._date = date
@@ -37,27 +31,23 @@ class PublishedEvent:
 
     @classmethod
     def dates_by_year(cls):
-        # XXX we are memoizing this, but we want to stop memoizing so we
-        # can have an automated process load events hourly
-        with cls.LOCK:
-            if cls.__DATES_BY_YEAR:
-                return cls.__DATES_BY_YEAR
 
-            output = defaultdict(list)
-            for filename in glob('archive/**/*.html'):
-                year, date, event_name = cls.FILENAME_REGEX.search(filename).groups()
-                surface = cls._surface(filename)
-                friendly_date = cls._friendly_date(date)
-                output[year].append((date, event_name, surface, friendly_date))
+        intermediate = defaultdict(list)
+        for filename in glob('archive/**/*.html'):
+            year, date, event_name = cls.FILENAME_REGEX.search(filename).groups()
+            surface = cls._surface(filename)
+            friendly_date = cls._friendly_date(date)
+            intermediate[year].append((date, event_name, surface, friendly_date))
 
-            for year, events in sorted(output.items(), reverse=True):
-                cls.__DATES_BY_YEAR[year] = sorted(events, reverse=True)
+        output = defaultdict(list)
+        for year, events in sorted(intermediate.items(), reverse=True):
+            output = sorted(events, reverse=True)
 
-            return cls.__DATES_BY_YEAR
+        return output
 
     @classmethod
     def _surface(cls, filename):
-        with open(filename, 'r') as ff:
+        with open(filename, encoding='utf-8') as ff:
             html = ff.read()
         if Shared.RALLYX_REGEX.search(html):
             return cls.DIRT_SURFACE
@@ -75,14 +65,14 @@ class PublishedEvent:
 if __name__ == '__main__':
     import requests
 
-    HOST = 'http://localhost:6543'
+    HOST_ = 'http://localhost:6543'
     # HOST = 'http://arscca.jackdesert.com'
-    dates = PublishedEvent.dates_by_year()
+    dates_ = PublishedEvent.dates_by_year()
 
-    for date, event_name in PublishedEvent.dates_by_year().items():
-        url = f'{HOST}/events/{date}?cb=1'
-        print(f'Parsing {date}')
+    for date_, event_name_ in PublishedEvent.dates_by_year().items():
+        url_ = f'{HOST_}/events/{date_}?cb=1'
+        print(f'Parsing {date_}')
 
-        res = requests.get(url, timeout=10)
-        if res.status_code != 200:
-            print(f'ERROR: {url}')
+        res_ = requests.get(url_, timeout=10)
+        if res_.status_code != 200:
+            print(f'ERROR: {url_}')
