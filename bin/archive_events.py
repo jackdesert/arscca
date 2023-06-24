@@ -233,6 +233,12 @@ class FinalFetcher:
 if __name__ == '__main__':
 
     import sys
+    import pytz
+
+    tz = pytz.timezone('America/Chicago')
+    chicago_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S %z')
+    print(f'Fetched at {chicago_now}')
+
     precise_year = None
     if len(sys.argv) > 1:
         precise_year = sys.argv[1]
