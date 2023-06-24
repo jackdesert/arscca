@@ -4,11 +4,17 @@ from arscca.models.util import Util
 from collections import defaultdict
 from copy import deepcopy
 import json
-import pdb
 import redis
 
+PAX_STRING = Shared.PAX_STRING
+NOVICE_PAX_STRING = Shared.NOVICE_PAX_STRING
 
 class Report:
+    """
+    This Standings Report displays the trophy standings for a single year.
+
+    The data is stored to redis in Dispatcher._apply_points
+    """
 
     KEY_PREPEND = 'points-from-'
 
@@ -49,8 +55,10 @@ class Report:
         if not klasses:
             # Return gracefully if no events yet
             return []
-        klasses.remove('PAX')
-        output = ['PAX']
+        klasses.remove(PAX_STRING)
+        if NOVICE_PAX_STRING in klasses:
+            klasses.remove(NOVICE_PAX_STRING)
+        output = [PAX_STRING, NOVICE_PAX_STRING]
         for klass in sorted(klasses):
             output.append(klass)
         return output

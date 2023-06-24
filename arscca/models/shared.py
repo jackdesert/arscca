@@ -32,3 +32,8 @@ class Shared:
     # Previous to 2021 there was a bit of html that said "RallyX Mode"
     RALLYX_REGEX = re.compile(r'(\*\* RallyX Mode )|( href="#SA">)|(<title>.*RallyX.*</title>)')
     ASPHALT_RALLY_REGEX = re.compile(r'cumulative-scoring')
+
+    PAX_STRING = 'PAX'
+    # Normally I would not use a space in a dictionary key,
+    # but it does make the report prettier
+    NOVICE_PAX_STRING = 'NOVICE PAX'

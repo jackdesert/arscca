@@ -15,6 +15,9 @@ from arscca.models.report import Report
 from arscca.models.shared import Shared
 from arscca.models.util import Util
 
+PAX_STRING = Shared.PAX_STRING
+NOVICE_PAX_STRING = Shared.NOVICE_PAX_STRING
+
 
 class Dispatcher:
     """
@@ -29,8 +32,6 @@ class Dispatcher:
     # You only need to fill this out for the current year,
     # since that is the only year that requires point calculation
     NON_POINTS_EVENT_DATES = frozenset(['2019-12-08', '2020-03-07'])
-
-    PAX_STRING = 'PAX'
 
     __slots__ = ('date', 'drivers', 'url', 'live', '_point_storage', '_log_splitter')
 
@@ -145,10 +146,18 @@ class Dispatcher:
                 # No points unless you scored
                 print(f'{dname} did not score')
                 continue
-            pax_points = self._point(self.PAX_STRING)
-            if pax_points > 0:
-                data[self.PAX_STRING][dname] = pax_points
             car_class = driver.car_class.lower()
+            # Apply either novice pax or open pax, but not both
+            novice_pax_points = pax_points = 0
+            if car_class.startswith('n'):
+                novice_pax_points = self._point(NOVICE_PAX_STRING)
+            else:
+                pax_points = self._point(PAX_STRING)
+
+            if pax_points > 0:
+                data[PAX_STRING][dname] = pax_points
+            if novice_pax_points > 0:
+                data[NOVICE_PAX_STRING][dname] = novice_pax_points
             car_class_points = self._point(car_class)
             if car_class_points > 0:
                 data[car_class][dname] = car_class_points
@@ -158,8 +167,11 @@ class Dispatcher:
         Shared.REDIS.set(f'points-from-{self.date}', json.dumps(data))
 
     def _point(self, pax_or_car_class):
+        """
+        Return the number of points
+        """
         num_drivers_ahead = self._point_storage[pax_or_car_class]
-        if num_drivers_ahead == 0 and (pax_or_car_class != self.PAX_STRING):
+        if num_drivers_ahead == 0 and pax_or_car_class not in [PAX_STRING, NOVICE_PAX_STRING]:
             points = 11
         else:
             points = 10 - num_drivers_ahead
