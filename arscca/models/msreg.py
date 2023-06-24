@@ -107,7 +107,8 @@ class Driver:
         if not value:
             return None
 
-        value = str(value).strip()
+        # Remove hyphens
+        value = str(value).replace('-', '').strip()
         if len(value) == 6:
             return value
 
