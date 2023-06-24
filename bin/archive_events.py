@@ -94,6 +94,7 @@ class YearFetcher:
 
 class EventFetcher:
     BASE_URL = 'http://arscca.org'
+    FINAL_FILENAME_REGEX = re.compile(r'(-final\.html)|(_fin_\.htm)$')
 
     def __init__(self, year, path):
         self._year = year
@@ -110,7 +111,7 @@ class EventFetcher:
         # Some years use list-title, other years use item-title
         for td in _td_with_class_indexcolname(soup):
             for link in td('a'):
-                if link.text.strip().endswith('_fin_.htm'):
+                if self.FINAL_FILENAME_REGEX.search(link.text.strip()):
                     href = link['href']
                     event_url = f'{url}/{href}'
                     final_fetcher = FinalFetcher(year=self._year, event_name=self._path, event_url=event_url)
