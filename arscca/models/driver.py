@@ -234,7 +234,7 @@ class GenericDriver:
             except ValueError:
                 pub = self.published_primary_score
 
-            print(msg)
+            #print(msg)
             return dict(
                 driver_name=self.name, calculated=float(calculated), published=pub
             )

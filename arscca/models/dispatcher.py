@@ -144,7 +144,7 @@ class Dispatcher:
 
             if driver.primary_score() == GenericDriver.INF:
                 # No points unless you scored
-                print(f'{dname} did not score')
+                #print(f'{dname} did not score')
                 continue
             car_class = driver.car_class.lower()
             # Apply either novice pax or open pax, but not both
