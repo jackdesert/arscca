@@ -14,6 +14,9 @@ from arscca.models.log_splitter import LogSplitter
 from arscca.models.report import Report
 from arscca.models.shared import Shared
 from arscca.models.util import Util
+import logging
+
+LOG = logging.getLogger('arscca')
 
 PAX_STRING = Shared.PAX_STRING
 NOVICE_PAX_STRING = Shared.NOVICE_PAX_STRING
@@ -47,7 +50,7 @@ class Dispatcher:
         self.live = live  # Boolean
         self._point_storage = defaultdict(int)
 
-        html_file = self._html_file_from_date(date)
+        html_file = self.LIVE_FILENAME if live else self._html_file_from_date(date)
         # Several things are delegated to LogSplitter
         self._log_splitter = LogSplitter(date, url, live, local_html_file=html_file)
         self.drivers = None  # updated in compile()

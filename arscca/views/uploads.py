@@ -15,7 +15,7 @@ import redis
 
 
 REDIS = Shared.REDIS
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger('arscca')
 
 
 @view_config(route_name='photo_upload_new',

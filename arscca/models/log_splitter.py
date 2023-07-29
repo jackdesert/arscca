@@ -14,6 +14,8 @@ import pdb
 import re
 import requests
 
+import logging
+LOG = logging.getLogger('arscca')
 
 # VARIATIONS
 # Events with two rows per driver use the last column as published score
@@ -76,7 +78,7 @@ class LogSplitter:
     @property
     def event_name(self):
         if self.live:
-            self.event_name = f'Live Results {self.date}'
+            return f'Live Results {self.date}'
         return self._local_html_file.split('__', 1)[1].split('.')[0]
 
     def _load_soup(self):

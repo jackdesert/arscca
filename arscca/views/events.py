@@ -35,7 +35,7 @@ REDIS_EXPIRATION_IN_SECONDS = 3600
 LOCK = Lock()
 LIVE_UPDATE_LOCK = Lock()
 LIVE_UPDATE_QUEUE = ShortQueue()
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger('arscca')
 
 @view_config(route_name='index',
              renderer='templates/index.jinja2')

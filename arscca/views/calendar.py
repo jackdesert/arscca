@@ -6,7 +6,7 @@ import logging
 import pdb
 
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger('arscca')
 
 
 @view_config(route_name='calendar',
