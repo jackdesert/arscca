@@ -6,6 +6,17 @@ Pulls the stats from the arscca.org website and displays them.
 
 Allows you to sort by whichever column you like.
 
+Related Repos
+-------------
+arscca-rsync
+arscca-twisted
+arscca- (photos?)
+
+Tail Logs of Docker Compose
+---------------------------
+
+    docker-compose logs -f --tail=0
+
 Getting Started (Docker)
 ------------------------
 
