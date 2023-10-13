@@ -12,7 +12,7 @@ Create user account
 
 From root terminal:
 
-    sudo apt update -y && apt install -y screen htop nginx
+    sudo apt update -y && apt install -y screen htop nginx python3-venv rsync
 
     # Create two non-root user:
     #   - one for normal login (MORTAL)
@@ -46,6 +46,7 @@ From root terminal:
     alias log='git log --name-status'
     alias sb='source ~/.bashrc'
     alias alie='vi ~/.bashrc'
+    alias bs='git branch && git status'
 
 
 Docker
@@ -69,6 +70,9 @@ git clone
 
     git clone git@github.com:jackdesert/arscca
     git clone git@github.com:jackdesert/arscca-twisted
+    git config --global user.name 'Jack Desert'
+    git config --global user.email 'JackDesert'
+
 
 
 Config Files
@@ -119,3 +123,22 @@ Copy the public key from the club laptop and put it in arscca authorized keys
 
     sudo -u arscca  mkdir -p /home/arscca/.ssh
     sudo -u arscca vi /home/arscca/.ssh/authorized_keys
+
+Cron Job
+--------
+
+    # configure a simple virtualenv for running cron job
+    VENV=~/simple-venv
+    python3 -m venv $VENV && \
+    $VENV/bin/pip install requests==2.23.0 bs4==0.0.1 pytz==2019.3 lxml==4.6.2
+
+Now write a cronjob and put the following in it:
+
+    #! /bin/bash
+    LOG=/tmp/cron.log
+    YEAR=$(date +'%Y')
+    * * * * * cd /home/ubuntu/arscca && /home/ubuntu/simple-venv/bin/python bin/archive_events.py "$YEAR"  >> $LOG  2>&1
+
+
+
+

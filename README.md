@@ -12,10 +12,22 @@ arscca-rsync
 arscca-twisted
 arscca- (photos?)
 
+Deploy to New Server
+--------------------
+
+See doc/01-configure-ubuntu.md
+
+
 Tail Logs of Docker Compose
 ---------------------------
 
     docker-compose logs -f --tail=0
+
+View Logs of arscca-pyramid and arscca-twisted
+----------------------------------------------
+
+See /tmp/arscca-pyramid.log and /tmp/arscca-twisted.log
+
 
 Getting Started (Docker)
 ------------------------
