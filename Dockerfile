@@ -32,8 +32,8 @@ COPY CHANGES.txt .
 #   B: Dependencies are already isolated via Docker, so there's no need for virtualenv
 RUN pip install -r requirements.txt
 
-# Install the test packages (specified in setup.py I think)
-RUN pip install -e ".[testing]"
+# Install `arscca` 
+RUN pip install -e .
 
 # Remove directory since we don't need the files anymore
 # AND because we are going to mount the repository at temp dir since we don't actually need the files for anything else
