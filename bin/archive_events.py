@@ -2,15 +2,14 @@
 This module pulls events from arscca.org and writes them
 to disk inside this repository.
 '''
-from bs4 import BeautifulSoup
-from bs4 import Comment
+import re
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-import ipdb
-import re
+
 import requests
+from bs4 import BeautifulSoup, Comment
 
 from arscca.models.singleton import file_based_singleton
 
@@ -20,14 +19,14 @@ NUM_RETRIES = 5
 RETRY_DELAY_SECONDS = 1
 TIMEOUT_SECONDS = 10
 
-def temp_write(html):
-    """
-    Dev helper for writing html to viewable location
-    """
-    fname = '/tmp/event.html'
-    with open(fname, 'w') as writer:
-        print(f'Writing to {fname}')
-        writer.write(html)
+#def temp_write(html):
+#    """
+#    Dev helper for writing html to viewable location
+#    """
+#    fname = '/tmp/event.html'
+#    with open(fname, 'w') as writer:
+#        print(f'Writing to {fname}')
+#        writer.write(html)
 
 class FinalEventNotFound(Exception):
     """
@@ -46,11 +45,11 @@ def loop_get(url):
             if not isinstance(eee, requests.RequestException):
                 raise eee
             sleep(RETRY_DELAY_SECONDS)
-            print(f'RETRYING {url} because {eee} where timeout={TIMEOUT_SECONDS}s')
+            print(f'{index}. RETRYING {url} because {eee} where timeout={TIMEOUT_SECONDS}s')
     raise RuntimeError(f'Failed after {NUM_RETRIES} tries fetching {url} when timeout={TIMEOUT_SECONDS}s')
 
 class TopLevelFetcher:
-    YEAR_REGEX = re.compile('\d{4}')
+    YEAR_REGEX = re.compile(r'\d{4}')
 
     def __init__(self, url):
         self._url = url
@@ -93,7 +92,6 @@ class YearFetcher:
 
         req = loop_get(url)
         soup = BeautifulSoup(req.text, 'lxml')
-        found = False
         event_fetchers = []
         for td in _td_with_class_indexcolname(soup):
             for link in td('a'):
@@ -115,10 +113,10 @@ class EventFetcher:
     # Rallyx sometimes has _fin.htm instead of _fin_.htm
     FINAL_FILENAME_REGEX = re.compile(r'(-final\.html)|(_fin_?\.htm)$')
 
+    __slots__ = ('_year', '_path')
     def __init__(self, year, path):
         self._year = year
         self._path = path
-        self._final_fetchers = []
 
     def locate_results(self):
         print('EventFetcher.locate_results')
@@ -144,13 +142,13 @@ class FinalFetcher:
     """
     Takes a single event and writes it to disk
     """
-    MONTH_FIRST_DATE_REGEX = re.compile('(\d\d)-(\d\d)-(\d\d\d\d)')
+    MONTH_FIRST_DATE_REGEX = re.compile(r'(\d\d)-(\d\d)-(\d\d\d\d)')
 
     # Matching on html comment:
     #    <!-- Date Created: Sun Jun 16 21:37:29 2019 -->
     # Note this is the date the report was generated, not the day of the event.
     # (This is only used as a backup in case MONTH_FIRST_DATE_REGEX is not found)
-    DATE_IN_COMMENTS_REGEX = re.compile('Date Created: \S{3} (\S{3}) (\d{1,2}).*(\d{4})')
+    DATE_IN_COMMENTS_REGEX = re.compile(r'Date Created: \S{3} (\S{3}) (\d{1,2}).*(\d{4})')
 
     OUTPUT_DIR = 'archive'
     FRIENDLY_DATE_FORMAT = '%b %d %Y'
@@ -189,7 +187,7 @@ class FinalFetcher:
 
         print(f'Writing {self._filename}')
 
-        with open(self._filename, 'w') as ff:
+        with open(self._filename, 'w', encoding='utf8') as ff:
             ff.write(self._html)
         self.LOG.append((self._date, self._event_name))
 
@@ -252,28 +250,29 @@ class FinalFetcher:
 if __name__ == '__main__':
 
     import sys
+
     import pytz
 
     tz = pytz.timezone('America/Chicago')
     chicago_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S %z')
     print(f'Fetched at {chicago_now}')
 
-    precise_year = None
+    PRECISE_YEAR = None
     if len(sys.argv) > 1:
-        precise_year = sys.argv[1]
-        print(f'Fetching for precise_year {precise_year}')
+        PRECISE_YEAR = sys.argv[1]
+        print(f'Fetching only for year {PRECISE_YEAR}')
 
     # Use a file based singleton so that when this is called by cron,
     # long-running processes will not pile up
     with file_based_singleton('/tmp/archive-events-singleton-dir'):
         FinalFetcher.stats()
         top_fetcher = TopLevelFetcher(f'{BASE_URL}#iframe-buster')
-        year_fetchers = top_fetcher.locate_years(precise_year)
+        year_fetchers_ = top_fetcher.locate_years(PRECISE_YEAR)
 
-        for year_fetcher in year_fetchers:
-            event_fetchers = year_fetcher.locate_events()
-            for event_fetcher in event_fetchers:
-                final_fetcher = event_fetcher.locate_results()
+        for year_fetcher_ in year_fetchers_:
+            event_fetchers_ = year_fetcher_.locate_events()
+            for event_fetcher_ in event_fetchers_:
+                final_fetcher = event_fetcher_.locate_results()
                 final_fetcher.archive_event()
 
 
