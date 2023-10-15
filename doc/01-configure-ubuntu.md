@@ -129,17 +129,22 @@ Copy the public key from the club laptop and put it in arscca authorized keys
 Cron Job
 --------
 
-    # configure a simple virtualenv for running cron job
+First create a virtualenv:
+
     VENV=~/simple-venv
     python3 -m venv $VENV && \
     $VENV/bin/pip install requests==2.23.0 bs4==0.0.1 pytz==2019.3 lxml==4.6.2
 
-Now write a cronjob and put the following in it:
+Now write a cronjob containing the following:
 
     #! /bin/bash
     LOG=/tmp/cron.log
-    YEAR=$(date +'%Y')
-    */15 * * * * cd /home/ubuntu/arscca && /home/ubuntu/simple-venv/bin/python bin/archive_events.py "$YEAR"  >> $LOG  2>&1
+    # Note building the year command here but not actually executing it. This is because
+    # inside cron it will not be executed.
+    # See https://unix.stackexchange.com/questions/29578/how-can-i-execute-date-inside-of-a-crontab-job
+    YEAR_COMMAND="/bin/date +%Y"
+    PYTHONPATH=.
+    */15 * * * * cd /home/ubuntu/arscca && /home/ubuntu/simple-venv/bin/python bin/archive_events.py $($YEAR_COMMAND)  >> $LOG  2>&1
 
 
 

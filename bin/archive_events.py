@@ -98,10 +98,6 @@ class YearFetcher:
                 if link.text == PARENT_DIR:
                     continue
                 href = link['href']
-                if 'rallyx' in href.lower():
-                    # Skipping RallyX for now because 2023/RallyX-Event1 is not parsing correctly
-                    print(f'Skipping {href} because RallyX')
-                    continue
                 event_fetcher = EventFetcher(self._year, href)
                 event_fetchers.append(event_fetcher)
         if not event_fetchers:
@@ -111,7 +107,7 @@ class YearFetcher:
 class EventFetcher:
     BASE_URL = 'http://arscca.org'
     # Rallyx sometimes has _fin.htm instead of _fin_.htm
-    FINAL_FILENAME_REGEX = re.compile(r'(-final\.html)|(_fin_?\.htm)$')
+    FINAL_FILENAME_REGEX = re.compile(r'(-final\.html)|(_fin_?\.html?)$')
 
     __slots__ = ('_year', '_path')
     def __init__(self, year, path):
