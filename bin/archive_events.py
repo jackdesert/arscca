@@ -7,12 +7,27 @@ from bs4 import Comment
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-import pdb
+from time import sleep
+import ipdb
 import re
 import requests
 
+from arscca.models.singleton import file_based_singleton
+
 PARENT_DIR = 'Parent Directory'
 BASE_URL = 'http://arscca.org/event_results'
+NUM_RETRIES = 5
+RETRY_DELAY_SECONDS = 1
+TIMEOUT_SECONDS = 10
+
+def temp_write(html):
+    """
+    Dev helper for writing html to viewable location
+    """
+    fname = '/tmp/event.html'
+    with open(fname, 'w') as writer:
+        print(f'Writing to {fname}')
+        writer.write(html)
 
 class FinalEventNotFound(Exception):
     """
@@ -24,22 +39,21 @@ def _td_with_class_indexcolname(soup):
 
 def loop_get(url):
     # This function retries your requests.get if it times out
-    req = None
-    while not req:
+    for index in range(NUM_RETRIES):
         try:
-            req = requests.get(url, timeout=1)
+            return requests.get(url, timeout=TIMEOUT_SECONDS)
         except Exception as eee:
             if not isinstance(eee, requests.RequestException):
                 raise eee
-            print(f'RETRYING {url}')
-    return req
+            sleep(RETRY_DELAY_SECONDS)
+            print(f'RETRYING {url} because {eee} where timeout={TIMEOUT_SECONDS}s')
+    raise RuntimeError(f'Failed after {NUM_RETRIES} tries fetching {url} when timeout={TIMEOUT_SECONDS}s')
 
 class TopLevelFetcher:
     YEAR_REGEX = re.compile('\d{4}')
 
     def __init__(self, url):
         self._url = url
-        self._year_fetchers = []
 
     def locate_years(self, precise_year=None):
         '''
@@ -51,6 +65,7 @@ class TopLevelFetcher:
         soup = BeautifulSoup(req.text, 'lxml')
         # Find td elements with class indexcolname
         # Used to be reversed
+        year_fetchers = []
         for td in _td_with_class_indexcolname(soup):
             for link in td('a'):
                 if link.text == PARENT_DIR:
@@ -62,8 +77,8 @@ class TopLevelFetcher:
 
                 if (year == precise_year) or precise_year is None:
                     year_fetcher = YearFetcher(year, href)
-                    self._year_fetchers.append(year_fetcher)
-                    year_fetcher.locate_events()
+                    year_fetchers.append(year_fetcher)
+        return year_fetchers
 
 
 class YearFetcher:
@@ -71,7 +86,6 @@ class YearFetcher:
     def __init__(self, year, path):
         self._year = year
         self._path = path
-        self._event_fetchers = []
 
     def locate_events(self):
         print('YearFetcher.locate_events')
@@ -80,21 +94,26 @@ class YearFetcher:
         req = loop_get(url)
         soup = BeautifulSoup(req.text, 'lxml')
         found = False
+        event_fetchers = []
         for td in _td_with_class_indexcolname(soup):
-            found = True
             for link in td('a'):
                 if link.text == PARENT_DIR:
                     continue
                 href = link['href']
+                if 'rallyx' in href.lower():
+                    # Skipping RallyX for now because 2023/RallyX-Event1 is not parsing correctly
+                    print(f'Skipping {href} because RallyX')
+                    continue
                 event_fetcher = EventFetcher(self._year, href)
-                self._event_fetchers.append(event_fetcher)
-                event_fetcher.locate_results()
-        if not found:
+                event_fetchers.append(event_fetcher)
+        if not event_fetchers:
             print(f'NO EVENTS FOR {self._year}')
+        return event_fetchers
 
 class EventFetcher:
     BASE_URL = 'http://arscca.org'
-    FINAL_FILENAME_REGEX = re.compile(r'(-final\.html)|(_fin_\.htm)$')
+    # Rallyx sometimes has _fin.htm instead of _fin_.htm
+    FINAL_FILENAME_REGEX = re.compile(r'(-final\.html)|(_fin_?\.htm)$')
 
     def __init__(self, year, path):
         self._year = year
@@ -109,15 +128,14 @@ class EventFetcher:
         req = loop_get(url)
         soup = BeautifulSoup(req.text, 'lxml')
         # Some years use list-title, other years use item-title
+        # The indexcolname holds the filenames
         for td in _td_with_class_indexcolname(soup):
             for link in td('a'):
+                # Only grab the one that is a "final" file
                 if self.FINAL_FILENAME_REGEX.search(link.text.strip()):
                     href = link['href']
                     event_url = f'{url}/{href}'
-                    final_fetcher = FinalFetcher(year=self._year, event_name=self._path, event_url=event_url)
-                    self._final_fetchers.append(final_fetcher)
-                    final_fetcher.archive_event()
-                    return
+                    return FinalFetcher(year=self._year, event_name=self._path, event_url=event_url)
         msg = f'No event found at url {url}'
         raise FinalEventNotFound(msg)
 
@@ -243,12 +261,20 @@ if __name__ == '__main__':
     precise_year = None
     if len(sys.argv) > 1:
         precise_year = sys.argv[1]
+        print(f'Fetching for precise_year {precise_year}')
 
-    FinalFetcher.stats()
-    top = TopLevelFetcher(f'{BASE_URL}#iframe-buster')
-    top.locate_years(precise_year)
+    # Use a file based singleton so that when this is called by cron,
+    # long-running processes will not pile up
+    with file_based_singleton('/tmp/archive-events-singleton-dir'):
+        FinalFetcher.stats()
+        top_fetcher = TopLevelFetcher(f'{BASE_URL}#iframe-buster')
+        year_fetchers = top_fetcher.locate_years(precise_year)
 
-    FinalFetcher.stats()
+        for year_fetcher in year_fetchers:
+            event_fetchers = year_fetcher.locate_events()
+            for event_fetcher in event_fetchers:
+                final_fetcher = event_fetcher.locate_results()
+                final_fetcher.archive_event()
 
 
 

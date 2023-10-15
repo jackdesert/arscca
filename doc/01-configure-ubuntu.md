@@ -122,7 +122,9 @@ arscca authorized_keys
 Copy the public key from the club laptop and put it in arscca authorized keys
 
     sudo -u arscca  mkdir -p /home/arscca/.ssh
-    sudo -u arscca vi /home/arscca/.ssh/authorized_keys
+    sudo su arscca
+    echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIJY0RGrCWxmNBQGckor+rULNa6m/i7SIs0imfbGwE1dYUSNgUlz/P4XIKNQZMzP7jIrwEmsmS+D7TMcRkzvhbda7eqilL9ADw4Ahhpizn0T/8yP1lkNneZqH54s3KnmcIKc+wpcAte02coc94RX3AZcmHZKzNKPs+AeWMe4jzev2cRCRNF3aS2yNBPjghQVQxTcK05tFXUGQkFI8cxhdU59R70ypikBFLmpBp51ybWnp5cIuXAkPidHdXs2xeTav5yKEB72rAeLFwq2FMrMvVI+tXl4wRcj3urMMknlLwf5Iic+gN26enH1kFeiWquK373HzxUNxlC1LdR/WD5InX User@MININT-EO6EKSC' >> /home/arscca/.ssh/authorized_keys
+    exit
 
 Cron Job
 --------
@@ -137,8 +139,21 @@ Now write a cronjob and put the following in it:
     #! /bin/bash
     LOG=/tmp/cron.log
     YEAR=$(date +'%Y')
-    * * * * * cd /home/ubuntu/arscca && /home/ubuntu/simple-venv/bin/python bin/archive_events.py "$YEAR"  >> $LOG  2>&1
+    */15 * * * * cd /home/ubuntu/arscca && /home/ubuntu/simple-venv/bin/python bin/archive_events.py "$YEAR"  >> $LOG  2>&1
 
 
 
+Screen
+------
+
+Open screen, then run:
+
+    docker-compose up
+
+
+Things to have them Test
+------------------------
+
+1. Live results push
+2. Msreg page
 
