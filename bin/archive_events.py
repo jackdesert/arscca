@@ -11,7 +11,7 @@ from time import sleep
 import requests
 from bs4 import BeautifulSoup, Comment
 
-from arscca.models.singleton import file_based_singleton
+from singleton import file_based_singleton
 
 PARENT_DIR = 'Parent Directory'
 BASE_URL = 'http://arscca.org/event_results'
