@@ -261,6 +261,9 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         PRECISE_YEAR = sys.argv[1]
         print(f'Fetching only for year {PRECISE_YEAR}')
+    if PRECISE_YEAR is not None and not re.compile(r'^\d{4}$').search(PRECISE_YEAR):
+        # Make sure an actual year is passed in, because in cron generating the year is tricky
+        raise ValueError('PRECISE_YEAR must be decimal')
 
     # Use a file based singleton so that when this is called by cron,
     # long-running processes will not pile up
