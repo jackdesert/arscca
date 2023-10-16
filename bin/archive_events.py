@@ -19,6 +19,14 @@ NUM_RETRIES = 5
 RETRY_DELAY_SECONDS = 1
 TIMEOUT_SECONDS = 10
 
+# Note these all start with http...these are hosted on https, so ideally
+# we would canonize
+SKIPPED_EVENT_URLS = frozenset(['http://arscca.org/event_results/2019/TnT/', # Odd formatting (TNT)
+    'http://arscca.org/event_results/2020/RallyX-Event1/', # Only a partial file
+    'http://arscca.org/event_results/2007/Event1/', # pdf
+
+    ])
+
 #def temp_write(html):
 #    """
 #    Dev helper for writing html to viewable location
@@ -107,7 +115,7 @@ class YearFetcher:
 class EventFetcher:
     BASE_URL = 'http://arscca.org'
     # Rallyx sometimes has _fin.htm instead of _fin_.htm
-    FINAL_FILENAME_REGEX = re.compile(r'(-final\.html)|(_fin_?\.html?)$')
+    FINAL_FILENAME_REGEX = re.compile(r'(-|_)fin(al)?_?\.html?$')
 
     __slots__ = ('_year', '_path')
     def __init__(self, year, path):
@@ -117,6 +125,10 @@ class EventFetcher:
     def locate_results(self):
         print('EventFetcher.locate_results')
         url = f'{BASE_URL}/{self._year}/{self._path}'
+        if 'season' in self._path:
+            return None
+        if url in SKIPPED_EVENT_URLS:
+            return None
         print(url)
 
         req = loop_get(url)
@@ -128,9 +140,12 @@ class EventFetcher:
                 # Only grab the one that is a "final" file
                 if self.FINAL_FILENAME_REGEX.search(link.text.strip()):
                     href = link['href']
+                    # Sometimes url has trailing slash already
+                    url = url.rstrip('/')
                     event_url = f'{url}/{href}'
                     return FinalFetcher(year=self._year, event_name=self._path, event_url=event_url)
         msg = f'No event found at url {url}'
+        print(f'\n\n********************\n {msg}\n')
         raise FinalEventNotFound(msg)
 
 # XXX Rename to EventFetcher (the other is EventFinder or EventLocator)
@@ -272,7 +287,8 @@ if __name__ == '__main__':
             event_fetchers_ = year_fetcher_.locate_events()
             for event_fetcher_ in event_fetchers_:
                 final_fetcher = event_fetcher_.locate_results()
-                final_fetcher.archive_event()
+                if final_fetcher is not None:
+                    final_fetcher.archive_event()
 
 
 
