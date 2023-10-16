@@ -51,23 +51,21 @@ Docker with Manual Containers
 
 First make sure your home directory is executable by all. Then:
 
-    sudo docker network create arscca-network
+    docker volume create arscca-redis-data
+    docker network create arscca-network
+
 
     cd /path/to/this/repo
 
     # Build the image based on the Dockerfile
     docker build -t arscca-pyramid .
 
-    # Create Network
-    docker network create arscca-network
-
     # Run a new container with Redis
     docker run  --rm \
                 --detach \
                 --name arscca-redis \
                 --network arscca-network \
-                --volume reddata:/data \
-                redis:5.0.7
+                --volume reddata:/data  redis:5.0.7
 
     # Run a new container with arscca-pyramid
     # Note `bash` is specified as the command to run.

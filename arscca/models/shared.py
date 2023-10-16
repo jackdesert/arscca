@@ -28,9 +28,11 @@ class Shared:
     MSREG_RAW_PATH = '/tmp/msreg_raw.txt'
     MSREG_AUGMENTED_PATH = '/tmp/msreg_augmented.txt'
 
-    # 2021 Events show links to classes. for example, #SA is stock all wheel drive
-    # Previous to 2021 there was a bit of html that said "RallyX Mode"
-    RALLYX_REGEX = re.compile(r'(\*\* RallyX Mode )|( href="#SA">)|(<title>.*RallyX.*</title>)')
+    # Match any of the following and it is detected as Rallycross
+    # - A car class called #SA (stock all wheel drive) (this was included 2021 and later)
+    # - A bit of html that says "RallyX Mode" (this was included previous to 2021)
+    # - Put "RallyX" in the title, which will either show up in the html <title> or in a th with align=center.
+    RALLYX_REGEX = re.compile(r'(\*\* RallyX Mode )|( href="#SA">)|(<title>.*RallyX.*</title>)|(align=center>[^<]*RallyX.*?<)')
     ASPHALT_RALLY_REGEX = re.compile(r'cumulative-scoring')
 
     PAX_STRING = 'PAX'

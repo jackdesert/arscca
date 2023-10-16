@@ -1,3 +1,8 @@
+"""
+The log splitter determines driver type
+
+See _set_driver_type()
+"""
 from arscca.models.driver import AsphaltRallyDriver
 from arscca.models.driver import OneCourseDriver
 from arscca.models.driver import RallyDriver
@@ -53,6 +58,7 @@ class LogSplitter:
         self._primary_published_score_column = None
         self._data = None
         self._num_rows_per_driver = None
+        self.html = None
 
     def build_and_return_drivers(self):
         self._load_soup()
@@ -84,15 +90,15 @@ class LogSplitter:
     def _load_soup(self):
         if self.live:
             with open(self.LIVE_FILENAME, 'r') as ff:
-                html = ff.read()
+                self.html = ff.read()
 
         # This path is used with the test suite
         with open(self._local_html_file) as ff:
-            html = ff.read()
+            self.html = ff.read()
 
         # We no longer support calling requests.get() from upstream server inline
 
-        self._soup = BeautifulSoup(html, 'html.parser')
+        self._soup = BeautifulSoup(self.html, 'html.parser')
 
 
     def _load_results_table(self):
@@ -168,15 +174,17 @@ class LogSplitter:
     def _set_driver_type(self):
 
 
-        if Shared.ASPHALT_RALLY_REGEX.search(str(self._soup)):
+        # Note searching in html, not str(soup), since soup adds double quotes to `align=center`
+        # and we want to match on the explicit axware output (assuming it is more accurate)
+        if Shared.ASPHALT_RALLY_REGEX.search(self.html):
             # Note set up the event as single day if you want asphalt rally scoring
+            # And also name the event with something in ASPHALT_RALLY_REGEX
             self.driver_type = AsphaltRallyDriver
             return
 
-        if Shared.RALLYX_REGEX.search(str(self._soup)):
+        if Shared.RALLYX_REGEX.search(self.html):
             self.driver_type = RallyDriver
             return
-
 
         d1 = 'D1'
         d2 = 'D2'

@@ -1,5 +1,7 @@
 """
 Dispatcher is the controller
+
+(The log splitter determines driver type)
 """
 from collections import defaultdict
 from glob import glob
