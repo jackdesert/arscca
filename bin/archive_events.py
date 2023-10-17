@@ -19,6 +19,9 @@ NUM_RETRIES = 5
 RETRY_DELAY_SECONDS = 1
 TIMEOUT_SECONDS = 10
 
+# Events before 2009 have a different layout and would require additional effort to parse
+MINIMUM_YEAR = 2009
+
 # Note these all start with http...these are hosted on https, so ideally
 # we would canonize
 SKIPPED_EVENT_URLS = frozenset(['http://arscca.org/event_results/2019/TnT/', # Odd formatting (TNT)
@@ -82,7 +85,7 @@ class TopLevelFetcher:
                 year = search[0]
                 href = link['href']
 
-                if (year == precise_year) or precise_year is None:
+                if year >= MINIMUM_YEAR and (year == precise_year or precise_year is None):
                     year_fetcher = YearFetcher(year, href)
                     year_fetchers.append(year_fetcher)
         return year_fetchers
