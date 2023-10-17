@@ -20,7 +20,7 @@ RETRY_DELAY_SECONDS = 1
 TIMEOUT_SECONDS = 10
 
 # Events before 2009 have a different layout and would require additional effort to parse
-MINIMUM_YEAR = 2009
+MINIMUM_YEAR = '2009'
 
 # Note these all start with http...these are hosted on https, so ideally
 # we would canonize
