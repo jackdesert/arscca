@@ -504,10 +504,17 @@ Also update bin/axware_publisher.py to use the new year.
 Also update templates/index.jinja2 to only display the trophy for the current year
 
 
-Backlog
+2023 Backlog
 -------
+
+  * Make static backup of all events for the future when live timing is no longer used
+    or when we only turn on the server for events
+
+
+Other Backlog
+-------------
+
   * Rename columns to "Raw Time" and "Pax Time"
-  * Bold each driver's best morning run and best afternoon run
   * Rocket next to name if most recent run 2% faster than previous best
 
   * Fix Live page so it shows date based on when uploaded (or axware file created)

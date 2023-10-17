@@ -1,6 +1,7 @@
 """
 Drivers for different event types
 """
+import html
 import re
 from decimal import Decimal, InvalidOperation
 
@@ -9,6 +10,10 @@ from arscca.models.shared import Shared
 from arscca.models.pax import Pax
 from arscca.models.photo import Photo
 
+# No need to have car model or driver name super long
+MAX_STRING_LENGTH = 47
+BACK_SLASH = '\\'
+FORWARD_SLASH = '/'
 
 class GenericDriver:
     """
@@ -20,8 +25,6 @@ class GenericDriver:
 
     PYLON_PENALTY_IN_SECONDS = 2
     MISSED_GATE_PENALTY_IN_SECONDS = 10
-    SINGLE_QUOTE = "'"
-    LEFT_QUOTE = '’'
 
     # pylint: disable=too-many-arguments
     def __init__(
@@ -53,7 +56,9 @@ class GenericDriver:
         """
         The driver's name. Example: 'Jonathan Hasty'
         """
-        return Canon(self._row_1[3]).name
+        raw = self._row_1[3]
+        sanitized = self._sanitize(raw)
+        return Canon(sanitized).name
 
     @property
     def car_model(self):
@@ -65,6 +70,10 @@ class GenericDriver:
     def _sanitize(self, text):
         """
         Sanitize the output so it works with json
+
+        This is needed for fields that users enter into msreg.
+        (For example, names like "Lil' bunches of Fun" and car
+        classes like "\\\\\\M3")
         """
         # Because of the way we transfer JSON to the html page:
         # {{ some_json }}
@@ -72,9 +81,21 @@ class GenericDriver:
         # ' some stuff \' some more stuff '
         # (the outer singles quotes drop off, but the middle remains)
         # therefore we change inner single quotes to left quotes
+        #
         if text is None:
             return None
-        return text.replace(self.SINGLE_QUOTE, self.LEFT_QUOTE)
+
+        # Enforce length limit
+        text = text[:MAX_STRING_LENGTH]
+
+        # html escape <, >, &, and quotes into their &quote; counterparts
+        text = html.escape(text)
+
+        # Replace backslashes because they work as control sequences in JSON
+        # Also see https://stackoverflow.com/questions/19176024/how-to-escape-special-characters-in-building-a-json-string
+        text = text.replace(BACK_SLASH, FORWARD_SLASH)
+        return text
+
     @property
     def id(self):
         """

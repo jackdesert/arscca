@@ -21,6 +21,13 @@ import requests
 
 import logging
 LOG = logging.getLogger('arscca')
+FUNKY_ENCODED_NBSP = 'Â\xa0'
+
+# Some rallyx dates are hardcoded because they did not match expected patterns
+HARDCODED_RALLYX_DATES = (
+        '2019-04-13', # Funky html
+        '2018-11-02',
+        )
 
 # VARIATIONS
 # Events with two rows per driver use the last column as published score
@@ -49,7 +56,6 @@ class LogSplitter:
         self.url = url
         self.live = live  # Boolean
 
-        # pass in a local_html_file for testing
         self._local_html_file = local_html_file
         self._point_storage = defaultdict(int)
         self.driver_type = None
@@ -88,15 +94,20 @@ class LogSplitter:
         return self._local_html_file.split('__', 1)[1].split('.')[0]
 
     def _load_soup(self):
-        if self.live:
-            with open(self.LIVE_FILENAME, 'r') as ff:
-                self.html = ff.read()
+        fname = self.LIVE_FILENAME if self.live else self._local_html_file
+        with open(fname, encoding='utf8') as reader:
+            html = reader.read()
 
-        # This path is used with the test suite
-        with open(self._local_html_file) as ff:
-            self.html = ff.read()
 
-        # We no longer support calling requests.get() from upstream server inline
+        # Funky Encodings
+        # Somewhere along the way, it appears that we used the wrong encoding in our files.
+        # Stripping out the 'Â' character from the html since we think in this pattern it
+        # represents an &nbsp;
+        # It appears to only occur as the only content inside an element. For example: <p>Â </p>
+        # Note it's not a normal space after the Â...if you put it inside a python string it will
+        # show up as a yellow underscore....that's why it uses the \x notation in FUNKY_ENCODED_NBSP
+        # See https://stackoverflow.com/questions/1461907/html-encoding-issues-%C3%82-character-showing-up-instead-of-nbsp
+        self.html = html.replace(f'>{FUNKY_ENCODED_NBSP}<', '> <')
 
         self._soup = BeautifulSoup(self.html, 'html.parser')
 
@@ -182,7 +193,7 @@ class LogSplitter:
             self.driver_type = AsphaltRallyDriver
             return
 
-        if Shared.RALLYX_REGEX.search(self.html):
+        if Shared.RALLYX_REGEX.search(self.html) or self.date in HARDCODED_RALLYX_DATES:
             self.driver_type = RallyDriver
             return
 
